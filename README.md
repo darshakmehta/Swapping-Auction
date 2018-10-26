@@ -8,6 +8,16 @@ Domain: Content Swapping Domain
   
   Common look-and-feel elements are rendered exactly the same, to show the seamless transitions with no jitter between pages for common elements.
   
+  
+# Stage 2
+  Serving views and defining routes
+  Implement MVC Design Pattern to structure the web application.
+  Model - JavaScript Data Objects to implement the business layer of the application
+  View -  EJS Pages to present the view to the browser
+  Control - Using Routes to control the flow of the application
+  We will define EJS Pages for the presentation, routes for the controller and JavaScript data objects for the business logic
+  
+  
 # Testing
   Validation of HTML5 pages by following tool: http://html5.validator.nu/
   

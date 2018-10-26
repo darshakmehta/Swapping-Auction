@@ -43,13 +43,15 @@ app.get('/categories', (req, res) => {
 
 /* GET Sub Categories Router - Use to display all sub categories of a choosen category */
 app.get('/subCategories', (req, res) => {
+		/* Check catalogCategory parameter exist and it is valid */
 		if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
+			/* Dispatch list of sub categories of type catalogCategory */
 			res.render('subCategories', {
 			welcome: 'Not signed in.',
 			catalogCategory: req.query.catalogCategory,
 			items
 			});
-		} else {
+		} else { //If invalid catalogCategory, dispatch catalog as if no category had been provided
 			res.render('categories', {
 				welcome: 'Not signed in.'
 			});
@@ -71,7 +73,7 @@ app.get('/item', (req, res) => {
 					})
 				} 
 			});
-		} else { //If item code is invalid, dispatch catalog
+		} else { //If item code is invalid, dispatch catalog as if no code had been provided
 			res.render('categories', {
 					welcome: 'Not signed in.'
 				});

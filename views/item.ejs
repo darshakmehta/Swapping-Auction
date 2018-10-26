@@ -33,10 +33,11 @@
 			<article>
 
 				<div class="page-info">
-					<!-- Picture of item -->
+					<!-- Picture of item from database -->
 					<img class="item-img-style float-left" src = "<%= item.image_url %>" alt = "item-image"/>
 				</div>
 				<div class="float-left">
+					<!-- Name of the item from database -->
 					<div class="item-name"> <%= item.name %> </div>
 					<!-- <div class="item-author"> by Peter Jackson </div> -->
 
@@ -50,17 +51,17 @@
 				</div>
 
 				<div class="item-content float-right">
-					<!-- Item detailed description -->
+					<!-- Item detailed description from the database -->
 					<%= item.description %>
 				</div>
 
 				<!-- Category of item -->
 				<div class="text-style2">  Category: 
-					<!-- Back Link to return to the catalog -->
+					<!-- Back Link to return to the catalog and category displayed based on database -->
 					<a href = "/subCategories?catalogCategory=<%= item.category %>" > <%= item.category %> </a>
 				</div>
 
-				<!-- Average Rating of item -->
+				<!-- Average Rating of item based on database -->
 				<div class="text-style2"> Average Rating: <%= item.rating %></div>
 			</article>
 		</div>

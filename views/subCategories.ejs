@@ -32,12 +32,13 @@
 			<article>
 				<!-- TODO: Dropdow or select box to choose categories  -->
 				<div class="page-info">
-					<!--  Categories of Items -->
+					<!--  Categories of Items based on database -->
 					<h1 class="categories"> <%= catalogCategory %> </h1>
 					<!-- Items per category  -->
 					<ul class="cat-list"> 
 						<% Object.keys(items).forEach((item, index) => { 
 						if(items[item]['category'] === catalogCategory){%>
+							<!-- Name of Categories -->
 							<li><a class="text-decorator-li" href= "/item?itemCode=<%= index + 1 %>"> <%= items[item].name  %></a></li>
 						<% }}) %>
 					</ul>

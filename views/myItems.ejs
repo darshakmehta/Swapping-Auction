@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <title>Swapping Auction</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    
+    <!-- CSS Reset -->
+    <!-- <link rel="stylesheet" href="styles/css-reset.css"> -->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/styles.css">
+  </head>
+
+  <body>
+
+  	<% include partials/header.ejs %>
+	<% include partials/user-navigation.ejs %>
+	<% include partials/site-navigation.ejs %>	
+
+	<!-- Main Content Area -->
+	<section>
+		<div class="content ">
+			<!--  Breadcrumb -->
+			<h3 class="inline-header">Home > My Catalog</h3>
+			<article>
+				<!-- Details of myItems -->
+				<h1 class="text-style"> Darshak's Catalog for Swapping </h1>
+				<div class="item-content">
+
+					<table>
+						<thead class="border-bottom-style">
+							<tr>
+								<th>Item</th>
+								<th>Category</th>
+								<th>My Rating</th>
+								<th>Swapped</th>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody class="border-bottom-style">
+							<tr>
+								<td><a href="/item?itemCode=1">Lord of the Rings</a></td>
+								<td><a href= "/subCategories?catalogCategory=Movies">Movie</a></td>
+								<!-- Average Rating -->
+								<td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
+								<td> <i class="fas fa-exchange-alt"></i></td>
+								<!-- Update action -->
+								<td> <a href="#"><div class="btn-style"> Update </div></a> </td>
+								<!-- Delete action -->
+								<td> <a href="#"><div class="btn-style"> Delete </div></a> </td>
+							</tr>
+							<tr>
+								<td><a href="/item?itemCode=5">Cycle</a></td>
+								<td><a href= "/subCategories?catalogCategory=Vehicle"> Vehicle</a></td>
+								<!-- Average Rating -->
+								<td><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
+								<td></td>
+								<!-- Update action -->
+								<td> <a href="#"><div class="btn-style"> Update </div></a> </td>
+								<!-- Delete action -->
+								<td> <a href="#"><div class="btn-style"> Delete </div></a> </td>
+							</tr>
+							<tr>
+								<td><a href="/item?itemCode=6">Motorcycle</a></td>
+								<td><a href= "/subCategories?catalogCategory=Vehicle">Vehicle</a></td>
+								<td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
+								<td> <i class="fas fa-check"></i></td>
+								<!-- Update action -->
+								<td> <a href="#"><div class="btn-style"> Update </div></a> </td>
+								<!-- Delete action -->
+								<td> <a href="#"><div class="btn-style"> Delete </div></a> </td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="myItems-legend">
+						<p> Legend: <i class="fas fa-exchange-alt"></i> Swap offer available <i class="fas fa-check"> </i> already swapped</p>
+					</div>
+				</div>
+			</article>
+		</div>
+	</section>
+
+	<% include partials/footer.ejs %>
+
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <title>Swapping Auction</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    
+    <!-- CSS Reset -->
+    <!-- <link rel="stylesheet" href="styles/css-reset.css"> -->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/styles.css">
+  </head>
+
+  <body>
+
+  	<% include partials/header.ejs %>
+	<% include partials/user-navigation.ejs %>
+	<% include partials/site-navigation.ejs %>	
+
+	<!-- Main Content Area -->
+	<section>
+		<div class="content ">
+			<!--  Breadcrumb -->
+			<h3 class="inline-header">Home > My Swaps</h3>
+			<article>
+				<!-- mySwaps Page -->
+				<h1 class="text-style-swap-offer"> <%= name%> Swap Offers </h1>
+				<div class="item-content">
+
+					<table>
+						<thead class="border-bottom-style">
+							<tr>
+								<th>Item</th>
+								<th>Swap Offer</th>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody class="border-bottom-style">
+							<tr>
+								<td><a href="/item?itemCode=1">Lord of the Rings</a></td>
+								<td><a href="/item?itemCode=3">Hobbit</a></td>
+								<td> <a href="#"><div class="btn-style-mySwap"> Accept </div></a> <a href="#"><div class="btn-style-mySwap2"> Reject </div></a></td>
+							</tr>
+							<tr>
+								<td><a href="/item?itemCode=5">Cycle</a></td>
+								<td><a href="/item?itemCode=4">Car</a></td>
+								<td> <a href="#"><div class="btn-style"> Withdraw Swap </div></a></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><a href="/item?itemCode=6">Motorcycle</a></td>
+								<td><a href="/item?itemCode=4">Car</a></td>
+								<td> <a href="#"><div class="btn-style"> Withdraw Swap </div></a> </td>
+
+							</tr>
+						</tbody>
+					</table>
+					<div class="myItems-legend">
+						<p> Legend: <i class="fas fa-exchange-alt"></i> Swap offer available <i class="fas fa-check"> </i> already swapped</p>
+					</div>
+				</div>
+			</article>
+		</div>
+	</section>
+
+	<% include partials/footer.ejs %>
+
+  </body>
+</html>

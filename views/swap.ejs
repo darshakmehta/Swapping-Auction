@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <title>Swapping Auction</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    
+    <!-- CSS Reset -->
+    <!-- <link rel="stylesheet" href="styles/css-reset.css"> -->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/styles.css">
+  </head>
+
+  <body>
+
+  	<% include partials/header.ejs %>
+	<% include partials/user-navigation.ejs %>
+	<% include partials/site-navigation.ejs %>	
+
+	<!-- Main Content Area -->
+	<section>
+		<div class="content">
+			<!--  Breadcrumb -->
+			<h3 class="inline-header">Home > Swap Items</h3> <!-- Swap ___ Category Name ___ -->
+			<h2 class="inline-header"> Swap this item </h2>
+			<!-- Interested item to swap -->
+			<article>
+				<div class="page-info">
+					<img class="item-img-style float-left" src = "/resources/images/item1.png" alt = "item-image"/>
+				</div>
+				<div class="float-left">
+					<div class="item-name"> Lord of the Rings </div>
+					<div class="item-author"> by Peter Jackson </div>
+					<div class="item-content-swap"> <b>The Lord of the Rings is a film series consisting of three high fantasy adventure films directed by Peter Jackson. They are based on the novel The Lord of the Rings by J. R. R. Tolkien. </b></div>
+				</div>
+				<div class ="swap-options-header clear-float ">
+					<h2> Select an item from your available swaps </h2>
+					<div class = "swap-options">
+						<form>
+							<!-- List of available UserItems -->
+							<ul>
+								<li class="swap-options-list">
+									<input type="radio" name ="swap-option" checked> <span class ="swap-options-item"><a href="/item?itemCode=3"> Hobbit </a></span>
+								</li>
+								<li class="swap-options-list">
+									<input  type="radio" name ="swap-option"> <span class ="swap-options-item"><a href="/item?itemCode=5">Cycle </a></span>
+								</li>
+							</ul>
+							<!-- Swap your available item for interested item -->
+							<a href="/myItems"><div class="btn-style-mySwap"> Confirm Swap </div></a>
+						</form>
+					</div>
+				</div>
+				
+				<div class="text-style2"> Category: Movies</div>
+				<div class="text-style2"> Average Rating: 3.7</div>
+			</article>
+		</div>
+	</section>
+
+	<% include partials/footer.ejs %>
+
+  </body>
+</html>

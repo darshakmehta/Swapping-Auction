@@ -52,6 +52,7 @@ const item6 = {
 	image_url: '/resources/images/item6.png'
 };
 
+/* Function to get all items from the Database */
 module.exports.getItems = () => {
 	return {
 		item1, item2, item3, item4, item5, item6

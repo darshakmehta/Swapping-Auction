@@ -1,3 +1,17 @@
+/***
+Item {
+Item Code - Unique identifier for the item --> TODO: Alphanumeric string
+//Remember to represent itemCode in a straightforward way to further use in form submissions, parameter names, and also can be used as a part of URLs for storing data such as images associated with the item
+Item Name - Name of the product
+Catalog Category - Select or Arrange items by section or type in the catalog
+Description - describe the importance of the item
+Rating - Rating of the item on the website
+Image URL -  Item image URL - generated based on itemCode and Directory file path
+}
+***/
+
+/** Following are the Hard-coded Item Models(Objects) **/
+
 const item1 = {
 	code: '1', 
 	name: 'Lord of the Rings',
@@ -52,7 +66,7 @@ const item6 = {
 	image_url: '/resources/images/item6.png'
 };
 
-/* Function to get all items from the Database */
+/* Function to return all the items from the hardcoded Database */
 module.exports.getItems = () => {
 	return {
 		item1, item2, item3, item4, item5, item6

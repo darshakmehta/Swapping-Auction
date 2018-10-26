@@ -7,7 +7,7 @@ const app = express();
 const model = require('../models/item');
 let items = model.getItems(); //Function to export all items
 
-/* Get Item by Id*/
+/* return the Item with the specified itemId from the hardcoded database */
 var getItem = (itemId) => {
 	return items[itemId];
 }
@@ -33,13 +33,15 @@ app.get('/home', (req, res) => {
 	});
 });
 
+
+/* GET Categories Router - Use to display categories belonging to the Catalog */
 app.get('/categories', (req, res) => {
 		res.render('categories', {
 			welcome: 'Not signed in.',
 		});
 });
 
-/* GET Sub Categories Router */
+/* GET Sub Categories Router - Use to display all sub categories of a choosen category */
 app.get('/subCategories', (req, res) => {
 		if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
 			res.render('subCategories', {
@@ -57,24 +59,24 @@ app.get('/subCategories', (req, res) => {
 /* GET Item Router */
 app.get('/item', (req, res) => {
 	if(Object.keys(req.query.length != 0)) {
-
+		/* Check the http request for a parameter called "itemCode" and validate it matches our format and it is valid */
 		if(req.query.itemCode <= 6 && req.query.itemCode >= 1) {
 			Object.keys(items).forEach((item, index) => {
-				
+				/* Valid Object should be added to the http response object */
 				if(items[item]['code'] === req.query.itemCode) {
+					/* Dispatch the individual item */
 					res.render('item', {
 						welcome: 'Welcome Darshak!',
 						item: getItem(item)
 					})
 				} 
 			});
-		} else {
+		} else { //If item code is invalid, dispatch catalog
 			res.render('categories', {
 					welcome: 'Not signed in.'
 				});
 		}
-
-	} else {
+	} else { //If no itemCode parameter is present, dispatch catalog
 		res.render('categories', {
 			welcome: 'Not signed in.'
 		});

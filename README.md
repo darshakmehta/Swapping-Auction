@@ -11,10 +11,13 @@ Domain: Content Swapping Domain
   
 # Stage 2
   Serving views and defining routes
+  
   Implement MVC Design Pattern to structure the web application.
-  Model - JavaScript Data Objects to implement the business layer of the application
-  View -  EJS Pages to present the view to the browser
-  Control - Using Routes to control the flow of the application
+  
+    Model - JavaScript Data Objects to implement the business layer of the application
+    View -  EJS Pages to present the view to the browser
+    Control - Using Routes to control the flow of the application
+  
   We will define EJS Pages for the presentation, routes for the controller and JavaScript data objects for the business logic
   
   

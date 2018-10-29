@@ -44,7 +44,14 @@
 					<!-- Button to add the item to items for swap list 
 					Swap it button is to request a swap for an item
 					-->
-					<a href="/swap"><div class="swap btn-style"><i class="fas fa-exchange-alt fa-swap-item"></i><span class="text-color"> Swap it</span></div></a>
+					<% if(itemStatus === 'pending') {%>
+						<h2> You have a swap offer for this item</h2>
+						<div > You have a swap offer for this item </div><a class="btn-style-mySwap" href= "/mySwaps"> See the offer </a>
+					<%} else if(itemStatus === 'swapped'){%>
+						<h2> You've swapped this item </h2>
+					<%} else {%>
+						<a href="/myItems/offer/<%= item.code%>"><div class="swap btn-style"><i class="fas fa-exchange-alt fa-swap-item"></i><span class="text-color"> Swap it</span></div></a>
+					<%}%>
 
 					<!-- Rate the item --> 
 					<a href="#"><div class="rate btn-style"><i class="fas fa-star fa-star-item"></i><span class="text-color"> Rate it</span></div></a>

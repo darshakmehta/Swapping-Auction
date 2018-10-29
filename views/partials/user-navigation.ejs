@@ -1,7 +1,12 @@
 <!-- User Specific Navigation -->
 <nav class="navbar ">
 	<div class="user-navbar">
-		<a class="" href="#"> Sign in </a>
+		<% if(sessionStatus == true) {%>
+		<a class="" href="/signout"> Sign Out </a>
+		<%} else {%>
+		<a class="" href="/myItems"> Sign In </a>
+		<%}%>
+		
 		<span> | </span>
 		<a class="" href="/myItems"> My Catalog </a>
 		<span> | </span>

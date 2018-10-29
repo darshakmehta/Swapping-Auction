@@ -36,22 +36,24 @@
 					<img class="item-img-style float-left" src = "/resources/images/item1.png" alt = "item-image"/>
 				</div>
 				<div class="float-left">
-					<div class="item-name"> Lord of the Rings </div>
-					<div class="item-author"> by Peter Jackson </div>
-					<div class="item-content-swap"> <b>The Lord of the Rings is a film series consisting of three high fantasy adventure films directed by Peter Jackson. They are based on the novel The Lord of the Rings by J. R. R. Tolkien. </b></div>
+					<div class="item-name"> <%= item.name %> </div>
+					<!-- <div class="item-author"> by Peter Jackson </div> -->
+					<div class="item-content-swap"> <b> <%= item.description %> </b></div>
 				</div>
 				<div class ="swap-options-header clear-float ">
+					<% if(flag === false) {%>
+						<h2> <%= message %> </h2>
+					<%} else {%>
 					<h2> Select an item from your available swaps </h2>
 					<div class = "swap-options">
 						<form>
 							<!-- List of available UserItems -->
 							<ul>
-								<li class="swap-options-list">
-									<input type="radio" name ="swap-option" checked> <span class ="swap-options-item"><a href="/item?itemCode=3"> Hobbit </a></span>
-								</li>
-								<li class="swap-options-list">
-									<input  type="radio" name ="swap-option"> <span class ="swap-options-item"><a href="/item?itemCode=5">Cycle </a></span>
-								</li>
+								<% Object.keys(availableList).forEach((item) => {%>
+									<li class="swap-options-list">
+										<input type="radio" name ="swap-option"> <span class ="swap-options-item"><a href="/item?itemCode=<%= availableList[item].item.code %>"> <%= availableList[item].item.name %></a></span>
+									</li>
+								<%});%>
 							</ul>
 							<!-- Swap your available item for interested item -->
 							<a href="/myItems"><div class="btn-style-mySwap"> Confirm Swap </div></a>

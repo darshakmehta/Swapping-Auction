@@ -9,7 +9,7 @@ UserProfile {
 	removeUserItem(item) - Method to remove UserItem associated with the given item in parameter
 	getUserItems - return a List/Collection of UserItems from this user profile
 	emptyProfile - clears the entire profile contents, resets the UserItem List to null
-	getUserProfile - Return the User Profile
+	getUserProfile - Returns a User Profile object for a specified user by userId
 }
 
 ***/
@@ -35,7 +35,7 @@ class UserProfile {
 
 	}
 
-	getUserProfile() {
+	getUserProfile(userId) {
 		//return user Profile
 	}
 }

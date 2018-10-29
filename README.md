@@ -20,7 +20,13 @@ Domain: Content Swapping Domain
   
   We will define EJS Pages for the presentation, routes for the controller and JavaScript data objects for the business logic
   
-  
+ 
+# Stage 3
+  Implement sessions to maintain state in our application
+
+  Complete MVC Architecture
+
+
 # Testing
   Validation of HTML5 pages by following tool: http://html5.validator.nu/
   

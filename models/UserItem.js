@@ -16,7 +16,6 @@ Status - this attribute indicates swap item status - available, pending (offer m
 Swap Item - This is the item swapped with this user item (an item that was offered for swapping by another user and was swapped with this user item). It stores the Item Code to map the item in the database
 Swap Item Rating - This is the user's rating for the item swapped with this user item.
 Swapper Rating - This is the user's rating for the other user that owns the items swapped with this user item.
-Made Offer - // Future candidate if we want to keep the offer made status, default to false 
 }
 
 Note:
@@ -35,13 +34,12 @@ class UserItem {
 		this.swapItem = swapItem,
 		this.swapItemRating = swapItemRating,
 		this.swapperRating = swapperRating,
-		this.madeOffer = madeOffer
 	}
 }
 
-const userItem1 = new UserItem(getItem("item1"), '4', 'available', 0, 0, 0, false);
-const userItem2 = new UserItem(getItem("item3"), '4', 'pending', 6, 0, 0, false);
-const userItem3 = new UserItem(getItem("item5"), '2', 'swapped', 2, 0, 0, false);
+const userItem1 = new UserItem(getItem("item1"), '4', 'available', 0, 0, 0);
+const userItem2 = new UserItem(getItem("item3"), '4', 'pending', 6, 0, 0);
+const userItem3 = new UserItem(getItem("item5"), '2', 'swapped', 2, 0, 0);
 
 module.exports = {
 	userItem1,

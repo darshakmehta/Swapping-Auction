@@ -40,3 +40,34 @@ class UserDB {
 const User1 = new UserDB('1', 'Darshak', 'Mehta', 'dmehta9@uncc.edu', '9527 University Terrace Dr.', 'Apt K', 'Charlotte', 'NC', '28262', 'USA');
 
 module.exports = User1;
+
+/*
+
+
+[{
+userId: "1",
+firstName : "Darshak",
+lastName :"Mehta",
+email: "dmehta9@uncc.edu",
+addressField1: "9527 University Terrace Dr.",
+addressField2: "Apt K",
+city: "Charlotte",
+state: "NC",
+zip: "28262",
+country: "USA"
+},
+{
+userId: "2",
+firstName : "Russel",
+lastName :"Peters",
+email: "rpeters@uncc.edu",
+addressField1: "10004 University Terrace Dr.",
+addressField2: "Apt A",
+city: "Charlotte",
+state: "NC",
+zip: "28262",
+country: "USA"
+}]
+
+
+*/

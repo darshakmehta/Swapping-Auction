@@ -48,7 +48,7 @@ module.exports = {
 }
 
 /*
-
+Collection: userItems
 [{
 userId: "1",
 code: "1", 
@@ -122,4 +122,29 @@ userRating: '5',
 status: 'available'
 }]
 
+Collection: offers
+[{
+
+userId: 
+swapUserId:
+userItemCode:
+swapUserItemCode:
+status:
+swapperRating:
+
+	
+}]
+
+
+
+Collection: swaps
+[{
+
+userId:
+swapUserId:
+userItemCode:
+swapUserItemCode:
+status:
+swapperRating: 
+}]
 */

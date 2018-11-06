@@ -27,13 +27,13 @@ if the user item status is swapped then the user will be able to rate the swap i
 
 /* Associates an item with a user and a swap */
 class UserItem {
-	constructor(item, rating, status, swapItem, swapItemRating, swapperRating, madeOffer) {
+	constructor(item, rating, status, swapItem, swapItemRating, swapperRating) {
 		this.item = item,
 		this.rating = rating,
 		this.status = status,
 		this.swapItem = swapItem,
 		this.swapItemRating = swapItemRating,
-		this.swapperRating = swapperRating,
+		this.swapperRating = swapperRating
 	}
 }
 

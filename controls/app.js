@@ -4,15 +4,23 @@ const express = require('express');
 const app = express();
 /* Include Express Session */
 const session = require('express-session');
+/* Include Body Parser */
+const bodyParser = require('body-parser');
+/* Url encoded Parser for POST Requests */
+const urlencodedParser = bodyParser.urlencoded({extended: false});
+/* Include Cookie Parser */
+const cookieParser = require('cookie-parser');
 
 /* Include JavaScript Object (Model) for all Items */
-const model = require('../models/Item');
-let items = model.getItems(); //Function to export all items
+//const model = require('../models/Item');
+//let items = model.getItems(); //Function to export all items
 
 /* return the Item with the specified itemId from the hardcoded database */
-var getItem = (itemId) => {
-	return items[itemId];
-}
+// var getItem = (itemId) => {
+// 	return items[itemId];
+// }
+
+let userItem = require('../models/UserItem');
 
 /* Profile Controller to manage user actions */
 const ProfileController = require('../controls/ProfileController');
@@ -23,8 +31,18 @@ app.set('views', '../views');
 app.set('view engine', 'ejs');
 /* Use static resources from following directory*/
 app.use('/resources', express.static('../resources'));
+/* Use Cookie Parser */
+app.use(cookieParser());
 /* User Session - set a secret */
 app.use(session({secret: "nbad"}));
+
+var {ObjectID} = require('mongodb');
+
+var {mongoose} = require('../controls/mongoose');
+var {User} = require('../models/UserDB');
+var {UserItem} = require('../models/UserItem');
+
+let items = [];
 
 /* GET Home Router */
 app.get('/', (req, res) => {
@@ -40,6 +58,26 @@ app.get('/', (req, res) => {
 			sessionStatus: true
 		});
 	}
+});
+
+/* Router to GET users */
+app.get('/users', (req, res) => {
+	User.find().then((user) => {
+		//console.log(user);
+		res.send(user);
+	}, (e) => {
+		console.log(e);
+	});
+});
+
+
+/* Router to GET user Items*/
+app.get('/userItems', (req, res) => {
+	UserItem.find().then((userItem) => {
+		res.send(userItem);
+	}, (e) => {
+		console.log(e);
+	});
 });
 
 /* GET Home Router */
@@ -79,22 +117,27 @@ var tempcodes = []; //List of item codes which belongs to user
 /* GET Sub Categories Router - Use to display all sub categories of a choosen category */
 app.get('/subCategories', (req, res) => {
 	if(req.session.theUser === undefined) {
-		/* Check catalogCategory parameter exist and it is valid */
-		if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
-			/* Dispatch list of sub categories of type catalogCategory */
-			/* If the user is not defined display the complete catalog */
-			res.render('subCategories', {
-			welcome: 'Not signed in.',
-			catalogCategory: req.query.catalogCategory,
-			items,
-			sessionStatus: false
-			});
-		} else {//If invalid catalogCategory, dispatch catalog as if no category had been provided
-			res.render('categories', {
+		var itemList = [];
+
+		userItem.getAllItems((err, item) => {
+			//console.log(itemList);
+			/* Check catalogCategory parameter exist and it is valid */
+			if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
+				/* Dispatch list of sub categories of type catalogCategory */
+				/* If the user is not defined display the complete catalog */
+				res.render('subCategories', {
 				welcome: 'Not signed in.',
+				catalogCategory: req.query.catalogCategory,
+				items: item,
 				sessionStatus: false
-			});
-		}
+				});
+			} else {//If invalid catalogCategory, dispatch catalog as if no category had been provided
+				res.render('categories', {
+					welcome: 'Not signed in.',
+					sessionStatus: false
+				});
+			}
+		});
 	} else {
 		if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
 		var userItems = Object.values(items);
@@ -126,16 +169,24 @@ app.get('/subCategories', (req, res) => {
 	}
 });
 
+var findItems = async() => {
+	
+	return items;
+}
+
+
 /* GET Item Router */
-app.get('/item', (req, res) => {
+app.get('/item', async (req, res) => {
+	
 	if(req.session.theUser === undefined) {
 		if(Object.keys(req.query.length != 0)) {
 			/* Check the http request for a parameter called "itemCode" and validate it matches our format and it is valid */
 			if(req.query.itemCode <= 6 && req.query.itemCode >= 1) {
+				/*
 				Object.keys(items).forEach((item, index) => {
-					/* Valid Object should be added to the http response object */
+					/* Valid Object should be added to the http response object 
 					if(items[item]['code'] === req.query.itemCode) {
-						/* Dispatch the individual item */
+						/* Dispatch the individual item 
 						res.render('item', {
 							welcome: 'Not signed in.',
 							item: getItem(item),
@@ -144,6 +195,17 @@ app.get('/item', (req, res) => {
 						});
 					} 
 				});
+				*/
+				/* Await till the item is returned */
+				var item = await userItem.getItem(req.query.itemCode);
+				/* Render individual Item */
+				res.render('item', {
+					welcome: 'Not signed in.',
+					item: item,
+					sessionStatus: false,
+					itemStatus: 'available'
+				});
+					
 			} else { //If item code is invalid, dispatch catalog as if no code had been provided
 				res.render('categories', {
 						welcome: 'Not signed in.',
@@ -215,7 +277,8 @@ app.get('/item', (req, res) => {
 /* Get My Items Router*/
 app.get('/myItems', (req, res) => {
 	res.render('myItems', {
-		welcome: 'Welcome Darshak!'
+		welcome: 'Welcome Darshak!',
+		sessionStatus: true
 	});
 });
 

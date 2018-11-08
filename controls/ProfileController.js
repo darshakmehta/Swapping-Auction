@@ -9,13 +9,13 @@ const session = require('express-session');
 const app = express();
 
 /* Include JavaScript Object (Model) for all Items from database */
-const model = require('../models/Item'); /* Function to export all items */
-let items = model.getItems();
+//const model = require('../models/Item'); /* Function to export all items */
+//let items = model.getItems();
 
 /* return the Item with the specified itemId from the hardcoded database */
-var getItem = (itemId) => {
-	return items[itemId];
-}
+// var getItem = (itemId) => {
+// 	return items[itemId];
+// }
 
 /* Include JavaScript Object (Model) for UserProfile */
 var UserProfile = require('../models/UserProfile');

@@ -1,11 +1,11 @@
 /* Include JavaScript Object (Model) for all Items */
-const model = require('../models/item');
-let items = model.getItems(); //Function to export all items
+// const model = require('../models/item');
+// let items = model.getItems(); //Function to export all items
 
 /* return the Item with the specified itemId from the hardcoded database */
-var getItem = (itemId) => {
-	return items[itemId];
-}
+// var getItem = (itemId) => {
+// 	return items[itemId];
+// }
 
 /***
 
@@ -26,26 +26,26 @@ if the user item status is swapped then the user will be able to rate the swap i
 ***/
 
 /* Associates an item with a user and a swap */
-class UserItem {
-	constructor(item, rating, status, swapItem, swapItemRating, swapperRating) {
-		this.item = item,
-		this.rating = rating,
-		this.status = status,
-		this.swapItem = swapItem,
-		this.swapItemRating = swapItemRating,
-		this.swapperRating = swapperRating
-	}
-}
+// class UserItem {
+// 	constructor(item, rating, status, swapItem, swapItemRating, swapperRating) {
+// 		this.item = item,
+// 		this.rating = rating,
+// 		this.status = status,
+// 		this.swapItem = swapItem,
+// 		this.swapItemRating = swapItemRating,
+// 		this.swapperRating = swapperRating
+// 	}
+// }
 
-const userItem1 = new UserItem(getItem("item1"), '4', 'available', 0, 0, 0);
-const userItem2 = new UserItem(getItem("item3"), '4', 'pending', 6, 0, 0);
-const userItem3 = new UserItem(getItem("item5"), '2', 'swapped', 2, 0, 0);
+// const userItem1 = new UserItem(getItem("item1"), '4', 'available', 0, 0, 0);
+// const userItem2 = new UserItem(getItem("item3"), '4', 'pending', 6, 0, 0);
+// const userItem3 = new UserItem(getItem("item5"), '2', 'swapped', 2, 0, 0);
 
-module.exports = {
-	userItem1,
-	userItem2,
-	userItem3
-}
+// module.exports = {
+// 	userItem1,
+// 	userItem2,
+// 	userItem3
+// }
 
 /*
 Collection: userItems
@@ -124,22 +124,16 @@ status: 'available'
 
 Collection: offers
 [{
-
 userId: 
 swapUserId:
 userItemCode:
 swapUserItemCode:
 status:
-swapperRating:
-
-	
+swapperRating:	
 }]
-
-
 
 Collection: swaps
 [{
-
 userId:
 swapUserId:
 userItemCode:
@@ -148,3 +142,102 @@ status:
 swapperRating: 
 }]
 */
+
+/* Require Mongoose Library */
+var mongoose = require('mongoose');
+
+/***
+
+// UserItems Model
+
+UserItem {
+userId - Uniquely identify each user
+Item Code - Unique identifier for the item --> TODO: Alphanumeric string
+Item Name - Name of the product
+Catalog Category - Select or Arrange items by section or type in the catalog
+Description - describe the importance of the item
+Rating - this user's rating for their item
+Image URL -  Item image URL - generated based on itemCode and Directory file path
+active - Check if product is active or inactive(deleted)
+user Rating - This is the user's rating by other users
+Status - this attribute indicates swap item status - available, pending (offer made), swapped (offer accepted)
+}
+
+**/
+const UserItem = mongoose.model('items', {
+	userId: {
+		type: Number,
+        required: true,
+        minlength: 1
+	},
+	code: {
+		type: String,
+        required: true,
+        minlength: 1
+	},
+	name: {
+		type: String,
+        required: true,
+        trim: true,
+        minlength: 1
+	},
+	category: {
+		type: String,
+        required: true,
+        trim: true,
+        minlength: 1
+	},
+	description: {
+		type: String,
+        required: true,
+        trim: true,
+        minlength: 1
+	},
+	rating: {
+		type: String,
+        required: true,
+        trim: true,
+        minlength: 1
+	},
+	image_url: {
+		type: String,
+        required: true,
+        trim: true,
+        minlength: 1
+	},
+	active: {
+		type: String,
+        required: true,
+        trim: true,
+        minlength: 1
+	},
+	userRating: {
+		type: String,
+        required: true,
+        minlength: 5
+	},
+	status: {
+		type: String,
+        required: true,
+        trim: true,
+        minlength: 1
+	}
+});
+/* Get All Items from Database */
+module.exports.getAllItems = (callback) => {
+	UserItem.find({}, (err, userItem) => {
+		if(userItem) {
+			callback(null, userItem);
+		} else {
+			callback(true, null);
+		}
+	});
+}
+/* Get Item by itemCode from Database */
+module.exports.getItem = (code) => {
+	try {
+		return UserItem.findOne({code});
+	} catch(e) {
+		console.log(e);
+	}
+}

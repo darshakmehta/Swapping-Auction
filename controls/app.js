@@ -204,7 +204,8 @@ app.get('/item', async (req, res) => {
 					welcome: 'Not signed in.',
 					item: item,
 					sessionStatus: false,
-					itemStatus: 'available'
+					itemStatus: 'available',
+					swapIt: "yes"
 				});
 					
 			} else { //If item code is invalid, dispatch catalog as if no code had been provided
@@ -235,11 +236,13 @@ app.get('/item', async (req, res) => {
 				//	if(items[item]['code'] === req.query.itemCode) {
 				var item = await userItem.getItem(req.query.itemCode);
 				var itemStatus = item.status;
+				var swapIt = req.session.theUser.userId === item.userId ? "no" : "yes";
 				res.render('item', {
 					welcome: 'Welcome ' + req.session.theUser.firstName + '!',
 					item,
 					sessionStatus: true,
-					itemStatus: itemStatus
+					itemStatus: itemStatus,
+					swapIt
 				});
 				// 	}
 				// });

@@ -50,8 +50,9 @@
 					<%} else if(itemStatus === 'swapped'){%>
 						<h2> You've swapped this item </h2>
 					<%} else {%>
+						<%if(swapIt == "yes"){%>
 						<a href="/myItems/offer/<%= item.code%>"><div class="swap btn-style"><i class="fas fa-exchange-alt fa-swap-item"></i><span class="text-color"> Swap it</span></div></a>
-					<%}%>
+					<%}}%>
 
 					<!-- Rate the item --> 
 					<a href="#"><div class="rate btn-style"><i class="fas fa-star fa-star-item"></i><span class="text-color"> Rate it</span></div></a>

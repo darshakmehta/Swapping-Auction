@@ -26,16 +26,20 @@ if the user item status is swapped then the user will be able to rate the swap i
 ***/
 
 /* Associates an item with a user and a swap */
-// class UserItem {
-// 	constructor(item, rating, status, swapItem, swapItemRating, swapperRating) {
-// 		this.item = item,
-// 		this.rating = rating,
-// 		this.status = status,
-// 		this.swapItem = swapItem,
-// 		this.swapItemRating = swapItemRating,
-// 		this.swapperRating = swapperRating
-// 	}
-// }
+
+class UserItemClass {
+	constructor(itemCode, itemName, category, description, rating, image_url, active, userRating, status) {
+		this.code = itemCode,
+		this.name = itemName,
+		this.category = category,
+		this.description = description,
+		this.rating = rating,
+		this.image_url = image_url,
+		this.active = active,
+		this.userRating = userRating,
+		this.status = status
+	}
+}
 
 // const userItem1 = new UserItem(getItem("item1"), '4', 'available', 0, 0, 0);
 // const userItem2 = new UserItem(getItem("item3"), '4', 'pending', 6, 0, 0);
@@ -166,7 +170,7 @@ Status - this attribute indicates swap item status - available, pending (offer m
 **/
 const UserItem = mongoose.model('items', {
 	userId: {
-		type: Number,
+		type: String,
         required: true,
         minlength: 1
 	},
@@ -223,9 +227,14 @@ const UserItem = mongoose.model('items', {
         minlength: 1
 	}
 });
+
+module.exports = {
+    UserItem
+}
+
 /* Get All Items from Database */
 module.exports.getAllItems = (callback) => {
-	UserItem.find({}, (err, userItem) => {
+	UserItem.find({active: "active"}, (err, userItem) => {
 		if(userItem) {
 			callback(null, userItem);
 		} else {
@@ -233,11 +242,58 @@ module.exports.getAllItems = (callback) => {
 		}
 	});
 }
+/* Get All Items from Database for particular User */
+module.exports.getAllItemsOfUser = (userId) => {
+	try {
+		return UserItem.find({userId: userId, active: "active"});
+	} catch(e) {
+
+	}
+}
+/* Get Items Not belonging to the user */
+module.exports.getNotAllItemsOfUser = (userId) => {
+	// UserItem.find({userId: {$ne: "1"}, active: "active"}, (err, userItem) => {
+	// 	if(userItem) {
+	// 		callback(null, userItem);
+	// 	} else {
+	// 		callback(true, null);
+	// 	}
+	// });
+	try {
+		return UserItem.find({userId: {$ne: "1"}, active: "active"});
+	} catch(e) {
+
+	}
+}
 /* Get Item by itemCode from Database */
 module.exports.getItem = (code) => {
 	try {
 		return UserItem.findOne({code});
 	} catch(e) {
 		console.log(e);
+	}
+}
+
+/* Add Item - TODO: add UserID, password */
+module.exports.addItem = (itemCode, itemName, category, description, rating, image_url, active, userRating, status) => {
+	var item = new UserItemClass(itemCode, itemName, category, description, rating, image_url, active, userRating, status);
+	addItem(item);
+}
+
+/* Store in mongoose table */
+var addItem = (item) => {
+	UserItem.save((err) => {
+		if(err) throw err;
+		res.send('Item created successfully');
+	})
+}
+/* Delete an item */
+module.exports.deleteItem = (code) => {
+	try {
+		UserItem.findOneAndUpdate({code: code}, {$set: {active: "inactive"}}, {$new: true}, (err, doc) => {
+			if(err) throw err;
+		});
+	} catch(e) {
+		
 	}
 }

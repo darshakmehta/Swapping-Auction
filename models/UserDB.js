@@ -18,23 +18,23 @@ getusers() - returns a set of all the users in the database
 ***/
 
 /* Represents a user */
-// class UserDB {
-// 	constructor(userId, firstName, lastName, email, address1, address2, city, state, zip, country) {
-// 		this.userId = userId,
-// 		this.firstName = firstName,
-// 		this.lastName = lastName,
-// 		this.emailAddress = email,
-// 		this.addressField1 = address1,
-// 		this.addressField2 = address2,
-// 		this.city = city,
-// 		this.stateOrRegion = state,
-// 		this.postalCode = zip,
-// 		this.country = country
-// 	}
-// 	getUsers(){
-// 		//return all users
-// 	}
-// }
+class UserDB {
+	constructor(firstName, lastName, email, address1, address2, city, state, zip, country) {
+		//this.userId = userId, Auto Increment User id
+		this.firstName = firstName,
+		this.lastName = lastName,
+		this.emailAddress = email,
+		this.addressField1 = address1,
+		this.addressField2 = address2,
+		this.city = city,
+		this.stateOrRegion = state,
+		this.postalCode = zip,
+		this.country = country
+	}
+	getUsers(){
+		//return all users
+	}
+}
 
 
 //const User1 = new UserDB('1', 'Darshak', 'Mehta', 'dmehta9@uncc.edu', '9527 University Terrace Dr.', 'Apt K', 'Charlotte', 'NC', '28262', 'USA');
@@ -74,9 +74,9 @@ country: "USA"
 
 
 var mongoose = require('mongoose');
-const User = mongoose.model('users', {
+var User = mongoose.model('users', {
 	userId: {
-		type: Number,
+		type: String,
         required: true,
         minlength: 1
 	},
@@ -123,7 +123,7 @@ const User = mongoose.model('users', {
         minlength: 1
 	},
 	postalCode: {
-		type: Number,
+		type: String,
         required: true,
         minlength: 5
 	},
@@ -137,4 +137,38 @@ const User = mongoose.model('users', {
 
 module.exports = {
     User
+}
+
+/* Add User */
+module.exports.addUser = (firstName, lastName, email, address1, address2, city, state, zip, country) => {
+	var count = User.find({}).count(); //Next User Id
+	var user = new UserDB(count, firstName, lastName, email, address1, address2, city, state, zip, country);
+	addUser(user);
+}
+
+/* Store in mongoose table */
+var addUser = (user) => {
+	User.save((err) => {
+		if(err) throw err;
+		res.send('User created successfully');
+	})
+}
+
+/* Get All Users from Database */
+module.exports.getAllUsers = (callback) => {
+	User.find({}, (err, user) => {
+		if(user) {
+			callback(null, user);
+		} else {
+			callback(true, null);
+		}
+	});
+}
+/* Get User by userId from Database */
+module.exports.getUser = (userId) => {
+	try {
+		return User.findOne({userId});
+	} catch(e) {
+		console.log(e);
+	}
 }

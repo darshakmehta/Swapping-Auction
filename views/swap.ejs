@@ -51,7 +51,7 @@
 							<ul>
 								<% Object.keys(availableList).forEach((item) => {%>
 									<li class="swap-options-list">
-										<input type="radio" name ="swap-option"> <span class ="swap-options-item"><a href="/item?itemCode=<%= availableList[item].item.code %>"> <%= availableList[item].item.name %></a></span>
+										<input type="radio" name ="swap-option"> <span class ="swap-options-item"><a href="/item?itemCode=<%= availableList[item].item.code %>"> <%= availableList[item].name %></a></span>
 									</li>
 								<%});%>
 							</ul>

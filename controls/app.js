@@ -24,7 +24,7 @@ let userItem = require('../models/UserItem');
 
 /* Profile Controller to manage user actions */
 const ProfileController = require('../controls/ProfileController');
-
+app.use(ProfileController);
 /* Render views from following directory*/
 app.set('views', '../views');
 /* Set View engine*/
@@ -115,10 +115,9 @@ var userTempItems  = []; //List of user items which does not belong to user
 var tempcodes = []; //List of item codes which belongs to user
 
 /* GET Sub Categories Router - Use to display all sub categories of a choosen category */
-app.get('/subCategories', (req, res) => {
+app.get('/subCategories', async (req, res) => {
 	if(req.session.theUser === undefined) {
 		var itemList = [];
-
 		userItem.getAllItems((err, item) => {
 			//console.log(itemList);
 			/* Check catalogCategory parameter exist and it is valid */
@@ -139,25 +138,27 @@ app.get('/subCategories', (req, res) => {
 			}
 		});
 	} else {
+		var userId = req.session.theUser.userId;
+		var item = await userItem.getNotAllItemsOfUser(userId);
 		if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
-		var userItems = Object.values(items);
-		tempcodes =[];
-		userTempItems  = []; 
+		// var userItems = Object.values(items);
+		// tempcodes =[];
+		// userTempItems  = []; 
 		/* Display items that do not belong to the active user */
 		/* TODO: Modularize the below code to a function/method to the database utility classes that can filter the catalog based on a user */
-		for(var i=0;i<req.session.currentProfile.userItems.length;i++) {
-					tempcodes.push(req.session.currentProfile.userItems[i].item.code);
-		}
-		for(var j=0;j<userItems.length;j++) {
-			if (tempcodes.indexOf( userItems[j].code) == -1) {
-				userTempItems.push(userItems[j])
-			}
-		}
+		// for(var i=0;i<req.session.currentProfile.userItems.length;i++) {
+		// 			tempcodes.push(req.session.currentProfile.userItems[i].code);
+		// }
+		// for(var j=0;j<userItems.length;j++) {
+		// 	if (tempcodes.indexOf( userItems[j].code) == -1) {
+		// 		userTempItems.push(userItems[j])
+		// 	}
+		// }
 		/* Dispatch filtered Item List */
 		res.render('subCategories', {
 			welcome: 'Not signed in.',
 			catalogCategory: req.query.catalogCategory,
-			items: userTempItems,
+			items: item,
 			sessionStatus: true
 		});
 		} else { //If invalid catalogCategory, dispatch catalog as if no category had been provided
@@ -220,26 +221,28 @@ app.get('/item', async (req, res) => {
 		}
 	} else {
 		if(Object.keys(req.query.length != 0)) {
-			var userItemsToStatus = req.session.currentProfile.userItems;
-			var stat = req.query.itemCode;
-			var itemStatus;
-			for (var i = 0; i < userItemsToStatus.length; i++) {
-				if (userItemsToStatus[i].item.code == stat) {
-					itemStatus = userItemsToStatus[i].status;
-				}
-			}
-			console.log(itemStatus);
+			// var userItemsToStatus = req.session.currentProfile.userItems;
+			// var stat = req.query.itemCode;
+			// var itemStatus;
+			// for (var i = 0; i < userItemsToStatus.length; i++) {
+			// 	if (userItemsToStatus[i].item.code == stat) {
+			// 		itemStatus = userItemsToStatus[i].status;
+			// 	}
+			// }
+			// console.log(itemStatus);
 			if(req.query.itemCode <= 6 && req.query.itemCode >= 1) {
-				Object.keys(items).forEach((item, index) => {
-					if(items[item]['code'] === req.query.itemCode) {
-						res.render('item', {
-							welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-							item: getItem(item),
-							sessionStatus: true,
-							itemStatus: itemStatus
-						});
-					}
+				//Object.keys(items).forEach((item, index) => {
+				//	if(items[item]['code'] === req.query.itemCode) {
+				var item = await userItem.getItem(req.query.itemCode);
+				var itemStatus = item.status;
+				res.render('item', {
+					welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+					item,
+					sessionStatus: true,
+					itemStatus: itemStatus
 				});
+				// 	}
+				// });
 			} else {
 				res.render('categories', {
 					welcome: 'Welcome ' + req.session.theUser.firstName + '!',
@@ -275,12 +278,12 @@ app.get('/item', async (req, res) => {
 });
 
 /* Get My Items Router*/
-app.get('/myItems', (req, res) => {
+/*app.get('/myItems', (req, res) => {
 	res.render('myItems', {
 		welcome: 'Welcome Darshak!',
 		sessionStatus: true
 	});
-});
+});*/
 
 /* Get Contact Router*/
 app.get('/contact', (req, res) => {
@@ -361,9 +364,9 @@ app.get('/mySwaps', (req, res) => {
 });
 
 /* Get Any URL Router*/
-app.get('/*', (req, res) => {
-	res.send('Plain Message');
-});
+// app.get('/*', (req, res) => {
+// 	res.send('Plain Message');
+// });
 
 /* Listen Express app on Port 8080 */
 app.listen(8080, () => {

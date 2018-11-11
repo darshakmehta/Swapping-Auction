@@ -39,7 +39,7 @@
 						<% Object.keys(items).forEach((item, index) => { 
 						if(items[item]['category'] === catalogCategory){%>
 							<!-- Name of Categories -->
-							<li><a class="text-decorator-li" href= "/item?itemCode=<%= index + 1 %>"> <%= items[item].name  %></a></li>
+							<li><a class="text-decorator-li" href= "/item?itemCode=<%= items[item].code %>"> <%= items[item].name  %></a></li>
 						<% }}) %>
 					</ul>
 				</div>

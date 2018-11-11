@@ -52,10 +52,10 @@
 						<tbody class="border-bottom-style">
 								<% Object.keys(userItemList).forEach((item, index) => { %>
 									<tr>
-									<td><a href="/item?itemCode=<%= userItemList[item].item.code %>"><%= userItemList[item].item.name %></a></td>
-									<td><a href= "/subCategories?catalogCategory=Movies"><%= userItemList[item].item.category %></a></td>
+									<td><a href="/item?itemCode=<%= userItemList[item].code %>"><%= userItemList[item].name %></a></td>
+									<td><a href= "/subCategories?catalogCategory=<%= userItemList[item].category %>"><%= userItemList[item].category %></a></td>
 									<td>
-										<% for(var i = 0; i < userItemList[item].item.rating; i++) {%>
+										<% for(var i = 0; i < userItemList[item].rating; i++) {%>
 											<i class="fas fa-star">
 										<%}%>
 									</td>
@@ -66,8 +66,8 @@
 									<%} else if(userItemList[item].status === 'swapped'){%>
 										<td> <i class="fas fa-check"></i></td>
 									<%}%>
-									<td> <a href="/myItems/update/<%= userItemList[item].item.code %>"><div class="btn-style"> Update </div></a> </td>
-									<td> <a href="/myItems/delete/<%= userItemList[item].item.code %>"><div class="btn-style"> Delete </div></a> </td>
+									<td> <a href="/myItems/update/<%= userItemList[item].code %>"><div class="btn-style"> Update </div></a> </td>
+									<td> <a href="/myItems/delete/<%= userItemList[item].code %>"><div class="btn-style"> Delete </div></a> </td>
 								</tr>	
 								<% }) %>
 							</tr>

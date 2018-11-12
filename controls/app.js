@@ -41,6 +41,7 @@ var {ObjectID} = require('mongodb');
 var {mongoose} = require('../controls/mongoose');
 var {User} = require('../models/UserDB');
 var {UserItem} = require('../models/UserItem');
+var offer = require('../models/offer');
 
 let items = [];
 
@@ -327,42 +328,84 @@ app.get('/swap', (req, res) => {
 });
 
 /* Get My Swaps Router*/
-app.get('/mySwaps', (req, res) => {
+app.get('/mySwaps', async (req, res) => {
+	
 	if(req.session.theUser === undefined) {
 		res.render('mySwaps', {
 			welcome: 'Not signed in.',
 			sessionStatus: false,
 			swapList: {},
-			name: 'My'
+			name: 'My',
+			actionList: []
 		});
 	} else {
-		var swapList = [];	
-		var swapItemList = [];
-		var userItemList;
-		var flag = false;
-		Object.keys(req.session.currentProfile.userItems).forEach((item) => {
-			if(req.session.currentProfile.userItems[item].status === 'pending') {
-				swapList.push(req.session.currentProfile.userItems[item]);
-				swapItemList.push(getItem("item" + req.session.currentProfile.userItems[item].swapItem));
-				flag = true;
-				res.render('mySwaps', {
-					welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-					swapList,
-					swapItemList,
-					sessionStatus: true,
-					name: req.session.theUser.firstName
-				});
-			} 
-		});
-		if(!flag) {
+		
+		var offerList = await offer.getPendingOffers();
+		
+		var count = await offer.getCountOfPending();
+		if(count !== 0) {
+				var userItemList= [];
+				var swapUserItemList = [];
+				var actionList = [];
+				Object.keys(offerList).forEach(async (offer) => {
+				var item = await userItem.getItem(offerList[offer].userItemCode);
+				userItemList.push(item);
+				var swapItem = await userItem.getItem(offerList[offer].swapUserItemCode);
+				swapUserItemList.push(swapItem);
+				if((req.session.theUser.userId == offerList[offer].userId)) {
+					actionList.push("withdraw");
+				} else {
+					actionList.push("accept/reject");
+				}
+				if((count - 1) == offer) {
+					res.render('mySwaps', {
+						welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+						swapList: userItemList,
+						swapItemList: swapUserItemList,
+						sessionStatus: true,
+						name: req.session.theUser.firstName,
+						actionList
+					});	
+				} 
+			});		
+		} else {
 			res.render('mySwaps', {
-				welcome: 'Not signed in.',
+				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
 				sessionStatus: true,
 				swapList: {},
-				name: 'My'
+				name: 'My',
+				actionList: []
 			});
-				
 		}
+		
+	}
+});
+
+app.post('/confirmswap', urlencodedParser, async (req, res) => {
+	// var nameOfItemAvailableToSwap = req.body.itemSelected;
+	 /*TODO get Item code from front end because products can have same name */
+	// var item = await userItem.getItemByName(nameOfItemAvailableToSwap);
+	// var codeOfItemAvaialbleToSwap = item.code;
+	//console.log(codeOfItemAvaialbleToSwap);
+	if(req.session === undefined) {
+		res.render('index', {
+			welcome: 'Not signed in.',
+			sessionStatus: false
+		});
+	} else {
+		// console.log(req.body);
+		offer.addOffer(req.body.userId, req.body.swapUserId, req.body.userItemCode, req.body.swapUserItemCode, "pending", "0");
+		await userItem.updateItemStatus(req.body.userItemCode, "pending");
+		await userItem.updateItemStatus(req.body.swapUserItemCode, "pending");
+		// console.log(req.session.theUser.userId);
+		req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
+		// console.log(req.session.currentProfile.userItems);
+		res.render('myItems', {
+          	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			itemMsg : true,
+          	userItemList:req.session.currentProfile.userItems,
+          	sessionStatus: true
+        });
 	}
 });
 

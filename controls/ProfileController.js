@@ -131,20 +131,21 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 						For example in Java, request.getParameterValues(“itemList”) will give you a list of all the items on the view)*/
 					var actionList = [];
 					/* If the item validates and exists in the user profile, get the UserItem Object saved in the user profile for this current item and check the status value */
-					Object.keys(req.session.currentProfile.userItems).forEach(async (item) => { /* iterate all the Items belonging to current user*/
-						if(req.session.currentProfile.userItems[item].code === req.params.theItem) {
-							if(req.session.currentProfile.userItems[item].status === 'pending') { /*  add the UserItem object to the request as "swapItem" and redirect to mySwaps view (to allow the user to accept/reject/withdraw)*/
+					// Object.keys(req.session.currentProfile.userItems).forEach(async (item) => { /* iterate all the Items belonging to current user*/
+					// 	if(req.session.currentProfile.userItems[item].code === req.params.theItem) {
+						var item = await userItem.getItem(req.params.theItem);
+							if(item.status === 'pending') { /*  add the UserItem object to the request as "swapItem" and redirect to mySwaps view (to allow the user to accept/reject/withdraw)*/
 								/*Uncomment TODO: check for null */
 								var itemOffer = await offer.getPendingOfferSwapUserItemCode(req.session.theUser.userId, req.params.theItem); /*  Add Swapped Item for current user Item*/
 								if(itemOffer === null) {
-									swapList.push(req.session.currentProfile.userItems[item]); /*  Add User Item to SwapList */
 									var itemOfferInner = await offer.getPendingOfferUserItemCode(req.session.theUser.userId, req.params.theItem); /*  Add Swapped Item for current user Item*/
-									swapItemList.push(await userItem.getItem(itemOfferInner.userItemCode));
+									swapList.push(await userItem.getItem(itemOfferInner.userItemCode));
+									swapItemList.push(await userItem.getItem(itemOfferInner.swapUserItemCode)); /*  Add User Item to SwapList */
 									actionList.push("accept");
 								} else {
-									swapList.push(req.session.currentProfile.userItems[item]); /*  Add User Item to SwapList */
-									actionList.push("withdraw")
+									swapList.push(await userItem.getItem(itemOffer.userItemCode)); /*  Add User Item to SwapList */
 									swapItemList.push(await userItem.getItem(itemOffer.swapUserItemCode));
+									actionList.push("withdraw")
 								}
 								/* Uncomment above TODO: check for null */
 								/* Dispatch to mySwaps for user to take action - accept/reject/withdraw */
@@ -157,18 +158,18 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 									itemStatus: 'pending', /* item status*/
 									actionList
 								});
-							} else if(req.session.currentProfile.userItems[item].status === 'available') { /* add the UserItem object to the request as "userItem" dispatch to the individual item view*/
+							} else if(item.status === 'available') { /* add the UserItem object to the request as "userItem" dispatch to the individual item view*/
 								/* Current placeholder for this stage of implementation we have choose the user item to display on the individual item view {We could choose swap item} */
-								userItemList = await userItem.getItem(req.session.currentProfile.userItems[item].code);
+								//userItemList = await userItem.getItem(item.code);
 								/* Dispatch to individual item view */
 								res.render('item', {
 									welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-									item: userItemList,
+									item,
 									sessionStatus: true,
 									itemStatus: 'available', /* different message to user based on status*/
 									swapIt: "no"
 								});
-							} else if(req.session.currentProfile.userItems[item].status === 'swapped') {
+							} else if(item.status === 'swapped') {
 								userItemList = await userItem.getItem(req.params.theItem);
 								/* Dispatch to individual item view */
 								res.render('item', {
@@ -177,11 +178,10 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 									sessionStatus: true,
 									itemStatus: 'swapped' /* different message to user based on status*/
 								});
-							}
-						} else {
+							} else {
 							/* If valid itemCode does not exist in the user Profile disptach to the profile view  */
 						}
-					});
+					// });
 					
 				} else { 
 					/* If the item does not validate or does not exist in the user Profile disptach to the profile view */
@@ -204,46 +204,40 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 							/* if the item validates and exists in the user profile and the status is pending (the pending status indicates that this item has a swap offer), get the user object saved in the user profile */
 					//		if(req.session.currentProfile.userItems[item].status === 'pending') {
 								/* if action is reject or withdraw => reset the status value to indicate that this item is available for swap and clear the value for the swap status property */
-								if(req.params.action === 'reject' || req.params.action === 'withdraw'){
-				                  // req.session.currentProfile.userItems[item].status = 'available';
-				                  // req.session.currentProfile.userItems[item].swapItem = 0;
-				                  // req.session.currentProfile.userItems[item].swapItemRating = 0;
-				                  // req.session.currentProfile.userItems[item].swapperRating = 0;
-				                  /* Add the updated profile to the session object as "sessionProfile" and dispatch to the user profile view */
-				                  /* Current situation we do not update the database, so we have sessionProfile */
-				                  // req.session.sessionProfile = req.session.currentProfile;
-				                  var offerItem = await offer.getPendingOfferSwapUserItemCode(req.session.theUser.userId, req.params.theItem);
-				                  console.log(offerItem);
-				                   /*Uncomment TODO: check for null*/
-				                  if(offerItem === null) {
-				                  		console.log(req.params.action);
-				                  		var offerItem = await offer.getPendingOfferUserItemCode(req.session.theUser.userId, req.params.theItem);
-				                  		console.log(offerItem);
-				                  		await offer.updateOffer(offerItem.swapUserId, req.params.theItem, req.params.action);
-					                    await userItem.updateItemStatus(offerItem.userItemCode, "available");
-					                    await userItem.updateItemStatus(offerItem.swapUserItemCode, "available");
-				                  } else {
-				                  	  console.log(offerItem);
-					                  await offer.updateOffer(req.session.theUser.userId, req.params.theItem, req.params.action);
-					                  await userItem.updateItemStatus(offerItem.userItemCode, "available");
-					                  await userItem.updateItemStatus(offerItem.swapUserItemCode, "available");
-				                  }
+								if(req.params.action === 'reject'){
+				                  var offerItem = await offer.rejectOffer(req.session.theUser.userId, req.params.theItem);
+				                  await offer.swapUpdateOffer(req.session.theUser.userId, req.params.theItem, req.params.action);
+				                  await userItem.updateItemStatus(offerItem.userItemCode, "available");
+				                  await userItem.updateItemStatus(offerItem.swapUserItemCode, "available");
 					              req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
-				                  /*Uncomment above TODO: check for null*/
 				                  res.render('myItems',{
 				                  	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
 									itemMsg : true,
 				                  	userItemList:req.session.currentProfile.userItems,
 				                  	sessionStatus: true,
 				                  });
+				                } else if (req.params.action === 'withdraw') {
+				                	var offerItem = await offer.getPendingOfferSwapUserItemCode(req.session.theUser.userId, req.params.theItem);
+				                	if(offerItem === null) {
+				                		var offerItem = await offer.getPendingOfferSwapUserItemCode(req.session.theUser.userId, req.params.theItem);
+				                	} else {
+				                	  await offer.withdrawUpdateOffer(req.session.theUser.userId, req.params.theItem, req.params.action);
+				                	  await userItem.updateItemStatus(offerItem.userItemCode, "available");
+					                  await userItem.updateItemStatus(offerItem.swapUserItemCode, "available");
+				                	}
+				                	req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
+					                res.render('myItems',{
+					                  	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+										itemMsg : true,
+					                  	userItemList:req.session.currentProfile.userItems,
+					                  	sessionStatus: true,
+					                });
 				                } else if(req.params.action === 'accept'){
 					                /* if the action is accept, set the status value to indicate that this item was swapped */
 					                var offerItem = await offer.acceptOffer(req.session.theUser.userId, req.params.theItem);
-					                console.log(offerItem);
 						            await userItem.updateItemStatus(offerItem.userItemCode, "swapped");
 						            await userItem.updateItemStatus(offerItem.swapUserItemCode, "swapped");
 					                req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
-					                console.log(req.session.currentProfile.userItems);
 					                  res.render('myItems',{
 					                  	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
 										itemMsg : true,

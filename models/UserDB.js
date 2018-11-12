@@ -141,16 +141,16 @@ module.exports = {
 
 /* Add User */
 module.exports.addUser = (firstName, lastName, email, address1, address2, city, state, zip, country) => {
-	var count = User.find({}).count(); //Next User Id
-	var user = new UserDB(count, firstName, lastName, email, address1, address2, city, state, zip, country);
-	addUser(user);
+	User.countDocuments({}, (err, count) => {
+		var user = new UserDB(count + 1, firstName, lastName, email, address1, address2, city, state, zip, country);
+		addUser(user);
+	});
 }
 
 /* Store in mongoose table */
 var addUser = (user) => {
 	User.save((err) => {
 		if(err) throw err;
-		res.send('User created successfully');
 	})
 }
 

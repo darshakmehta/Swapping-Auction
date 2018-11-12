@@ -69,9 +69,31 @@ module.exports.addOffer = (userId, swapUserId, userItemCode, swapUserItemCode, s
 }
 
 /* Update offer */
-module.exports.updateOffer = (userId, code, action) => {
+module.exports.updateOffer = (userId, swapUserItemCode, action) => {
 	try {
-		Offer.findOneAndUpdate({userId, userItemCode: code, status: "pending"}, {$set: {status: action}}, {$new: true}, (err, doc) => {
+		Offer.findOneAndUpdate({userId, swapUserItemCode, status: "pending"}, {$set: {status: action}}, {$new: true}, (err, doc) => {
+			if(err) throw err;
+		});
+	} catch(e) {
+		
+	}
+}
+
+/* Swap Update offer */
+module.exports.swapUpdateOffer = (swapUserId, userItemCode, action) => {
+	try {
+		Offer.findOneAndUpdate({swapUserId, userItemCode, status: "pending"}, {$set: {status: action}}, {$new: true}, (err, doc) => {
+			if(err) throw err;
+		});
+	} catch(e) {
+		
+	}
+}
+
+/* Withdraw Update offer */
+module.exports.withdrawUpdateOffer = (userId, userItemCode, action) => {
+	try {
+		Offer.findOneAndUpdate({userId, userItemCode, status: "pending"}, {$set: {status: action}}, {$new: true}, (err, doc) => {
 			if(err) throw err;
 		});
 	} catch(e) {
@@ -96,9 +118,37 @@ module.exports.getPendingOfferUserItemCode = (swapUserId, swapUserItemCode) => {
 	}
 }
 
-module.exports.acceptOffer = (swapUserId, swapUserItemCode) => {
+/* Reject Offer */
+module.exports.rejectOffer = (swapUserId, userItemCode) => {
 	try {
-		return Offer.findOneAndUpdate({swapUserId, swapUserItemCode, status: "pending"}, {$set: {status: "accepted"}}, {$new : true});
+		return Offer.findOne({swapUserId, userItemCode, status: "pending"});
+	} catch(e) {
+
+	}
+}
+
+/* Reject Offer */
+module.exports.swapRejectOffer = (userId, swapUserItemCode) => {
+	try {
+		return Offer.findOne({userId, swapUserItemCode, status: "pending"});
+	} catch(e) {
+
+	}
+}
+
+/* Withdraw Offer */
+module.exports.withdrawOffer = (userId, userItemCode) => {
+	try {
+		return Offer.findOne({userId, userItemCode, status: "pending"});
+	} catch(e) {
+
+	}
+}
+
+
+module.exports.acceptOffer = (swapUserId, userItemCode) => {
+	try {
+		return Offer.findOneAndUpdate({swapUserId, userItemCode, status: "pending"}, {$set: {status: "accepted"}}, {$new : true});
 	} catch(e) {
 
 	}

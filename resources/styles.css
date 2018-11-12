@@ -166,7 +166,7 @@ article {
 }
 
 .item-content-swap {
-	margin: 20px 0px 20px 80px;
+	margin: 5px 0px 5px 80px;
 	font-family: 'sans-serif';
 	font-size: 15px;
 	word-wrap: break-word;
@@ -302,6 +302,14 @@ td {
 	border: 1px solid #BDBDBD;
 	width: 450px;
 	padding: 10px;
+}
+
+.my-offer-styling {
+	/*height: 610px;*/
+}
+
+.inline-header-swap {
+	margin: 0px;
 }
 
 /* MySwaps */

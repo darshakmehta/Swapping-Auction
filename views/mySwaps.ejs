@@ -46,9 +46,13 @@
 						<tbody class="border-bottom-style">
 							<% Object.keys(swapList).forEach((item) =>{%>
 								<tr>
-									<td><a href="/item?itemCode=<%= swapList[item].item.code%>"><%= swapList[item].item.name %></a></td>
+									<td><a href="/item?itemCode=<%= swapList[item].code%>"><%= swapList[item].name %></a></td>
 									<td><a href="/item?itemCode=<%= swapItemList[item].code%>"><%= swapItemList[item].name %></a></td>
-									<td> <a href="/myItems/accept/<%= swapList[item].item.code%>"><div class="btn-style-mySwap"> Accept </div></a> <a href="/myItems/reject/<%=  swapList[item].item.code%>"><div class="btn-style-mySwap2"> Reject </div></a></td>
+									<% if(actionList[item] === "withdraw") {%>
+									<td> <a href="/myItems/withdraw/<%= swapList[item].code%>"><div class="btn-style"> Withdraw Swap </div></a> </td>
+									<%} else {	%>
+									<td> <a href="/myItems/accept/<%= swapList[item].code%>"><div class="btn-style-mySwap"> Accept </div></a> <a href="/myItems/reject/<%=  swapList[item].code%>"><div class="btn-style-mySwap2"> Reject </div></a></td>
+									<%}%>
 								</tr>
 							<%});%>
 						</tbody>

@@ -26,6 +26,15 @@ Domain: Content Swapping Domain
 
   Complete MVC Architecture
 
+  [Imgur](https://i.imgur.com/eA4sb7D.png)
+
+# Stage 4
+
+  Database Integration - Ability to organize collection of information to access, manage and update
+
+  Persistent Data Storage using MongoDB (NoSQL) with help of mongoose js
+
+
 
 # Testing
   Validation of HTML5 pages by following tool: http://html5.validator.nu/

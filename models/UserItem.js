@@ -260,7 +260,7 @@ module.exports.getNotAllItemsOfUser = (userId) => {
 	// 	}
 	// });
 	try {
-		return UserItem.find({userId: {$ne: "1"}, active: "active"});
+		return UserItem.find({userId: {$ne: userId}, active: "active"});
 	} catch(e) {
 
 	}
@@ -291,6 +291,26 @@ var addItem = (item) => {
 module.exports.deleteItem = (code) => {
 	try {
 		UserItem.findOneAndUpdate({code: code}, {$set: {active: "inactive"}}, {$new: true}, (err, doc) => {
+			if(err) throw err;
+		});
+	} catch(e) {
+		
+	}
+}
+
+/* Get Item By name */
+module.exports.getItemByName = (name) => {
+	try {
+		return UserItem.findOne({name});
+	} catch(e) {
+		console.log(e);
+	}
+}
+
+/*Update Item Status */
+module.exports.updateItemStatus = (code, status) => {
+	try {
+		UserItem.findOneAndUpdate({code: code}, {$set: {status: status}}, {$new: true}, (err, doc) => {
 			if(err) throw err;
 		});
 	} catch(e) {

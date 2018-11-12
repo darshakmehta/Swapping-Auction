@@ -5,12 +5,13 @@ class offerDB {
 		this.swapUserId = swapUserId,
 		this.userItemCode = userItemCode,
 		this.swapUserItemCode = swapUserItemCode,
-		this.status = status
-		this.swapperRating = swapperRating,
+		this.status = status,
+		this.swapperRating = swapperRating
 	}
 }
-	
-const Offer = mongoose.model('offers', {
+/* Require Mongoose Library */
+var mongoose = require('mongoose');	
+var Offer = mongoose.model('offers', {
 	offerId: {
 		type: String,
         required: true,
@@ -58,21 +59,72 @@ module.exports = {
 
 /* Add offer */
 module.exports.addOffer = (userId, swapUserId, userItemCode, swapUserItemCode, status, swapperRating) => {
-	var count = Offer.find({}).count() + 1;
-	var offer = new offerDB(count, userId, swapUserId, userItemCode, swapUserItemCode, status, swapperRating);
-	Offer.save((err) => {
-		if(err) throw err;
-		res.send("Offer added successfully");
-	})
+	Offer.countDocuments({}, (err, count) => {
+		var offer = new offerDB(count + 1, userId, swapUserId, userItemCode, swapUserItemCode, status, swapperRating);
+		var offerItem = new Offer(offer);
+		offerItem.save((err) => {
+			if(err) throw err;
+		})
+	});
 }
 
 /* Update offer */
-module.exports.updateOffer = () => {
+module.exports.updateOffer = (userId, code, action) => {
 	try {
-		Offer.findOneAndUpdate({code: code}, {$set: {}, {$new: true}, (err, doc) => {
+		Offer.findOneAndUpdate({userId, userItemCode: code, status: "pending"}, {$set: {status: action}}, {$new: true}, (err, doc) => {
 			if(err) throw err;
 		});
 	} catch(e) {
 		
 	}
 }
+
+/* Get Pending Offer Id for swapUserItemCode */
+module.exports.getPendingOfferSwapUserItemCode = (userId, userItemCode) => {
+	try {
+		return Offer.findOne({userId, userItemCode, status: "pending"});
+	} catch(e) {
+
+	}
+}
+/* Get Pending Offer Id for userItemCode */
+module.exports.getPendingOfferUserItemCode = (swapUserId, swapUserItemCode) => {
+	try {
+		return Offer.findOne({swapUserId, swapUserItemCode, status: "pending"});
+	} catch(e) {
+
+	}
+}
+
+module.exports.acceptOffer = (swapUserId, swapUserItemCode) => {
+	try {
+		return Offer.findOneAndUpdate({swapUserId, swapUserItemCode, status: "pending"}, {$set: {status: "accepted"}}, {$new : true});
+	} catch(e) {
+
+	}
+}
+
+module.exports.getPendingOffers = () => {
+	try {
+		return Offer.find({status: "pending"});
+	} catch(e) {
+
+	}
+}
+
+module.exports.getCountOfPending = () => {
+	try {
+		return Offer.find({status: "pending"}).countDocuments();
+	} catch(e) {
+
+	}
+}
+
+/* Get Offer Id for swapUserItemCode */
+// module.exports.getOffer = (userId, userItemCode) => {
+// 	try {
+// 		return Offer.findOne({userId, userItemCode);
+// 	} catch(e) {
+
+// 	}
+// }

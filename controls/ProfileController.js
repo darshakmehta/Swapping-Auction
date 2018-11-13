@@ -48,7 +48,7 @@ app.get('/myItems', async (req, res) => {
 	if(req.session.theUser === undefined) { /* Check the session for a current user, using the attribute "theUser" */
 		//var user = require('../models/UserDB'); /* create a User Object, by selecting the first (or random) user from the UserDB */
 		/* Now user is the current placeholder for having the user go through all the steps of entering their details or logging in to their account */
-		req.session.theUser = await userDB.getUser("2"); /*  add the User object to the current session as "theUser" */
+		req.session.theUser = await userDB.getUser("1"); /*  add the User object to the current session as "theUser" */
 		profileOne.userId = req.session.theUser.userId;
 		profileOne.userItems = await userItem.getAllItemsOfUser(profileOne.userId); /*  get the User Profile item - this is current placeholder for a user's saved information and items */
 		//console.log(profileOne);
@@ -205,8 +205,8 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 								if(req.params.action === 'reject'){
 				                  var offerItem = await offer.rejectOffer(req.session.theUser.userId, req.params.theItem);
 				                  await offer.updateOffer(req.session.theUser.userId, req.params.theItem, req.params.action);
-				                  await userItem.updateItemStatus(offerItem.userItemCode, "available");
 				                  await userItem.updateItemStatus(offerItem.swapUserItemCode, "available");
+				                  await userItem.updateItemStatus(offerItem.userItemCode, "available");
 					              req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 				                  res.render('myItems',{
 				                  	welcome: 'Welcome ' + req.session.theUser.firstName + '!',

@@ -56,7 +56,7 @@ module.exports.updateOffer = (swapUserId, userItemCode, action) => {
 			if(err) throw err;
 		});
 	} catch(e) {
-		
+		console.log(e);
 	}
 }
 
@@ -67,7 +67,7 @@ module.exports.withdrawUpdateOffer = (userId, userItemCode, action) => {
 			if(err) throw err;
 		});
 	} catch(e) {
-		
+		console.log(e);
 	}
 }
 
@@ -76,7 +76,7 @@ module.exports.getOfferByUser = (userId, userItemCode) => {
 	try {
 		return Offer.findOne({userId, userItemCode, status: "pending"});
 	} catch(e) {
-
+		console.log(e);
 	}
 }
 /* Get Pending Offer by Other User */
@@ -84,7 +84,7 @@ module.exports.getOfferByOtherUser = (swapUserId, swapUserItemCode) => {
 	try {
 		return Offer.findOne({swapUserId, swapUserItemCode, status: "pending"});
 	} catch(e) {
-
+		console.log(e);
 	}
 }
 
@@ -93,7 +93,7 @@ module.exports.rejectOffer = (swapUserId, userItemCode) => {
 	try {
 		return Offer.findOne({swapUserId, userItemCode, status: "pending"});
 	} catch(e) {
-
+		console.log(e);
 	}
 }
 
@@ -102,7 +102,7 @@ module.exports.acceptOffer = (swapUserId, userItemCode) => {
 	try {
 		return Offer.findOneAndUpdate({swapUserId, userItemCode, status: "pending"}, {$set: {status: "accepted"}}, {$new : true});
 	} catch(e) {
-
+		console.log(e);
 	}
 }
 
@@ -111,7 +111,7 @@ module.exports.getPendingOffers = () => {
 	try {
 		return Offer.find({status: "pending"});
 	} catch(e) {
-
+		console.log(e);
 	}
 }
 
@@ -120,6 +120,15 @@ module.exports.getCountOfPending = () => {
 	try {
 		return Offer.find({status: "pending"}).countDocuments();
 	} catch(e) {
+		console.log(e);
+	}
+}
 
+/* Get Pending Offer to check for swap */
+module.exports.getOfferForSwap = (userItemCode) => {
+	try {
+		return Offer.find({userItemCode, status: "pending"});
+	} catch(e) {
+		console.log(e);
 	}
 }

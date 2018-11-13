@@ -1,3 +1,4 @@
+/* Represents a UserDB */
 class offerDB {
 	constructor(offerId, userId, swapUserId, userItemCode, swapUserItemCode, status, swapperRating) {
 		this.offerId = offerId	,
@@ -11,57 +12,37 @@ class offerDB {
 }
 /* Require Mongoose Library */
 var mongoose = require('mongoose');	
-var Offer = mongoose.model('offers', {
+/* Offer Model to represent in MongoDB */
+const Offer = mongoose.model('offers', {
 	offerId: {
-		type: String,
-        required: true,
-        minlength: 1
+		type: String, required: true
 	},
 	userId: {
-		type: String,
-        required: true,
-        minlength: 1
+		type: String, required: true
 	},
 	swapUserId: {
-		type: String,
-        required: true,
-        minlength: 1
+		type: String, required: true
 	},
 	userItemCode: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	},
 	swapUserItemCode: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	},
 	status: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	},
 	swapperRating: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	}
 });
-
-module.exports = {
-    Offer
-}
 
 /* Add offer */
 module.exports.addOffer = (userId, swapUserId, userItemCode, swapUserItemCode, status, swapperRating) => {
 	Offer.countDocuments({}, (err, count) => {
 		var offer = new offerDB(count + 1, userId, swapUserId, userItemCode, swapUserItemCode, status, swapperRating);
 		var offerItem = new Offer(offer);
+		/* Store offer in mongoose table */
 		offerItem.save((err) => {
 			if(err) throw err;
 		})
@@ -69,18 +50,7 @@ module.exports.addOffer = (userId, swapUserId, userItemCode, swapUserItemCode, s
 }
 
 /* Update offer */
-module.exports.updateOffer = (userId, swapUserItemCode, action) => {
-	try {
-		Offer.findOneAndUpdate({userId, swapUserItemCode, status: "pending"}, {$set: {status: action}}, {$new: true}, (err, doc) => {
-			if(err) throw err;
-		});
-	} catch(e) {
-		
-	}
-}
-
-/* Swap Update offer */
-module.exports.swapUpdateOffer = (swapUserId, userItemCode, action) => {
+module.exports.updateOffer = (swapUserId, userItemCode, action) => {
 	try {
 		Offer.findOneAndUpdate({swapUserId, userItemCode, status: "pending"}, {$set: {status: action}}, {$new: true}, (err, doc) => {
 			if(err) throw err;
@@ -101,16 +71,16 @@ module.exports.withdrawUpdateOffer = (userId, userItemCode, action) => {
 	}
 }
 
-/* Get Pending Offer Id for swapUserItemCode */
-module.exports.getPendingOfferSwapUserItemCode = (userId, userItemCode) => {
+/* Get Pending Offer by User */
+module.exports.getOfferByUser = (userId, userItemCode) => {
 	try {
 		return Offer.findOne({userId, userItemCode, status: "pending"});
 	} catch(e) {
 
 	}
 }
-/* Get Pending Offer Id for userItemCode */
-module.exports.getPendingOfferUserItemCode = (swapUserId, swapUserItemCode) => {
+/* Get Pending Offer by Other User */
+module.exports.getOfferByOtherUser = (swapUserId, swapUserItemCode) => {
 	try {
 		return Offer.findOne({swapUserId, swapUserItemCode, status: "pending"});
 	} catch(e) {
@@ -127,25 +97,7 @@ module.exports.rejectOffer = (swapUserId, userItemCode) => {
 	}
 }
 
-/* Reject Offer */
-module.exports.swapRejectOffer = (userId, swapUserItemCode) => {
-	try {
-		return Offer.findOne({userId, swapUserItemCode, status: "pending"});
-	} catch(e) {
-
-	}
-}
-
-/* Withdraw Offer */
-module.exports.withdrawOffer = (userId, userItemCode) => {
-	try {
-		return Offer.findOne({userId, userItemCode, status: "pending"});
-	} catch(e) {
-
-	}
-}
-
-
+/* Accept Offer */
 module.exports.acceptOffer = (swapUserId, userItemCode) => {
 	try {
 		return Offer.findOneAndUpdate({swapUserId, userItemCode, status: "pending"}, {$set: {status: "accepted"}}, {$new : true});
@@ -154,6 +106,7 @@ module.exports.acceptOffer = (swapUserId, userItemCode) => {
 	}
 }
 
+/* Get Pending Offers */
 module.exports.getPendingOffers = () => {
 	try {
 		return Offer.find({status: "pending"});
@@ -162,6 +115,7 @@ module.exports.getPendingOffers = () => {
 	}
 }
 
+/* Get Count of Pending Offers */
 module.exports.getCountOfPending = () => {
 	try {
 		return Offer.find({status: "pending"}).countDocuments();
@@ -169,12 +123,3 @@ module.exports.getCountOfPending = () => {
 
 	}
 }
-
-/* Get Offer Id for swapUserItemCode */
-// module.exports.getOffer = (userId, userItemCode) => {
-// 	try {
-// 		return Offer.findOne({userId, userItemCode);
-// 	} catch(e) {
-
-// 	}
-// }

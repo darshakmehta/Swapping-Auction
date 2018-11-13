@@ -11,15 +11,6 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 /* Include Cookie Parser */
 const cookieParser = require('cookie-parser');
 
-/* Include JavaScript Object (Model) for all Items */
-//const model = require('../models/Item');
-//let items = model.getItems(); //Function to export all items
-
-/* return the Item with the specified itemId from the hardcoded database */
-// var getItem = (itemId) => {
-// 	return items[itemId];
-// }
-
 let userItem = require('../models/UserItem');
 
 /* Profile Controller to manage user actions */
@@ -61,7 +52,7 @@ app.get('/', (req, res) => {
 	}
 });
 
-/* Router to GET users */
+/* Test Router to GET users */
 app.get('/users', (req, res) => {
 	User.find().then((user) => {
 		//console.log(user);
@@ -72,7 +63,7 @@ app.get('/users', (req, res) => {
 });
 
 
-/* Router to GET user Items*/
+/* Test Router to GET user Items*/
 app.get('/userItems', (req, res) => {
 	UserItem.find().then((userItem) => {
 		res.send(userItem);
@@ -112,15 +103,11 @@ app.get('/categories', (req, res) => {
 	}
 });
 
-var userTempItems  = []; //List of user items which does not belong to user
-var tempcodes = []; //List of item codes which belongs to user
-
 /* GET Sub Categories Router - Use to display all sub categories of a choosen category */
 app.get('/subCategories', async (req, res) => {
 	if(req.session.theUser === undefined) {
 		var itemList = [];
 		userItem.getAllItems((err, item) => {
-			//console.log(itemList);
 			/* Check catalogCategory parameter exist and it is valid */
 			if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
 				/* Dispatch list of sub categories of type catalogCategory */
@@ -142,19 +129,6 @@ app.get('/subCategories', async (req, res) => {
 		var userId = req.session.theUser.userId;
 		var item = await userItem.getNotAllItemsOfUser(userId);
 		if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
-		// var userItems = Object.values(items);
-		// tempcodes =[];
-		// userTempItems  = []; 
-		/* Display items that do not belong to the active user */
-		/* TODO: Modularize the below code to a function/method to the database utility classes that can filter the catalog based on a user */
-		// for(var i=0;i<req.session.currentProfile.userItems.length;i++) {
-		// 			tempcodes.push(req.session.currentProfile.userItems[i].code);
-		// }
-		// for(var j=0;j<userItems.length;j++) {
-		// 	if (tempcodes.indexOf( userItems[j].code) == -1) {
-		// 		userTempItems.push(userItems[j])
-		// 	}
-		// }
 		/* Dispatch filtered Item List */
 		res.render('subCategories', {
 			welcome: 'Not signed in.',
@@ -171,12 +145,6 @@ app.get('/subCategories', async (req, res) => {
 	}
 });
 
-var findItems = async() => {
-	
-	return items;
-}
-
-
 /* GET Item Router */
 app.get('/item', async (req, res) => {
 	
@@ -184,20 +152,6 @@ app.get('/item', async (req, res) => {
 		if(Object.keys(req.query.length != 0)) {
 			/* Check the http request for a parameter called "itemCode" and validate it matches our format and it is valid */
 			if(req.query.itemCode <= 6 && req.query.itemCode >= 1) {
-				/*
-				Object.keys(items).forEach((item, index) => {
-					/* Valid Object should be added to the http response object 
-					if(items[item]['code'] === req.query.itemCode) {
-						/* Dispatch the individual item 
-						res.render('item', {
-							welcome: 'Not signed in.',
-							item: getItem(item),
-							sessionStatus: false,
-							itemStatus: 'available'
-						});
-					} 
-				});
-				*/
 				/* Await till the item is returned */
 				var item = await userItem.getItem(req.query.itemCode);
 				/* Render individual Item */
@@ -208,12 +162,11 @@ app.get('/item', async (req, res) => {
 					itemStatus: 'available',
 					swapIt: "yes"
 				});
-					
 			} else { //If item code is invalid, dispatch catalog as if no code had been provided
 				res.render('categories', {
-						welcome: 'Not signed in.',
-						sessionStatus: false
-					});
+					welcome: 'Not signed in.',
+					sessionStatus: false
+				});
 			}
 		} else { //If no itemCode parameter is present, dispatch catalog
 			res.render('categories', {
@@ -223,21 +176,20 @@ app.get('/item', async (req, res) => {
 		}
 	} else {
 		if(Object.keys(req.query.length != 0)) {
-			// var userItemsToStatus = req.session.currentProfile.userItems;
-			// var stat = req.query.itemCode;
-			// var itemStatus;
-			// for (var i = 0; i < userItemsToStatus.length; i++) {
-			// 	if (userItemsToStatus[i].item.code == stat) {
-			// 		itemStatus = userItemsToStatus[i].status;
-			// 	}
-			// }
-			// console.log(itemStatus);
 			if(req.query.itemCode <= 6 && req.query.itemCode >= 1) {
-				//Object.keys(items).forEach((item, index) => {
-				//	if(items[item]['code'] === req.query.itemCode) {
 				var item = await userItem.getItem(req.query.itemCode);
 				var itemStatus = item.status;
 				var swapIt = req.session.theUser.userId === item.userId ? "no" : "yes";
+				/*
+				TODO: check if the item is user and he has got offer, or he has swap to send the appropriate message
+				if(itemStatus === "pending") {
+					if(swapIt === "no") {
+						var offerItem = await offer.getOffer(req.sessionStatus.theUser.userId);
+					} else {
+
+					}
+					
+				}*/
 				res.render('item', {
 					welcome: 'Welcome ' + req.session.theUser.firstName + '!',
 					item,
@@ -245,32 +197,12 @@ app.get('/item', async (req, res) => {
 					itemStatus: itemStatus,
 					swapIt
 				});
-				// 	}
-				// });
 			} else {
 				res.render('categories', {
 					welcome: 'Welcome ' + req.session.theUser.firstName + '!',
 					sessionStatus: true
 				});
 			}
-			// if(tempcodes.indexOf(req.query.itemCode)==-1) {
-			// 	Object.keys(items).forEach((item, index) => {
-			// 		if(items[item]['code'] === req.query.itemCode) {
-			// 			res.render('item', {
-			// 				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-			// 				item: getItem(item),
-			// 				sessionStatus: true,
-
-			// 			});
-			// 		}
-			// 	});
-			// } else {
-			// 	res.render('categories', {
-			// 		welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-			// 		sessionStatus: true,
-			// 	});
-			// }
-
 		} else { 
 			res.render('categories', {
 				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
@@ -280,14 +212,6 @@ app.get('/item', async (req, res) => {
 		}
 	}
 });
-
-/* Get My Items Router*/
-/*app.get('/myItems', (req, res) => {
-	res.render('myItems', {
-		welcome: 'Welcome Darshak!',
-		sessionStatus: true
-	});
-});*/
 
 /* Get Contact Router*/
 app.get('/contact', (req, res) => {
@@ -311,7 +235,6 @@ app.get('/about', (req, res) => {
 		res.render('about', {
 			welcome: 'Not signed in.',
 			sessionStatus: false
-
 		});
 	} else {
 		res.render('about', {
@@ -321,15 +244,8 @@ app.get('/about', (req, res) => {
 	}
 });
 
-app.get('/swap', (req, res) => {
-	res.render('swap', {
-		welcome: 'Welcome Darshak!'
-	});
-});
-
 /* Get My Swaps Router*/
 app.get('/mySwaps', async (req, res) => {
-	
 	if(req.session.theUser === undefined) {
 		res.render('mySwaps', {
 			welcome: 'Not signed in.',
@@ -339,35 +255,33 @@ app.get('/mySwaps', async (req, res) => {
 			actionList: []
 		});
 	} else {
-		
 		var offerList = await offer.getPendingOffers();
-		
 		var count = await offer.getCountOfPending();
 		if(count !== 0) {
-				var userItemList= [];
-				var swapUserItemList = [];
-				var actionList = [];
-				Object.keys(offerList).forEach(async (offer) => {
-					var item = await userItem.getItem(offerList[offer].userItemCode);
-					userItemList.push(item);
-					var swapItem = await userItem.getItem(offerList[offer].swapUserItemCode);
-					swapUserItemList.push(swapItem);
-					if((req.session.theUser.userId == offerList[offer].userId)) {
-						actionList.push("withdraw");
-					} else {
-						actionList.push("accept/reject");
-					}
-					if((count - 1) == offer) {
-						res.render('mySwaps', {
-							welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-							swapList: userItemList,
-							swapItemList: swapUserItemList,
-							sessionStatus: true,
-							name: req.session.theUser.firstName,
-							actionList
-						});	
-					} 
-				});		
+			var userItemList= [];
+			var swapUserItemList = [];
+			var actionList = [];
+			Object.keys(offerList).forEach(async (offer) => {
+				var item = await userItem.getItem(offerList[offer].userItemCode);
+				userItemList.push(item);
+				var swapItem = await userItem.getItem(offerList[offer].swapUserItemCode);
+				swapUserItemList.push(swapItem);
+				if((req.session.theUser.userId == offerList[offer].userId)) {
+					actionList.push("withdraw");
+				} else {
+					actionList.push("accept/reject");
+				}
+				if((count - 1) == offer) {
+					res.render('mySwaps', {
+						welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+						swapList: userItemList,
+						swapItemList: swapUserItemList,
+						sessionStatus: true,
+						name: req.session.theUser.firstName,
+						actionList
+					});	
+				} 
+			});		
 		} else {
 			res.render('mySwaps', {
 				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
@@ -377,29 +291,21 @@ app.get('/mySwaps', async (req, res) => {
 				actionList: []
 			});
 		}
-		
 	}
 });
 
+/* Confirm Swap Router */
 app.post('/confirmswap', urlencodedParser, async (req, res) => {
-	// var nameOfItemAvailableToSwap = req.body.itemSelected;
-	 /*TODO get Item code from front end because products can have same name */
-	// var item = await userItem.getItemByName(nameOfItemAvailableToSwap);
-	// var codeOfItemAvaialbleToSwap = item.code;
-	//console.log(codeOfItemAvaialbleToSwap);
 	if(req.session === undefined) {
 		res.render('index', {
 			welcome: 'Not signed in.',
 			sessionStatus: false
 		});
 	} else {
-		// console.log(req.body);
 		offer.addOffer(req.body.userId, req.body.swapUserId, req.body.userItemCode, req.body.swapUserItemCode, "pending", "0");
 		await userItem.updateItemStatus(req.body.userItemCode, "pending");
 		await userItem.updateItemStatus(req.body.swapUserItemCode, "pending");
-		// console.log(req.session.theUser.userId);
 		req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
-		// console.log(req.session.currentProfile.userItems);
 		res.render('myItems', {
           	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
 			itemMsg : true,
@@ -410,9 +316,9 @@ app.post('/confirmswap', urlencodedParser, async (req, res) => {
 });
 
 /* Get Any URL Router*/
-// app.get('/*', (req, res) => {
-// 	res.send('Plain Message');
-// });
+app.get('/*', (req, res) => {
+	res.send('Plain Message');
+});
 
 /* Listen Express app on Port 8080 */
 app.listen(8080, () => {

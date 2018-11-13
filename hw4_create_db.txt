@@ -2,7 +2,8 @@ use swapAuction
 db.createCollection("items");
 db.createCollection("offers");
 db.createCollection("users");
-db.createCollection("feedbacks");
+db.createCollection("userfeedbacks");
+db.createCollection("itemfeedbacks");
 
 db.users.insert([{
 userId: "1",

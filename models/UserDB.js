@@ -1,153 +1,68 @@
-/***
-
-UserDB {
-User ID - Unique identifier for the user
-First Name
-Last Name
-Email Address
-Address Field 1
-Address Field 2
-City
-State / Region
-Postal Code / Zip Code
-Country	
-}
-
-getusers() - returns a set of all the users in the database
-
-***/
-
-/* Represents a user */
+/* Represents a UserDB */
 class UserDB {
-	constructor(firstName, lastName, email, address1, address2, city, state, zip, country) {
-		//this.userId = userId, Auto Increment User id
+	constructor(userId, password, firstName, lastName, email, address1, address2, city, state, zip, country) {
+		this.userId = userId, //Auto Increment
+		this.password = password,
 		this.firstName = firstName,
 		this.lastName = lastName,
-		this.emailAddress = email,
+		this.email = email,
 		this.addressField1 = address1,
 		this.addressField2 = address2,
 		this.city = city,
-		this.stateOrRegion = state,
-		this.postalCode = zip,
+		this.state = state,
+		this.zip = zip,
 		this.country = country
 	}
-	getUsers(){
-		//return all users
-	}
 }
-
-
-//const User1 = new UserDB('1', 'Darshak', 'Mehta', 'dmehta9@uncc.edu', '9527 University Terrace Dr.', 'Apt K', 'Charlotte', 'NC', '28262', 'USA');
-
-//module.exports = User1;
-
-/*
-
-
-[{
-userId: "1",
-firstName : "Darshak",
-lastName :"Mehta",
-email: "dmehta9@uncc.edu",
-addressField1: "9527 University Terrace Dr.",
-addressField2: "Apt K",
-city: "Charlotte",
-state: "NC",
-zip: "28262",
-country: "USA"
-},
-{
-userId: "2",
-firstName : "Russel",
-lastName :"Peters",
-email: "rpeters@uncc.edu",
-addressField1: "10004 University Terrace Dr.",
-addressField2: "Apt A",
-city: "Charlotte",
-state: "NC",
-zip: "28262",
-country: "USA"
-}]
-
-
-*/
-
-
+/* Require Mongoose Library */
 var mongoose = require('mongoose');
-var User = mongoose.model('users', {
+/* Offer Model to represent in MongoDB */
+const User = mongoose.model('users', {
 	userId: {
-		type: String,
-        required: true,
-        minlength: 1
+		type: String, required: true
+	},
+	password: {
+		type: String, required: true
 	},
 	firstName: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	},
 	lastName: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	},
-	emailAddress: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+	email: {
+		type: String, required: true
 	},
 	addressField1: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	},
 	addressField2: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	},
 	city: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	},
-	stateOrRegion: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+	state: {
+		type: String, required: true
 	},
-	postalCode: {
-		type: String,
-        required: true,
-        minlength: 5
+	zip: {
+		type: String, required: true
 	},
 	country: {
-		type: String,
-        required: true,
-        trim: true,
-        minlength: 1
+		type: String, required: true
 	}
 });
-
-module.exports = {
-    User
-}
 
 /* Add User */
 module.exports.addUser = (firstName, lastName, email, address1, address2, city, state, zip, country) => {
 	User.countDocuments({}, (err, count) => {
-		var user = new UserDB(count + 1, firstName, lastName, email, address1, address2, city, state, zip, country);
+		var password = "XXX"; //Auto generated Hash Password
+		var user = new UserDB(count + 1, password, firstName, lastName, email, address1, address2, city, state, zip, country);
 		addUser(user);
 	});
 }
 
-/* Store in mongoose table */
+/* Store user in mongoose table */
 var addUser = (user) => {
 	User.save((err) => {
 		if(err) throw err;
@@ -164,6 +79,7 @@ module.exports.getAllUsers = (callback) => {
 		}
 	});
 }
+
 /* Get User by userId from Database */
 module.exports.getUser = (userId) => {
 	try {

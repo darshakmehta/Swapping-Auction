@@ -348,26 +348,26 @@ app.get('/mySwaps', async (req, res) => {
 				var swapUserItemList = [];
 				var actionList = [];
 				Object.keys(offerList).forEach(async (offer) => {
-				var item = await userItem.getItem(offerList[offer].userItemCode);
-				userItemList.push(item);
-				var swapItem = await userItem.getItem(offerList[offer].swapUserItemCode);
-				swapUserItemList.push(swapItem);
-				if((req.session.theUser.userId == offerList[offer].userId)) {
-					actionList.push("withdraw");
-				} else {
-					actionList.push("accept/reject");
-				}
-				if((count - 1) == offer) {
-					res.render('mySwaps', {
-						welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-						swapList: userItemList,
-						swapItemList: swapUserItemList,
-						sessionStatus: true,
-						name: req.session.theUser.firstName,
-						actionList
-					});	
-				} 
-			});		
+					var item = await userItem.getItem(offerList[offer].userItemCode);
+					userItemList.push(item);
+					var swapItem = await userItem.getItem(offerList[offer].swapUserItemCode);
+					swapUserItemList.push(swapItem);
+					if((req.session.theUser.userId == offerList[offer].userId)) {
+						actionList.push("withdraw");
+					} else {
+						actionList.push("accept/reject");
+					}
+					if((count - 1) == offer) {
+						res.render('mySwaps', {
+							welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+							swapList: userItemList,
+							swapItemList: swapUserItemList,
+							sessionStatus: true,
+							name: req.session.theUser.firstName,
+							actionList
+						});	
+					} 
+				});		
 		} else {
 			res.render('mySwaps', {
 				welcome: 'Welcome ' + req.session.theUser.firstName + '!',

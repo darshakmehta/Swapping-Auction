@@ -26,7 +26,7 @@ Domain: Content Swapping Domain
 
   Complete MVC Architecture
 
-  [Imgur](https://i.imgur.com/eA4sb7D.png)
+  [MVC Design](https://i.imgur.com/eA4sb7D.png)
 
 # Stage 4
 
@@ -62,3 +62,14 @@ Domain: Content Swapping Domain
   Cross-browser Compatibility
   
   Mobile Responsive
+
+# Steps to install Project
+  Before cloning the project, you should install node, mongodb libraries.
+
+  1. Clone the project
+  
+  2. ``npm install``
+
+  3. Use the ``hw4_create_db.txt`` file to insert the documents in the mongodb database
+
+  4. inside the root folder -> ``nodemon controls/app``

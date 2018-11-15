@@ -72,20 +72,6 @@ app.get('/userItems', (req, res) => {
 	});
 });
 
-/* GET Home Router */
-app.get('/home', (req, res) => {
-	if(req.session.theUser === undefined) {
-		res.render('index', {
-			welcome: 'Not signed in.',
-			sessionStatus: false
-		});
-	} else {
-		res.render('index', {
-			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-			sessionStatus: true
-		});
-	}
-});
 
 
 /* GET Categories Router - Use to display categories belonging to the Catalog */

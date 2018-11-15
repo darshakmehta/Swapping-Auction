@@ -1,19 +1,12 @@
 <!-- User Specific Navigation -->
-<nav class="navbar ">
-	<div class="user-navbar">
+<nav class="nav justify-content-center user-navbar">
 		<% if(sessionStatus == true) {%>
-		<a class="" href="/signout"> Sign Out </a>
+		<a class="nav-link" href="/signout"> Sign Out </a>
 		<%} else {%>
-		<a class="" href="/myItems"> Sign In </a>
+		<a class="nav-link" href="/myItems"> Sign In </a>
 		<%}%>
-		
-		<span> | </span>
-		<a class="" href="/myItems"> My Catalog </a>
-		<span> | </span>
+		<a class="nav-link" href="/myItems"> My Catalog </a>
 		<!-- Active Swap Offers -->
-		<a class="" href="/mySwaps"> My Swaps </a>
-		<span> | </span>
-		<a class="" href="#"> Cart </a>
-		<span> | </span>
-	</div>
+		<a class="nav-link" href="/mySwaps"> My Swaps </a>
+		<a class="nav-link disabled nav-disabled" href="#"> Cart </a>
 </nav>

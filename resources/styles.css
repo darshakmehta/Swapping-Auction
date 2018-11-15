@@ -39,8 +39,9 @@
 }
 
 /* Navbar Area */
-.navbar {
-	margin-top: 5px;
+
+.nav-disabled {
+	cursor: default;
 }
 
 .user-navbar {
@@ -58,9 +59,6 @@
 	margin-top: 65px;
 }
 
-a {
-	text-decoration: none;
-}
 
 aside {
 	width: 20%;
@@ -81,7 +79,6 @@ article {
 .sidebar {
 	border: 1px solid #BDBDBD;
 	height: 490px;
-	text-align: left;
 }
 
 .sidebar ul {

@@ -10,7 +10,8 @@ const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 /* Include Cookie Parser */
 const cookieParser = require('cookie-parser');
-
+/* Include NodeMailer */
+const nodemailer = require('nodemailer');
 let userItem = require('../models/UserItem');
 
 /* Profile Controller to manage user actions */
@@ -30,6 +31,7 @@ app.use(session({secret: "nbad"}));
 var {ObjectID} = require('mongodb');
 
 var {mongoose} = require('../controls/mongoose');
+var {transporter} = require('../controls/nodemailtransporter');
 var {User} = require('../models/UserDB');
 var {UserItem} = require('../models/UserItem');
 var offer = require('../models/offer');
@@ -427,6 +429,22 @@ app.post('/register', urlencodedParser, async (req, res) => {
 		var country = req.body.state;
 		/* TODO checks and validation */
 		await userDB.addUser(firstName, lastName, email, password, addressField1, addressField2, city, state, zip, country);
+		var flag = false; /* TODO: To avoid sending out the password */
+		if(flag === true) {
+			const mailOptions = {
+			  from: 'dmehta9@uncc.edu', // sender address
+			  to: email, // list of receivers
+			  subject: 'Successfully Registerd ' + firstName, // Subject line
+			  html: '<h1><p>Congratulations for your first step.</p></h1><h4>As a First Sign up to our website we give you 25 points to start your swapping journey</h4>'// plain text body
+			};
+
+			transporter.sendMail(mailOptions, function (err, info) {
+			   if(err)
+			     console.log(err)
+			   else
+			     console.log(info);
+			});
+		}
 		res.render('login', {
 			welcome: 'Not signed in.',
 			sessionStatus: false,

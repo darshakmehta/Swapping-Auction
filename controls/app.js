@@ -41,13 +41,14 @@ app.get('/', (req, res) => {
 	if(req.session.theUser === undefined) {
 		res.render('index', {
 			welcome: 'Not signed in.',
-			sessionStatus: false
-
+			sessionStatus: false,
+			name: 'Anonymous'
 		});
 	} else {
 		res.render('index', {
 			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-			sessionStatus: true
+			sessionStatus: true,
+			name: req.session.theUser.firstName
 		});
 	}
 });
@@ -285,7 +286,8 @@ app.post('/confirmswap', urlencodedParser, async (req, res) => {
 	if(req.session === undefined) {
 		res.render('index', {
 			welcome: 'Not signed in.',
-			sessionStatus: false
+			sessionStatus: false,
+			name: 'Anonymous'
 		});
 	} else {
 		offer.addOffer(req.body.userId, req.body.swapUserId, req.body.userItemCode, req.body.swapUserItemCode, "pending", "0");

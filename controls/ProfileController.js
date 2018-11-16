@@ -95,7 +95,8 @@ app.get('myItems/:action', (req, res) => {
 	} else {
 		res.render('index', {
 			welcome: 'Not signed in.',
-			sessionStatus: false
+			sessionStatus: false,
+			name: 'Anonymous'
 		});
 	}
 });
@@ -307,7 +308,8 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 		req.session.currentProfile = undefined;
 		res.render('index', {
 			welcome: 'Not signed in.',
-			sessionStatus: false
+			sessionStatus: false,
+			name: 'Anonymous'
 		});
 	}
 });

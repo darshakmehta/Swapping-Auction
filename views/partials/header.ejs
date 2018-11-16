@@ -1,14 +1,21 @@
 <!-- Header - Site Branding / Context Information -->
-<header>
-	<div class="header">
-		<!--  Placeholder for Login name -->
-		<span class="login-info"> <%= welcome %> </span>
-		<!--  Logo - Primary Branding -->
-		<div class="logo">
-			<a href="/" > <img class="logo-img" src = "/resources/images/logo.png" alt = "Swapping with Auction" /></a>
+<header class="container-fluid header">
+	<div class="row">
+		
+		<div class="col-6 col-md-3 col-lg-2">
+			<!--  Logo - Primary Branding -->
+			<div class="logo">
+				<a href="/" > <img class="logo-img" src = "/resources/images/logo2.png" alt = "Swapping with Auction" /></a>
+			</div>
 		</div>
-		<div class="tagline-header">
-			<h1 class="tagline"> Sell your old stuff. Get new stuff you LOVE</h1>
-	</div>
+		<div class="col-6 col-md-9 col-lg-8 align-self-center">
+			<div class="tagline-header">
+				<h1 class="tagline secondary-text-color"> Sell your old stuff. Get new stuff you LOVE</h1>
+			</div>
+		</div>
+		<div class="col-12 col-lg-2 align-self-end">
+			<!--  Placeholder for Login name -->
+			<span class="login-info primary-text-color mr-1"> <%= welcome %> </span>
+		</div>
 	</div>
 </header>

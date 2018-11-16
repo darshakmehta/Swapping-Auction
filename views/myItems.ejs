@@ -26,64 +26,67 @@
 
   	<% include partials/header.ejs %>
 	<% include partials/user-navigation.ejs %>
-	<% include partials/site-navigation.ejs %>	
+	<div class="content-container container-fluid">
+		<% include partials/site-navigation.ejs %>	
 
-	<!-- Main Content Area -->
-	<section>
-		<div class="content ">
-			<!--  Breadcrumb -->
-			<h3 class="inline-header">Home > My Catalog</h3>
-			<% if(itemMsg === false) {%>
-				<h2> <%= itemsMsg %> </h2>
-			<%}else{%>
-			<article>
-				<!-- Details of myItems -->
-				<h1 class="text-style"> Darshak's Catalog for Swapping </h1>
-				<div class="item-content">
+		<!-- Main Content Area -->
+		<section class="col-lg-9">
+			<div class="content ">
+				<!--  Breadcrumb -->
+				<h3 class="inline-header">Home > My Catalog</h3>
+				<% if(itemMsg === false) {%>
+					<h2> <%= itemsMsg %> </h2>
+				<%}else{%>
+				<article>
+					<!-- Details of myItems -->
+					<h1 class="text-style"> Darshak's Catalog for Swapping </h1>
+					<div class="item-content">
 
-					<table>
-						<thead class="border-bottom-style">
-							<tr>
-								<th>Item</th>
-								<th>Category</th>
-								<th>My Rating</th>
-								<th>Swapped</th>
-								<th></th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody class="border-bottom-style">
-								<% Object.keys(userItemList).forEach((item, index) => { %>
-									<tr>
-									<td><a href="/item?itemCode=<%= userItemList[item].code %>"><%= userItemList[item].name %></a></td>
-									<td><a href= "/subCategories?catalogCategory=<%= userItemList[item].category %>"><%= userItemList[item].category %></a></td>
-									<td>
-										<% for(var i = 0; i < userItemList[item].rating; i++) {%>
-											<i class="fas fa-star">
+						<table>
+							<thead class="border-bottom-style">
+								<tr>
+									<th>Item</th>
+									<th>Category</th>
+									<th>My Rating</th>
+									<th>Swapped</th>
+									<th></th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody class="border-bottom-style">
+									<% Object.keys(userItemList).forEach((item, index) => { %>
+										<tr>
+										<td><a href="/item?itemCode=<%= userItemList[item].code %>"><%= userItemList[item].name %></a></td>
+										<td><a href= "/subCategories?catalogCategory=<%= userItemList[item].category %>"><%= userItemList[item].category %></a></td>
+										<td>
+											<% for(var i = 0; i < userItemList[item].rating; i++) {%>
+												<i class="fas fa-star">
+											<%}%>
+										</td>
+										<% if(userItemList[item].status === 'available') {%>
+											<td></td>
+										<%}else if(userItemList[item].status === 'pending'){%>
+										<td> <i class="fas fa-exchange-alt"></i></td>
+										<%} else if(userItemList[item].status === 'swapped'){%>
+											<td> <i class="fas fa-check"></i></td>
 										<%}%>
-									</td>
-									<% if(userItemList[item].status === 'available') {%>
-										<td></td>
-									<%}else if(userItemList[item].status === 'pending'){%>
-									<td> <i class="fas fa-exchange-alt"></i></td>
-									<%} else if(userItemList[item].status === 'swapped'){%>
-										<td> <i class="fas fa-check"></i></td>
-									<%}%>
-									<td> <a href="/myItems/update/<%= userItemList[item].code %>"><div class="btn-style"> Update </div></a> </td>
-									<td> <a href="/myItems/delete/<%= userItemList[item].code %>"><div class="btn-style"> Delete </div></a> </td>
-								</tr>	
-								<% }) %>
-							</tr>
-							</tbody>
-					</table>
-					<div class="myItems-legend">
-						<p> Legend: <i class="fas fa-exchange-alt"></i> Swap offer available <i class="fas fa-check"> </i> already swapped</p>
+										<td> <a class="a-disabled" href="/myItems/update/<%= userItemList[item].code %>"><button class="btn a-hover-color btn-style"> Update </button></a> </btn td>
+										<td> <a class="a-disabled" href="/myItems/delete/<%= userItemList[item].code %>"><button class="btn a-hover-color btn-style"> Delete </button></a> </btn td>
+									</tr>	
+									<% }) %>
+								</tr>
+								</tbody>
+						</table>
+						<div class="myItems-legend">
+							<p> Legend: <i class="fas fa-exchange-alt"></i> Swap offer available <i class="fas fa-check"> </i> already swapped</p>
+						</div>
 					</div>
-				</div>
-			</article>
-			<%}%>
-		</div>
-	</section>
+				</article>
+				<%}%>
+			</div>
+		</section>
+		</div> <!-- Row ends -->
+	</div> <!-- Container ends -->
 
 	<% include partials/footer.ejs %>
 	

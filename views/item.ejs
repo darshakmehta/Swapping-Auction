@@ -25,64 +25,67 @@
 
   	<% include partials/header.ejs %>
 	<% include partials/user-navigation.ejs %>
-	<% include partials/site-navigation.ejs %>	
-  	
-  	<!-- Main Content Area -->
-	<section>
-		<div class="content ">
-			<!--  Breadcrumb -->
-			<h3 class="inline-header">Home > Categories > Item</h3>
-			<!-- Details about Items -->
-			<article>
+	<div class="content-container container-fluid">
+		<% include partials/site-navigation.ejs %>	
+	  	
+		  	<!-- Main Content Area -->
+			<section class="col-lg-9">
+				<div class="content ">
+					<!--  Breadcrumb -->
+					<h3 class="inline-header">Home > Categories > Item</h3>
+					<!-- Details about Items -->
+					<article>
 
-				<div class="page-info">
-					<!-- Picture of item from database -->
-					<img class="item-img-style float-left" src = "<%= item.image_url %>" alt = "item-image"/>
+						<div class="page-info">
+							<!-- Picture of item from database -->
+							<img class="item-img-style float-left" src = "<%= item.image_url %>" alt = "item-image"/>
+						</div>
+						<div class="float-left">
+							<!-- Name of the item from database -->
+							<div class="item-name"> <%= item.name %> </div>
+							<!-- <div class="item-author"> by Peter Jackson </div> -->
+
+							<!-- Button to add the item to items for swap list 
+							Swap it button is to request a swap for an item
+							-->
+							<% if(itemStatus === 'pending') {
+								if(swapIt === "yes") {%>
+									<h2> You have a swap offer for this item</h2>
+									<a class="btn-style-mySwap" href= "/mySwaps"> See the offer </a>
+								<%} else {%>
+									<!-- TODO: <h2> You have received an offer for this item </h2> -->
+									<h2> You have offered this item </h2>
+									<a class="btn-style-mySwap" href= "/mySwaps"> See the offer </a>
+								<%}%>
+							<%} else if(itemStatus === 'swapped'){%>
+								<h2> You've swapped this item </h2>
+							<%}  else {%>
+								<%if(swapIt === "yes"){%>
+								<a class="a-disabled" href="/myItems/offer/<%= item.code%>"><button class="btn swap btn-style"><i class="fas fa-exchange-alt fa-swap-item"></i><span class="text-color"> Swap it</span></button></a>
+							<%}}%>
+
+							<!-- Rate the item --> 
+							<a class="a-disabled" href="#"><button class="btn rate btn-style rate-disabled" disabled aria-disabled="true" ><i class="fas fa-star fa-star-item"></i><span class="text-color"> Rate it</span></button></a>
+						</div>
+
+						<div class="item-content float-right">
+							<!-- Item detailed description from the database -->
+							<%= item.description %>
+						</div>
+
+						<!-- Category of item -->
+						<div class="text-style2">  Category: 
+							<!-- Back Link to return to the catalog and category displayed based on database -->
+							<a href = "/subCategories?catalogCategory=<%= item.category %>" > <%= item.category %> </a>
+						</div>
+
+						<!-- Average Rating of item based on database -->
+						<div class="text-style2"> Average Rating: <%= item.rating %></div>
+					</article>
 				</div>
-				<div class="float-left">
-					<!-- Name of the item from database -->
-					<div class="item-name"> <%= item.name %> </div>
-					<!-- <div class="item-author"> by Peter Jackson </div> -->
-
-					<!-- Button to add the item to items for swap list 
-					Swap it button is to request a swap for an item
-					-->
-					<% if(itemStatus === 'pending') {
-						if(swapIt === "yes") {%>
-							<h2> You have a swap offer for this item</h2>
-							<a class="btn-style-mySwap" href= "/mySwaps"> See the offer </a>
-						<%} else {%>
-							<!-- TODO: <h2> You have received an offer for this item </h2> -->
-							<h2> You have offered this item </h2>
-							<a class="btn-style-mySwap" href= "/mySwaps"> See the offer </a>
-						<%}%>
-					<%} else if(itemStatus === 'swapped'){%>
-						<h2> You've swapped this item </h2>
-					<%}  else {%>
-						<%if(swapIt === "yes"){%>
-						<a href="/myItems/offer/<%= item.code%>"><div class="swap btn-style"><i class="fas fa-exchange-alt fa-swap-item"></i><span class="text-color"> Swap it</span></div></a>
-					<%}}%>
-
-					<!-- Rate the item --> 
-					<a href="#"><div class="rate btn-style"><i class="fas fa-star fa-star-item"></i><span class="text-color"> Rate it</span></div></a>
-				</div>
-
-				<div class="item-content float-right">
-					<!-- Item detailed description from the database -->
-					<%= item.description %>
-				</div>
-
-				<!-- Category of item -->
-				<div class="text-style2">  Category: 
-					<!-- Back Link to return to the catalog and category displayed based on database -->
-					<a href = "/subCategories?catalogCategory=<%= item.category %>" > <%= item.category %> </a>
-				</div>
-
-				<!-- Average Rating of item based on database -->
-				<div class="text-style2"> Average Rating: <%= item.rating %></div>
-			</article>
-		</div>
-	</section>
+			</section>
+		</div> <!-- Row ends -->
+	</div> <!-- Container ends -->
 
 	<% include partials/footer.ejs %>
 

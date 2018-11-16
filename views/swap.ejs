@@ -25,54 +25,57 @@
 
   	<% include partials/header.ejs %>
 	<% include partials/user-navigation.ejs %>
-	<% include partials/site-navigation.ejs %>	
+	<div class="content-container container-fluid">
+		<% include partials/site-navigation.ejs %>	
 
-	<!-- Main Content Area -->
-	<section class="my-offer-styling">
-		<div class="content">
-			<!--  Breadcrumb -->
-			<h3 class="inline-header">Home > Swap Items</h3> <!-- Swap ___ Category Name ___ -->
-			<h2 class="inline-header-swap"> Swap this item </h2>
-			<!-- Interested item to swap -->
-			<article>
-				<div class="text-style2"> Category: <%= item.category %></div>
-				<div class="text-style2"> Average Rating: <%= item.rating %></div>
-				<div class="page-info">
-					<img class="item-img-style float-left" src = "<%= item.image_url %>" alt = "item-image"/>
-				</div>
-				<div class="float-left">
-					<div class="item-name"> <%= item.name %> </div>
-					<!-- <div class="item-author"> by Peter Jackson </div> -->
-					<div class="item-content-swap"> <b> <%= item.description %> </b></div>
-				</div>
-				<div class ="swap-options-header clear-float ">
-					<% if(flag === false) {%>
-						<h2> <%= message %> </h2>
-					<%} else {%>
-					<h2> Select an item from your available swaps </h2>
-					<div class = "swap-options">
-						<form action = "/confirmswap" method = "POST">
-							<!-- List of available UserItems -->
-							<ul>
-								<input type = "hidden" name="swapUserId" value="<%= item.userId %>">
-								<input type = "hidden" name="swapUserItemCode" value="<%= item.code %>"> 
-								<input type = "hidden" name="userId" value="<%= availableList[0].userId %>">
-								<% Object.keys(availableList).forEach((item) => {%>
-									<li class="swap-options-list">
-										<input type="radio" name ="userItemCode" value="<%= availableList[item].code %>"> <span class ="swap-options-item"><a href="/item?itemCode=<%= availableList[item].code %>"> <%= availableList[item].name %></a></span>
-									</li>
-								<%});%>
-							</ul>
-							<!-- Swap your available item for interested item -->
-							<input class="btn-style-mySwap" type="submit" value="Confirm Swap">
-						</form>
+		<!-- Main Content Area -->
+		<section class="col-lg-9 my-offer-styling">
+			<div class="content">
+				<!--  Breadcrumb -->
+				<h3 class="inline-header">Home > Swap Items</h3> <!-- Swap ___ Category Name ___ -->
+				<h2 class="inline-header-swap"> Swap this item </h2>
+				<!-- Interested item to swap -->
+				<article>
+					<div class="text-style2"> Category: <%= item.category %></div>
+					<div class="text-style2"> Average Rating: <%= item.rating %></div>
+					<div class="page-info">
+						<img class="item-img-style float-left" src = "<%= item.image_url %>" alt = "item-image"/>
 					</div>
-					<%}%>
-				</div>
-				
-			</article>
-		</div>
-	</section>
+					<div class="float-left">
+						<div class="item-name"> <%= item.name %> </div>
+						<!-- <div class="item-author"> by Peter Jackson </div> -->
+						<div class="item-content-swap"> <b> <%= item.description %> </b></div>
+					</div>
+					<div class ="swap-options-header clear-float ">
+						<% if(flag === false) {%>
+							<h2> <%= message %> </h2>
+						<%} else {%>
+						<h2> Select an item from your available swaps </h2>
+						<div class = "swap-options">
+							<form action = "/confirmswap" method = "POST">
+								<!-- List of available UserItems -->
+								<ul>
+									<input type = "hidden" name="swapUserId" value="<%= item.userId %>">
+									<input type = "hidden" name="swapUserItemCode" value="<%= item.code %>"> 
+									<input type = "hidden" name="userId" value="<%= availableList[0].userId %>">
+									<% Object.keys(availableList).forEach((item) => {%>
+										<li class="swap-options-list">
+											<input type="radio" name ="userItemCode" value="<%= availableList[item].code %>"> <span class ="swap-options-item"><a href="/item?itemCode=<%= availableList[item].code %>"> <%= availableList[item].name %></a></span>
+										</li>
+									<%});%>
+								</ul>
+								<!-- Swap your available item for interested item -->
+								<input class="btn-style-mySwap" type="submit" value="Confirm Swap">
+							</form>
+						</div>
+						<%}%>
+					</div>
+					
+				</article>
+			</div>
+		</section>
+		</div> <!-- Row ends -->
+	</div> <!-- Container ends -->
 
 	<% include partials/footer.ejs %>
 

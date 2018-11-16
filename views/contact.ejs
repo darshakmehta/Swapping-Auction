@@ -23,26 +23,28 @@
 
   <body>
 
-  	<% include partials/header.ejs %>
+  <% include partials/header.ejs %>
 	<% include partials/user-navigation.ejs %> 	
-	<% include partials/site-navigation.ejs %>	
+  <div class="content-container container-fluid">
+  	<% include partials/site-navigation.ejs %>	
 
-	<!-- Main Content Area -->
-	<section>
-		<div class="content">
-			<!--  Breadcrumb -->
-			<h3 class="inline-header">Contact</h3>
-			<!-- Contact Details for the site -->
-			<article>
-				<div class="page-info">
-					<p> Contact us @7042362921 </p>
-					<p>	You can email your feedback at dmehta9@uncc.edu</p>
-					<p> Love to hear from you. </p>
-				</div>
-			</article>
-		</div>
-	</section>
-
+  	<!-- Main Content Area -->
+  	<section class="col-lg-9">
+  		<div class="content">
+  			<!--  Breadcrumb -->
+  			<h3 class="inline-header">Contact</h3>
+  			<!-- Contact Details for the site -->
+  			<article>
+  				<div class="page-info">
+  					<p> Contact us @7042362921 </p>
+  					<p>	You can email your feedback at dmehta9@uncc.edu</p>
+  					<p> Love to hear from you. </p>
+  				</div>
+  			</article>
+  		</div>
+  	</section>
+    </div> <!-- Row ends -->
+  </div> <!-- Container ends -->
 	<% include partials/footer.ejs %>
 	
 	<!-- Optional JavaScript -->

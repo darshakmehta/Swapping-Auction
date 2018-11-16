@@ -47,13 +47,13 @@ let items = [];
 app.get('/', (req, res) => {
 	if(req.session.theUser === undefined) {
 		res.render('index', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false,
 			name: 'Anonymous'
 		});
 	} else {
 		res.render('index', {
-			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			welcome: req.session.theUser.firstName,
 			sessionStatus: true,
 			name: req.session.theUser.firstName
 		});
@@ -86,12 +86,12 @@ app.get('/userItems', (req, res) => {
 app.get('/categories', (req, res) => {
 	if(req.session.theUser === undefined) {
 		res.render('categories', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false
 		});
 	} else {
 		res.render('categories', {
-			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			welcome: req.session.theUser.firstName,
 			sessionStatus: true
 		});
 	}
@@ -107,14 +107,14 @@ app.get('/subCategories', async (req, res) => {
 				/* Dispatch list of sub categories of type catalogCategory */
 				/* If the user is not defined display the complete catalog */
 				res.render('subCategories', {
-				welcome: 'Not signed in.',
+				welcome: 'notSignedIn',
 				catalogCategory: req.query.catalogCategory,
 				items: item,
 				sessionStatus: false
 				});
 			} else {//If invalid catalogCategory, dispatch catalog as if no category had been provided
 				res.render('categories', {
-					welcome: 'Not signed in.',
+					welcome: 'notSignedIn',
 					sessionStatus: false
 				});
 			}
@@ -125,14 +125,14 @@ app.get('/subCategories', async (req, res) => {
 		if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
 		/* Dispatch filtered Item List */
 		res.render('subCategories', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			catalogCategory: req.query.catalogCategory,
 			items: item,
 			sessionStatus: true
 		});
 		} else { //If invalid catalogCategory, dispatch catalog as if no category had been provided
 			res.render('categories', {
-				welcome: 'Not signed in.',
+				welcome: 'notSignedIn',
 				sessionStatus: true
 			});
 		}
@@ -150,7 +150,7 @@ app.get('/item', async (req, res) => {
 				var item = await userItem.getItem(req.query.itemCode);
 				/* Render individual Item */
 				res.render('item', {
-					welcome: 'Not signed in.',
+					welcome: 'notSignedIn',
 					item: item,
 					sessionStatus: false,
 					itemStatus: 'available',
@@ -158,13 +158,13 @@ app.get('/item', async (req, res) => {
 				});
 			} else { //If item code is invalid, dispatch catalog as if no code had been provided
 				res.render('categories', {
-					welcome: 'Not signed in.',
+					welcome: 'notSignedIn',
 					sessionStatus: false
 				});
 			}
 		} else { //If no itemCode parameter is present, dispatch catalog
 			res.render('categories', {
-				welcome: 'Not signed in.',
+				welcome: 'notSignedIn',
 				sessionStatus: false
 			});
 		}
@@ -185,7 +185,7 @@ app.get('/item', async (req, res) => {
 					
 				}*/
 				res.render('item', {
-					welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+					welcome: req.session.theUser.firstName,
 					item,
 					sessionStatus: true,
 					itemStatus: itemStatus,
@@ -193,13 +193,13 @@ app.get('/item', async (req, res) => {
 				});
 			} else {
 				res.render('categories', {
-					welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+					welcome: req.session.theUser.firstName,
 					sessionStatus: true
 				});
 			}
 		} else { 
 			res.render('categories', {
-				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+				welcome: req.session.theUser.firstName,
 				sessionStatus: true
 			});
 			
@@ -211,13 +211,13 @@ app.get('/item', async (req, res) => {
 app.get('/contact', (req, res) => {
 	if(req.session.theUser === undefined) {
 		res.render('contact', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false
 
 		});
 	} else {
 		res.render('contact', {
-			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			welcome: req.session.theUser.firstName,
 			sessionStatus: true
 		});
 	}
@@ -227,12 +227,12 @@ app.get('/contact', (req, res) => {
 app.get('/about', (req, res) => {
 	if(req.session.theUser === undefined) {
 		res.render('about', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false
 		});
 	} else {
 		res.render('about', {
-			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			welcome: req.session.theUser.firstName,
 			sessionStatus: true
 		});
 	}
@@ -241,12 +241,11 @@ app.get('/about', (req, res) => {
 /* Get My Swaps Router*/
 app.get('/mySwaps', async (req, res) => {
 	if(req.session.theUser === undefined) {
-		res.render('mySwaps', {
-			welcome: 'Not signed in.',
+		res.render('login', {
+			welcome: 'notSignedIn',
 			sessionStatus: false,
-			swapList: {},
-			name: 'My',
-			actionList: []
+			name: 'Anonymous',
+			error: 'null'
 		});
 	} else {
 		var offerList = await offer.getPendingOffers();
@@ -267,7 +266,7 @@ app.get('/mySwaps', async (req, res) => {
 				}
 				if((count - 1) == offer) {
 					res.render('mySwaps', {
-						welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+						welcome: req.session.theUser.firstName,
 						swapList: userItemList,
 						swapItemList: swapUserItemList,
 						sessionStatus: true,
@@ -278,7 +277,7 @@ app.get('/mySwaps', async (req, res) => {
 			});		
 		} else {
 			res.render('mySwaps', {
-				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+				welcome: req.session.theUser.firstName,
 				sessionStatus: true,
 				swapList: {},
 				name: 'My',
@@ -292,7 +291,7 @@ app.get('/mySwaps', async (req, res) => {
 app.post('/confirmswap', urlencodedParser, async (req, res) => {
 	if(req.session === undefined) {
 		res.render('index', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false,
 			name: 'Anonymous'
 		});
@@ -302,7 +301,7 @@ app.post('/confirmswap', urlencodedParser, async (req, res) => {
 		await userItem.updateItemStatus(req.body.swapUserItemCode, "pending");
 		req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 		res.render('myItems', {
-          	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+          	welcome: req.session.theUser.firstName,
 			itemMsg : true,
           	userItemList:req.session.currentProfile.userItems,
           	sessionStatus: true
@@ -313,14 +312,14 @@ app.post('/confirmswap', urlencodedParser, async (req, res) => {
 app.get('/login', (req, res) => {
 	if(req.session.theUser === undefined) {
 		res.render('login', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false,
 			name: 'Anonymous',
 			error: 'null'
 		});
 	} else {
 		res.render('myItems', {
-			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			welcome: req.session.theUser.firstName,
 			itemMsg : true,
 			userItemList: req.session.currentProfile.userItems,
 			sessionStatus: true
@@ -331,13 +330,13 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
 	if(req.session.theUser === undefined) {
 		res.render('register', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false,
 			name: 'Anonymous'
 		});
 	} else {
 		res.render('myItems', {
-			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			welcome: req.session.theUser.firstName,
 			itemMsg : true,
 			userItemList: req.session.currentProfile.userItems,
 			sessionStatus: true
@@ -350,14 +349,14 @@ app.post('/login', urlencodedParser, async (req, res) => {
 		if(req.session.theUser === undefined) {
 			if(req.body.username === '') {
 				res.render('login', {
-					welcome: 'Not signed in.',
+					welcome: 'notSignedIn',
 					sessionStatus: false,
 					name: 'Anonymous',
 					error: 'username'
 				});
 			} else if(req.body.password === '') {
 				res.render('login', {
-					welcome: 'Not signed in.',
+					welcome: 'notSignedIn',
 					sessionStatus: false,
 					name: 'Anonymous',
 					error: 'password',
@@ -369,7 +368,7 @@ app.post('/login', urlencodedParser, async (req, res) => {
 					req.session.theUser = undefined; /*  clear the session*/
 					req.session.currentProfile = undefined; /*  clear the UserProfile*/
 					res.render('login', {
-						welcome: 'Not signed in.',
+						welcome: 'notSignedIn',
 						sessionStatus: false,
 						name: 'Anonymous',
 						error: 'incorrect'
@@ -381,14 +380,14 @@ app.post('/login', urlencodedParser, async (req, res) => {
 					/* Check if user has any items if it does not have any item dispatch with message as "There are no items to display" */
 					if(req.session.currentProfile.userItems === undefined || req.session.currentProfile.userItems.length === 0) {
 						res.render('myItems', {
-							welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+							welcome: req.session.theUser.firstName,
 							itemMsg: false,
 							itemsMsg: 'There are no items to display',
 							sessionStatus: true
 						});
 					} else { /* Dispatch to Profile view with user Items added on currentProfile*/
 						res.render('myItems', {
-							welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+							welcome: req.session.theUser.firstName,
 							itemMsg : true,
 							userItemList: req.session.currentProfile.userItems,
 							sessionStatus: true
@@ -398,7 +397,7 @@ app.post('/login', urlencodedParser, async (req, res) => {
 			}
 		} else {		
 			res.render('myItems', {
-				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+				welcome: req.session.theUser.firstName,
 				itemMsg : true,
 				userItemList: req.session.currentProfile.userItems,
 				sessionStatus: true
@@ -406,7 +405,7 @@ app.post('/login', urlencodedParser, async (req, res) => {
 		}	
 	} else {
 		res.render('login', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false,
 			name: 'Anonymous',
 			error: 'null'
@@ -446,7 +445,7 @@ app.post('/register', urlencodedParser, async (req, res) => {
 			});
 		}
 		res.render('login', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false,
 			name: 'Anonymous',
 			error:'success',
@@ -454,7 +453,7 @@ app.post('/register', urlencodedParser, async (req, res) => {
 		});
 	} else {
 		res.render('myItems', {
-			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			welcome: req.session.theUser.firstName,
 			itemMsg : true,
 			userItemList: req.session.currentProfile.userItems,
 			sessionStatus: true

@@ -15,7 +15,11 @@
 		</div>
 		<div class="col-12 col-lg-2 align-self-end">
 			<!--  Placeholder for Login name -->
-			<span class="login-info primary-text-color mr-1"> <%= welcome %> </span>
+			<% if(welcome === 'notSignedIn'){ %>
+				<span class="login-info primary-text-color mr-1"> Not Signed in </span>
+			<%} else {%>
+				<span class="login-info primary-text-color mr-1"> Welcome <%= welcome %>!</span>
+			<%}%>
 		</div>
 	</div>
 </header>

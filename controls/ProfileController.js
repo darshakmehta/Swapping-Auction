@@ -35,14 +35,14 @@ app.get('/myItems', async (req, res) => {
 	if(req.session.theUser === undefined) { /* Check the session for a current user, using the attribute "theUser" */
 		/* Now user is the current placeholder for having the user go through all the steps of entering their details or logging in to their account */
 		res.render('login', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false,
 			name: 'Anonymous',
 			error: 'null'
 		});
 	} else { /* if there is a user exist in the session on "theUser" disptach to Profile view with user Items*/
 		res.render('myItems', {
-			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			welcome: req.session.theUser.firstName,
 			itemMsg : true,
 			userItemList: req.session.currentProfile.userItems,
 			sessionStatus: true
@@ -55,7 +55,7 @@ app.get('/signout', (req, res) => {
 	req.session.theUser = undefined; /*  clear the session*/
 	req.session.currentProfile = undefined; /*  clear the UserProfile*/
 	res.render('categories', { /* dispatch to the categories view*/
-		welcome: 'Not signed in.',
+		welcome: 'notSignedIn',
 		sessionStatus: false
 	});
 });
@@ -65,14 +65,14 @@ app.get('myItems/:action', (req, res) => {
 	if(req.session.theUser !== undefined) {
 		if(action.includes(req.params.action)) {
 			res.render('myItems', {
-				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+				welcome: req.session.theUser.firstName,
 				itemMsg : true,
 				userItemList: req.session.currentProfile.userItems,
 				sessionStatus: true
 			});
 		} else {
 			res.render('myItems', {
-				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+				welcome: req.session.theUser.firstName,
 				itemMsg : true,
 				userItemList: req.session.currentProfile.userItems,
 				sessionStatus: true
@@ -80,7 +80,7 @@ app.get('myItems/:action', (req, res) => {
 		}
 	} else {
 		res.render('index', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false,
 			name: 'Anonymous'
 		});
@@ -118,7 +118,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 					}
 					/* Dispatch to mySwaps for user to take action - accept/reject/withdraw */
 					res.render('mySwaps', {
-						welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+						welcome: req.session.theUser.firstName,
 						swapList,
 						swapItemList,
 						sessionStatus: true, /* user logged in or logged out*/
@@ -130,7 +130,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 					/* Current placeholder for this stage of implementation we have choose the user item to display on the individual item view {We could choose swap item} */
 					/* Dispatch to individual item view */
 					res.render('item', {
-						welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+						welcome: req.session.theUser.firstName,
 						item,
 						sessionStatus: true,
 						itemStatus: 'available', /* different message to user based on status*/
@@ -140,7 +140,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 					userItemList = await userItem.getItem(req.params.theItem);
 					/* Dispatch to individual item view */
 					res.render('item', {
-						welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+						welcome: req.session.theUser.firstName,
 						item: userItemList,
 						sessionStatus: true,
 						itemStatus: 'swapped' /* different message to user based on status*/
@@ -153,7 +153,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				/* TODO: if this is a new user and no items are added to their profile this page should be empty (display a message indicating there are no items to display */
 				/* Current situation : User is sign out, also TODO: check if session is cleared */
 				res.render('myItems', {
-					welcome: 'Not signed in',
+					welcome: 'notSignedIn',
 					itemMsg : true,
 					sessionStatus: false
 				});
@@ -171,7 +171,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 	                  await userItem.updateItemStatus(offerItem.userItemCode, "available");
 		              req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 	                  res.render('myItems',{
-	                  	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+	                  	welcome: req.session.theUser.firstName,
 						itemMsg : true,
 	                  	userItemList:req.session.currentProfile.userItems,
 	                  	sessionStatus: true,
@@ -183,7 +183,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 	                  	await userItem.updateItemStatus(offerItem.swapUserItemCode, "available");
 	                	req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 		                res.render('myItems',{
-		                  	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+		                  	welcome: req.session.theUser.firstName,
 							itemMsg : true,
 		                  	userItemList:req.session.currentProfile.userItems,
 		                  	sessionStatus: true,
@@ -195,7 +195,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 			            await userItem.updateItemStatus(offerItem.swapUserItemCode, "swapped");
 		                req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 		                  res.render('myItems',{
-		                  	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+		                  	welcome: req.session.theUser.firstName,
 							itemMsg : true,
 		                  	userItemList:req.session.currentProfile.userItems,
 		                  	sessionStatus: true
@@ -203,7 +203,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 	                }
 				} else {
 					res.render('myItems', {
-						welcome: 'Not signed in',
+						welcome: 'notSignedIn',
 						itemMsg : true,
 						sessionStatus: false
 					});
@@ -217,7 +217,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				await userItem.deleteItem(req.params.theItem);
 				req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 				res.render('myItems', {
-                  	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+                  	welcome: req.session.theUser.firstName,
 					itemMsg : true,
                   	userItemList:req.session.currentProfile.userItems,
                   	sessionStatus: true
@@ -227,7 +227,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				/* TODO: if this is a new user and no items are added to their profile this page should be empty (display a message indicating there are no items to display */
 				/* Current situation : User is sign out, also TODO: check if session is cleared */
 				res.render('myItems', {
-					welcome: 'Not signed in',
+					welcome: 'notSignedIn',
 					itemMsg : true,
 					sessionStatus: false
 				});
@@ -250,7 +250,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 					/* If there are available items, add all the available items to the request and dispatch to the swap item view (swap.ejs) */
 					var item = await userItem.getItem(req.params.theItem);
 					res.render('swap', {
-						welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+						welcome: req.session.theUser.firstName,
 						availableList,
 						flag: true,
 						sessionStatus: true,
@@ -261,7 +261,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 					var item = await userItem.getItem(req.params.theItem);
 					res.render('swap', {
 						message: '    Sorry, you do not have any available items for swapping. Please add more items to start swapping again!',
-						welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+						welcome: req.session.theUser.firstName,
 						flag: false,
 						sessionStatus: true,
 						item
@@ -272,7 +272,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				/* TODO: if this is a new user and no items are added to their profile this page should be empty (display a message indicating there are no items to display */
 				/* Current situation : User is sign out, also TODO: check if session is cleared */
 				res.render('myItems', {
-					welcome: 'Not signed in',
+					welcome: 'notSignedIn',
 					itemMsg : true,
 					sessionStatus: false
 				});
@@ -281,7 +281,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 			/* If the item does not validate or does not exist in the user profile disptach to the profile view */
 			/* TODO: if this is a new user and no items are added to their profile this page should be empty (display a message indicating there are no items to display */
 			res.render('myItems', {
-				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+				welcome: req.session.theUser.firstName,
 				itemMsg : true,
 				userItemList: req.session.currentProfile.userItems,
 				sessionStatus: true
@@ -293,7 +293,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 		req.session.theUser = undefined;
 		req.session.currentProfile = undefined;
 		res.render('index', {
-			welcome: 'Not signed in.',
+			welcome: 'notSignedIn',
 			sessionStatus: false,
 			name: 'Anonymous'
 		});

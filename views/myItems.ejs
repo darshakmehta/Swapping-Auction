@@ -30,7 +30,7 @@
 		<% include partials/site-navigation.ejs %>	
 
 		<!-- Main Content Area -->
-		<section class="col-lg-9">
+		<section class="col-lg-10">
 			<div class="content ">
 				<div class="inline-header">
 	              <!--  Breadcrumb -->
@@ -42,11 +42,11 @@
 	              </nav>
 	          	</div>
 				<% if(itemMsg === false) {%>
-					<h2> <%= itemsMsg %> </h2>
+					<h2 class="badge badge-info itemMsg"> <%= itemsMsg %> </h2>
 				<%}else{%>
 				<article>
 					<!-- Details of myItems -->
-					<h1 class="text-style"> Darshak's Catalog for Swapping </h1>
+					<h1 class="text-style">  Catalog for Swapping </h1>
 					<div class="item-content">
 
 						<table>

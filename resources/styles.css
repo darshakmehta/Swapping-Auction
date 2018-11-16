@@ -22,9 +22,6 @@ body {
 	background-color: #FFC107;
 }
 .header {
-	/*height: 110px;*/
-	/*border: 1px solid #BDBDBD;*/
-	/*border-radius: 0;*/
 	background-color: #FFC107;
 	box-shadow: 0 4px 6px rgba(0,0,0,.2);
 }
@@ -35,13 +32,10 @@ body {
 
 .login-info {
 	float: right;
-	/*margin: 0;
-	padding: 5px 10px 0px 5px;*/
 }
 
 .logo {
 	padding-top: 20px;
-	/*float: left;*/	
 }
 
 .logo .logo-img {
@@ -63,12 +57,10 @@ a:hover {
 }
 
 .user-navbar {
-	/*border: 1px solid #BDBDBD;*/
 	padding: 0px 10px 0 10px;
 	text-align: center;
 	font-size: 30px;
 	font-family: 'Lato';
-	/*background-color: #FFC107;*/
 	box-shadow: 0 4px 6px rgba(0,0,0,.2);
 
 }
@@ -76,7 +68,6 @@ a:hover {
 .tagline {
 	text-align: center;	
 	font-family: 'Lato';
-	/*margin-top: 65px;*/
 }
 
 
@@ -84,13 +75,6 @@ aside {
 	width: 20%;
 	float: left;
 	box-shadow: 0px 0px 39px rgb(0,0,0,0.2);
-	/*margin: 5px 0 0 0;*/
-}
-
-section {
-	/*float: right;
-	height: 490px;
-	width: 80%;*/
 }
 
 article {
@@ -98,9 +82,7 @@ article {
 }
 
 .sidebar {
-	/*border: 1px solid #BDBDBD;*/
 	height: 490px;
-	/*background-color: #FFC107;*/
 }
 
 .sidebar ul {
@@ -112,7 +94,6 @@ article {
 }
 
 .content {
-	/*border: 1px solid #BDBDBD;*/
 	height: 515px;
 	background-color: #FFECB3;
 	box-shadow: -4px 3px 6px rgb(0,0,0,0.2);
@@ -136,24 +117,11 @@ article {
 	font-size: 20px;
 }
 
-.content .inline-header {
-	/*padding: 10px 0 0 15px;
-	color: #757575;*/
-}
-
 .content-container {
-	/*height: 525px;*/
-	/*padding: 0;*/
 	margin-top: 4px;
 }
 .footer {
-	/*position: fixed;*/
-    /*left: 0;*/
-    /*bottom: 0;*/
-    /*width: 97.7%;*/
-    /*padding: 10px;*/
     margin: 5px 0 0 0;
-	/*border: 1px solid #BDBDBD;*/
 	box-shadow: 0px 0px 11px rgba(0,0,0,.2);
 }
 
@@ -227,7 +195,6 @@ article {
 }
 
 .swap, .rate {
-	/*display: block;*/
 	margin: 15px;
 }
 
@@ -256,15 +223,8 @@ table {
 	border-collapse: collapse;
 }
 
-thead {
-}
-
-tbody {
-}
-
 .border-bottom-style {
 	border-bottom: 3px solid #FFA000;
-
 }
 
 th {
@@ -286,17 +246,7 @@ td {
 }
 
 .btn-style {
-    /*padding: 6px 12px;*/
-    /*margin-bottom: 0;*/
     font-size: 14px;
-    /*font-weight: 400;*/
-    /*text-align: center;*/
-    /*white-space: nowrap;*/
-    /*vertical-align: middle;*/
-    /*cursor: pointer;*/
-    /*background-image: none;*/
-    /*border: 1px solid transparent;*/
-    /*text-decoration: none;*/
     color: #FFFFFF;
     background-color: #FFA000;
     border-color: #BDBDBD;
@@ -349,6 +299,10 @@ td {
 .text-style2 {
 	margin-left: 20px;
 	float: right;
+}
+
+.itemMsg {
+	font-size: 3rem;
 }
 
 /* Swap.ejs */

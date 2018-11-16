@@ -34,7 +34,9 @@ Domain: Content Swapping Domain
 
   Persistent Data Storage using MongoDB (NoSQL) with help of mongoose js
 
+# Stage 5
 
+  Secure Application - Implementing security measures to enhance the application robustness to security attacks.
 
 # Testing
   Validation of HTML5 pages by following tool: http://html5.validator.nu/

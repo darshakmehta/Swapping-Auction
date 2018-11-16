@@ -43,7 +43,11 @@
   				<form method="POST" action="/login">
   					<div class="row justify-content-center">
 	  					<div class="col-lg-6">
-	  						<label for="email" class="main-color" name="email-label"><h3>Email </h3></label><input class="input-style my-ml-67" type="email" name="email" placeholder="email">
+	  						<% if(error === 'password') {%>
+	  							<label for="email" class="main-color" name="email-label"><h3>Email </h3></label><input class="input-style my-ml-67" type="email" name="username" placeholder="email" value="<%= username %>">
+	  						<%} else {%>
+	  							<label for="email" class="main-color" name="email-label"><h3>Email </h3></label><input class="input-style my-ml-67" type="email" name="username" placeholder="email">
+	  						<%}%>
 	  					</div>
 	  					 <!-- Force next columns to break to new line -->
 	  					<div class="w-100"></div>
@@ -53,12 +57,29 @@
   					</div>
   					<div class="row justify-content-center">
 	  					<div class="col-lg-6 mt-3 offset-lg-2">
-	  						<input class="sign-in btn btn-style ml-4 a-hover-color" type="submit" name="sign-in">
+	  						<input class="sign-in btn btn-style ml-4 a-hover-color" type="submit" name="signIn">
 	  					</div>
-
-	  					<div class="col-lg-6 mt-3 offset-lg-2">
-	  						<h2>Don't have an account? <a href="/register" >Register</a></h2>
-	  					</div>
+	  					<% if(error === 'incorrect') {%>
+	  						<div class="col-lg-6 mt-3 offset-lg-2">
+		  						<span class="badge badge-warning">Either username or password are incorrect. Please try again.</span>
+		  					</div>
+	  					<%} else if(error === 'success') {%>
+	  						<div class="col-lg-6 mt-3 offset-lg-2">
+		  						<span class="badge badge-success">Successfully registered <%= firstName %>, please check your email for sign up points and login to continue</span>
+		  					</div>
+	  					<%} else if(error === 'username') {%>
+	  						<div class="col-lg-6 mt-3 offset-lg-2">
+		  						<span class="badge badge-info"> Please enter the username </span>
+		  					</div>
+	  					<%} else if(error === 'password') {%>
+	  						<div class="col-lg-6 mt-3 offset-lg-2">
+		  						<span class="badge badge-info"> Please enter the password </span>
+		  					</div>
+	  					<%} else {%>
+		  					<div class="col-lg-6 mt-3 offset-lg-2">
+		  						<h2>Don't have an account? <a href="/register" >Register</a></h2>
+		  					</div>
+	  					<%}%>
   					</div>
   				</form>
   			</div>	

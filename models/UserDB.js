@@ -54,17 +54,17 @@ const User = mongoose.model('users', {
 });
 
 /* Add User */
-module.exports.addUser = (firstName, lastName, email, address1, address2, city, state, zip, country) => {
+module.exports.addUser = (firstName, lastName, email, password, addressField1, addressField2, city, state, zip, country) => {
 	User.countDocuments({}, (err, count) => {
-		var password = "XXX"; //Auto generated Hash Password
-		var user = new UserDB(count + 1, password, firstName, lastName, email, address1, address2, city, state, zip, country);
-		addUser(user);
+		var passwordHash = "XXX"; //Salt and Hash Password before saving
+		var user = new UserDB(count + 1, password, firstName, lastName, email, addressField1, addressField2, city, state, zip, country);
+		addUser(new User(user));
 	});
 }
 
 /* Store user in mongoose table */
 var addUser = (user) => {
-	User.save((err) => {
+	user.save((err) => {
 		if(err) throw err;
 	})
 }
@@ -84,6 +84,15 @@ module.exports.getAllUsers = (callback) => {
 module.exports.getUser = (userId) => {
 	try {
 		return User.findOne({userId});
+	} catch(e) {
+		console.log(e);
+	}
+}
+
+/* Verify User and render myItems */
+module.exports.getUser = (email, password) => {
+	try {
+		return User.findOne({email, password});
 	} catch(e) {
 		console.log(e);
 	}

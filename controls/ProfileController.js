@@ -34,26 +34,12 @@ app.get('/myItems', async (req, res) => {
 
 	if(req.session.theUser === undefined) { /* Check the session for a current user, using the attribute "theUser" */
 		/* Now user is the current placeholder for having the user go through all the steps of entering their details or logging in to their account */
-		req.session.theUser = await userDB.getUser("1"); /*  add the User object to the current session as "theUser" */
-		profileOne.userId = req.session.theUser.userId;
-		profileOne.userItems = await userItem.getAllItemsOfUser(profileOne.userId); /*  get the User Profile item - this is current placeholder for a user's saved information and items */
-		req.session.currentProfile = profileOne; /*  add the user profile to the session object as "currentProfile" */
-		/* Check if user has any items if it does not have any item dispatch with message as "There are no items to display" */
-		if(req.session.currentProfile.userItems === undefined || req.session.currentProfile.userItems.length === 0) {
-			res.render('myItems', {
-				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-				itemMsg: false,
-				itemsMsg: 'There are no items to display',
-				sessionStatus: true
-			});
-		} else { /* Dispatch to Profile view with user Items added on currentProfile*/
-			res.render('myItems', {
-				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-				itemMsg : true,
-				userItemList: req.session.currentProfile.userItems,
-				sessionStatus: true
-			});
-		}
+		res.render('login', {
+			welcome: 'Not signed in.',
+			sessionStatus: false,
+			name: 'Anonymous',
+			error: 'null'
+		});
 	} else { /* if there is a user exist in the session on "theUser" disptach to Profile view with user Items*/
 		res.render('myItems', {
 			welcome: 'Welcome ' + req.session.theUser.firstName + '!',

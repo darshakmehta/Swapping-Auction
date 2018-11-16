@@ -33,7 +33,12 @@ var {mongoose} = require('../controls/mongoose');
 var {User} = require('../models/UserDB');
 var {UserItem} = require('../models/UserItem');
 var offer = require('../models/offer');
-
+/* Include UserDB Class */
+var userDB = require('../models/UserDB');
+/* Include JavaScript Object (Model) for UserProfile */
+var UserProfile = require('../models/UserProfile');
+/* Include JavaScript Object (Model) for UserItem */
+const profileOne = new UserProfile();
 let items = [];
 
 /* GET Home Router */
@@ -308,14 +313,16 @@ app.get('/login', (req, res) => {
 		res.render('login', {
 			welcome: 'Not signed in.',
 			sessionStatus: false,
-			name: 'Anonymous'
+			name: 'Anonymous',
+			error: 'null'
 		});
 	} else {
-		// res.render('login', {
-		// 	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-		// 	sessionStatus: true,
-		// 	name: req.session.theUser.firstName
-		// });
+		res.render('myItems', {
+			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			itemMsg : true,
+			userItemList: req.session.currentProfile.userItems,
+			sessionStatus: true
+		});
 	}
 });
 
@@ -327,20 +334,114 @@ app.get('/register', (req, res) => {
 			name: 'Anonymous'
 		});
 	} else {
-		// res.render('register', {
-		// 	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
-		// 	sessionStatus: true,
-		// 	name: req.session.theUser.firstName
-		// });
+		res.render('myItems', {
+			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			itemMsg : true,
+			userItemList: req.session.currentProfile.userItems,
+			sessionStatus: true
+		});
 	}
 });
 
-app.post('/login', urlencodedParser, (req, res) => {
-	console.log(req.body);
+app.post('/login', urlencodedParser, async (req, res) => {
+	if(req.body.signIn === 'Submit') {
+		if(req.session.theUser === undefined) {
+			if(req.body.username === '') {
+				res.render('login', {
+					welcome: 'Not signed in.',
+					sessionStatus: false,
+					name: 'Anonymous',
+					error: 'username'
+				});
+			} else if(req.body.password === '') {
+				res.render('login', {
+					welcome: 'Not signed in.',
+					sessionStatus: false,
+					name: 'Anonymous',
+					error: 'password',
+					username: req.body.username
+				});
+			} else {
+				req.session.theUser = await userDB.getUser(req.body.username, req.body.password);
+				if(req.session.theUser === null) {
+					req.session.theUser = undefined; /*  clear the session*/
+					req.session.currentProfile = undefined; /*  clear the UserProfile*/
+					res.render('login', {
+						welcome: 'Not signed in.',
+						sessionStatus: false,
+						name: 'Anonymous',
+						error: 'incorrect'
+					});
+				} else {
+					profileOne.userId = req.session.theUser.userId;
+					profileOne.userItems = await userItem.getAllItemsOfUser(profileOne.userId); /*  get the User Profile item - this is current placeholder for a user's saved information and items */
+					req.session.currentProfile = profileOne; /*  add the user profile to the session object as "currentProfile" */
+					/* Check if user has any items if it does not have any item dispatch with message as "There are no items to display" */
+					if(req.session.currentProfile.userItems === undefined || req.session.currentProfile.userItems.length === 0) {
+						res.render('myItems', {
+							welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+							itemMsg: false,
+							itemsMsg: 'There are no items to display',
+							sessionStatus: true
+						});
+					} else { /* Dispatch to Profile view with user Items added on currentProfile*/
+						res.render('myItems', {
+							welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+							itemMsg : true,
+							userItemList: req.session.currentProfile.userItems,
+							sessionStatus: true
+						});
+					}
+				}
+			}
+		} else {		
+			res.render('myItems', {
+				welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+				itemMsg : true,
+				userItemList: req.session.currentProfile.userItems,
+				sessionStatus: true
+			});
+		}	
+	} else {
+		res.render('login', {
+			welcome: 'Not signed in.',
+			sessionStatus: false,
+			name: 'Anonymous',
+			error: 'null'
+		});
+	}
 });
 
-app.post('/register', urlencodedParser, (req, res) => {
-	console.log(req.body);
+app.post('/register', urlencodedParser, async (req, res) => {
+	if(req.session.theUser === undefined) {
+		var firstName = req.body.firstName;
+		var lastName = req.body.lastName;
+		var email = req.body.email;
+		var password = req.body.password;
+		var confirmPassword = req.body.confirmPassword;
+		var addressField1 = req.body.addressField1;
+		var addressField2 = req.body.addressField2;
+		var city = req.body.city;
+		var state = req.body.state;
+		var zip = req.body.zip;
+		var country = req.body.state;
+		/* TODO checks and validation */
+		await userDB.addUser(firstName, lastName, email, password, addressField1, addressField2, city, state, zip, country);
+		res.render('login', {
+			welcome: 'Not signed in.',
+			sessionStatus: false,
+			name: 'Anonymous',
+			error:'success',
+			firstName
+		});
+	} else {
+		res.render('myItems', {
+			welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+			itemMsg : true,
+			userItemList: req.session.currentProfile.userItems,
+			sessionStatus: true
+		});
+	}
 });
 
 /* Get Any URL Router*/

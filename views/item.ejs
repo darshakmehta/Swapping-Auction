@@ -51,17 +51,17 @@
 							<% if(itemStatus === 'pending') {
 								if(swapIt === "yes") {%>
 									<h2> You have a swap offer for this item</h2>
-									<a class="btn-style-mySwap" href= "/mySwaps"> See the offer </a>
+									<a href= "/mySwaps"> <button class="btn btn-style-mySwap a-hover-color"> See the offer </button></a>
 								<%} else {%>
 									<!-- TODO: <h2> You have received an offer for this item </h2> -->
 									<h2> You have offered this item </h2>
-									<a class="btn-style-mySwap" href= "/mySwaps"> See the offer </a>
+									<a href= "/mySwaps"><button class="btn btn-style-mySwap a-hover-color" href= "/mySwaps"> See the offer </button></a>
 								<%}%>
 							<%} else if(itemStatus === 'swapped'){%>
 								<h2> You've swapped this item </h2>
 							<%}  else {%>
 								<%if(swapIt === "yes"){%>
-								<a class="a-disabled" href="/myItems/offer/<%= item.code%>"><button class="btn swap btn-style"><i class="fas fa-exchange-alt fa-swap-item"></i><span class="text-color"> Swap it</span></button></a>
+								<a class="a-disabled" href="/myItems/offer/<%= item.code%>"><button class="btn swap btn-style"><i class="fas fa-exchange-alt fa-swap-item"></i><span class="text-color a-hover-color"> Swap it</span></button></a>
 							<%}}%>
 
 							<!-- Rate the item --> 

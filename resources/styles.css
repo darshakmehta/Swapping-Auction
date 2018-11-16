@@ -49,6 +49,14 @@ body {
 
 /* Navbar Area */
 
+a {
+	color: #009688
+}
+
+a:hover {
+	color: #FF9800;
+}
+
 .nav-disabled {
 	cursor: default;
 }
@@ -145,6 +153,7 @@ article {
 	font-family: 'Lato';
 	margin-left: 20px;
 	margin-bottom: 0px;
+	font-size: 2.2rem;
 }
 
 .cat-list {
@@ -307,11 +316,6 @@ td {
 }
 
 .a-hover-color:hover {
-	text-decoration: none;
-	color: #6c757d;
-}
-
-.swap:hover {
 	text-decoration: none;
 	color: #6c757d;
 }

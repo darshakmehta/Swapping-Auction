@@ -107,12 +107,12 @@ module.exports.getItem = (code) => {
 /* Add Item - TODO: get UserID by req.session.theUser.userId */
 module.exports.addItem = (userId, code, name, category, description, rating, image_url, active, userRating, status) => {
 	var item = new UserItemClass(userId, code, name, category, description, rating, image_url, active, userRating, status);
-	addItem(item);
+	addItem(new UserItem(item));
 }
 
 /* Store in mongoose table */
 var addItem = (item) => {
-	UserItem.save((err) => {
+	item.save((err) => {
 		if(err) throw err;
 	})
 }

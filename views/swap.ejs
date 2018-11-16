@@ -31,8 +31,15 @@
 		<!-- Main Content Area -->
 		<section class="col-lg-9 my-offer-styling">
 			<div class="content">
-				<!--  Breadcrumb -->
-				<h3 class="inline-header">Home > Swap Items</h3> <!-- Swap ___ Category Name ___ -->
+				<div class="inline-header">
+	              <!--  Breadcrumb -->
+	              <nav aria-label="breadcrumb">
+	                <ol class="breadcrumb">
+	                  <li class="breadcrumb-item" aria-label="breadcrumb"><a href="/">Home</a></li>
+	                  <li class="breadcrumb-item" aria-label="breadcrumb" aria-current="page"><span class="breadcrumb-active">Swap <%= item.category %></span></li>
+	                </ol>
+	              </nav>
+		        </div>
 				<h2 class="inline-header-swap"> Swap this item </h2>
 				<!-- Interested item to swap -->
 				<article>

@@ -31,8 +31,16 @@
 		  	<!-- Main Content Area -->
 			<section class="col-lg-9">
 				<div class="content ">
-					<!--  Breadcrumb -->
-					<h3 class="inline-header">Home > Categories > Item</h3>
+					<div class="inline-header">
+		              <!--  Breadcrumb -->
+		              <nav aria-label="breadcrumb">
+		                <ol class="breadcrumb">
+		                  <li class="breadcrumb-item" aria-label="breadcrumb"><a href="/">Home</a></li>
+		                  <li class="breadcrumb-item" aria-label="breadcrumb"><a href="/subCategories?catalogCategory=<%= item.category %>"><%= item.category %></a></li>
+		                  <li class="breadcrumb-item" aria-label="breadcrumb" aria-current="page"><span class="breadcrumb-active"><%= item.name %></span></li>
+		                </ol>
+		              </nav>
+		          	</div>
 					<!-- Details about Items -->
 					<article>
 

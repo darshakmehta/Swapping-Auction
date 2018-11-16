@@ -114,6 +114,20 @@ article {
 	/*border: 1px solid #BDBDBD;*/
 	height: 515px;
 	background-color: #FFECB3;
+	box-shadow: -4px 3px 6px rgb(0,0,0,0.2);
+}
+
+.breadcrumb {
+	background-color: #FFECB3;
+}
+
+.breadcrumb-active {
+	color: #FF9800;
+}
+
+.breadcrumb-active:hover {
+	text-decoration: none;
+	/*cursor: default;*//*TODO: if we keep default, it flickers once and becomes default*/
 }
 
 .content .page-info {
@@ -122,8 +136,8 @@ article {
 }
 
 .content .inline-header {
-	padding: 10px 0 0 15px;
-	color: #757575;
+	/*padding: 10px 0 0 15px;
+	color: #757575;*/
 }
 
 .content-container {

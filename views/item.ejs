@@ -50,7 +50,7 @@
 						</div>
 						<div class="float-left">
 							<!-- Name of the item from database -->
-							<div class="item-name"> <%= item.name %> </div>
+							<div class="item-name"><h1> <%= item.name %> </h1></div>
 							<!-- <div class="item-author"> by Peter Jackson </div> -->
 
 							<!-- Button to add the item to items for swap list 
@@ -58,15 +58,15 @@
 							-->
 							<% if(itemStatus === 'pending') {
 								if(swapIt === "yes") {%>
-									<h2> You have a swap offer for this item</h2>
-									<a href= "/mySwaps"> <button class="btn btn-style-mySwap a-hover-color"> See the offer </button></a>
+									<h5 class="ml-4"> You have a swap offer for this item</h5>
+									<a href= "/mySwaps"> <button class="btn btn-style-mySwap a-hover-color ml-4"> See the offer </button></a>
 								<%} else {%>
-									<!-- TODO: <h2> You have received an offer for this item </h2> -->
-									<h2> You have offered this item </h2>
-									<a href= "/mySwaps"><button class="btn btn-style-mySwap a-hover-color" href= "/mySwaps"> See the offer </button></a>
+									<!-- TODO: <h5> You have received an offer for this item </h5> -->
+									<h5 class="ml-4"> You have offered this item </h5>
+									<a href= "/mySwaps"><button class="btn btn-style-mySwap a-hover-color ml-4" href= "/mySwaps"> See the offer </button></a>
 								<%}%>
 							<%} else if(itemStatus === 'swapped'){%>
-								<h2> You've swapped this item </h2>
+								<h5 class="ml-4"> You've swapped this item </h5>
 							<%}  else {%>
 								<%if(swapIt === "yes"){%>
 								<a class="a-disabled" href="/myItems/offer/<%= item.code%>"><button class="btn swap btn-style"><i class="fas fa-exchange-alt fa-swap-item"></i><span class="text-color a-hover-color"> Swap it</span></button></a>
@@ -82,13 +82,13 @@
 						</div>
 
 						<!-- Category of item -->
-						<div class="text-style2">  Category: 
+						<div class="text-style2">  <span class="main-color"> Category: </span>
 							<!-- Back Link to return to the catalog and category displayed based on database -->
 							<a href = "/subCategories?catalogCategory=<%= item.category %>" > <%= item.category %> </a>
 						</div>
 
 						<!-- Average Rating of item based on database -->
-						<div class="text-style2"> Average Rating: <%= item.rating %></div>
+						<div class="text-style2"> <span class="main-color"> Average Rating: </span><%= item.rating %></div>
 					</article>
 				</div>
 			</section>

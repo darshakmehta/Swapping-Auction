@@ -28,7 +28,7 @@
   	   <% include partials/site-navigation.ejs %>	
 
       <!-- Main Content Area -->  
-    	<section class="col-lg-9">
+    	<section class="col-lg-10">
     		<div class="content ">
           <div class="inline-header">
               <!--  Breadcrumb -->
@@ -41,10 +41,25 @@
           </div>
     			<article>
             <!-- TODO: Dropdow or select box to choose categories  -->
-    				<div class="page-info">
+    				<div class="row page-info">
               <!--  Categories of Items -->
-    					<h1 class="categories"><a href="/subCategories?catalogCategory=Movies"> Movies  </a></h1>	
-    					<h1 class="categories"><a href="/subCategories?catalogCategory=Vehicle">Vehicle</a></h1>
+              <div class="col-lg-4 offset-lg-1 card card-shadow" style="width: 18rem;">
+                <img class="card-img-top" src="../resources/images/movie.png" alt="Film">
+                <div class="card-body">
+                  <h5 class="card-title"><b>Movie</b></h5>
+                  <p class="card-text">a story or event recorded by a camera as a set of moving images and shown in a theater or on television; a motion picture.</p>
+                  <h1 class="categories"><a href="/subCategories?catalogCategory=Movies" class="btn btn-style" >Search Movies</a></h1>  
+                </div>
+              </div>
+              <div class="col-lg-4 offset-lg-2 card card-shadow" style="width: 18rem;">
+                <img class="card-img-top" src="../resources/images/vehicle.png" alt="Vehicle">
+                <div class="card-body">
+                  <h5 class="card-title"><b>Vehicle</b></h5>
+                  <p class="card-text">a thing called as automotive used for transporting people or goods, especially on land, such as a car, bicycle, truck, or cart.</p>
+    					     <h1 class="categories"><a href="/subCategories?catalogCategory=Vehicle" class="btn btn-style">Search Vehicles</a></h1>
+                </div>
+              </div>
+              
     				</div>
     			</article>
     		</div>

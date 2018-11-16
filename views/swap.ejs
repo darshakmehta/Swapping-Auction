@@ -43,21 +43,21 @@
 				<h2 class="inline-header-swap"> Swap this item </h2>
 				<!-- Interested item to swap -->
 				<article>
-					<div class="text-style2"> Category: <%= item.category %></div>
-					<div class="text-style2"> Average Rating: <%= item.rating %></div>
+					<div class="text-style2"> <span class="main-color"> Category: </span><%= item.category %></div>
+					<div class="text-style2"> <span class="main-color"> Average Rating: </span><%= item.rating %></div>
 					<div class="page-info">
 						<img class="item-img-style float-left" src = "<%= item.image_url %>" alt = "item-image"/>
 					</div>
 					<div class="float-left">
 						<div class="item-name"> <%= item.name %> </div>
 						<!-- <div class="item-author"> by Peter Jackson </div> -->
-						<div class="item-content-swap"> <b> <%= item.description %> </b></div>
+						<div class="item-content-swap"> <span> <%= item.description %> </span></div>
 					</div>
 					<div class ="swap-options-header clear-float ">
 						<% if(flag === false) {%>
 							<h2> <%= message %> </h2>
 						<%} else {%>
-						<h2> Select an item from your available swaps </h2>
+						<h3 class="ml-4"> Select an item from your available swaps </h3>
 						<div class = "swap-options">
 							<form action = "/confirmswap" method = "POST">
 								<!-- List of available UserItems -->

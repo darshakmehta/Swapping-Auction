@@ -184,6 +184,13 @@ article {
 	box-shadow: -4px -6px 6px 4px rgb(0, 0, 0, 0.2);
 }
 
+.category-badge {
+	width: 25%;
+    border-radius: 0;
+    position: absolute;
+    right: 0;
+}
+
 /* Item */
 
 .float-left {

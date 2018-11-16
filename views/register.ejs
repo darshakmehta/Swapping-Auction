@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <title>Swapping Auction</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <!-- CSS Reset -->
+    <!-- <link rel="stylesheet" href="styles/css-reset.css"> -->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/resources/styles.css">
+  </head>
+
+  <body>
+
+  <% include partials/header.ejs %>
+	<% include partials/user-navigation.ejs %>
+  <div class="content-container container-fluid">
+  	<% include partials/site-navigation.ejs %>	
+  	<!-- Main Content Area -->
+  	<section class="col-lg-9">
+  		<div class="content">
+  			<!--  Breadcrumb -->
+  			<div class="inline-header">
+              <nav aria-label="breadcrumb">
+                <ol class="register-breadcrumb breadcrumb">
+                  <li class="breadcrumb-item" aria-label="breadcrumb" aria-current="page"><span class="breadcrumb-active">Home</span></li>
+                </ol>
+              </nav>
+        </div>
+        <h1 class="main-color text-align"> Sign up for Free Account and get 25 points</h1>
+  			<!-- Register Area -->
+        <div class="container mt-5">
+          <form method="POST" action="/register">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="row">
+                  <div class="col-lg-12 flex-container">
+                    <label for="firstName" class="main-color"><h3>First Name* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="firstName" placeholder="first name">
+                  </div>
+                  <div class="col-lg-12 flex-container">
+                    <label for="lastName" class="main-color"><h3>Last Name* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="lastName" placeholder="last name">
+                  </div>
+                  <div class="col-lg-12 flex-container">
+                    <label for="email" class="main-color"><h3>Email* </h3></label><input class="input-style ml-3 flex-container-items" type="email" name="email" placeholder="email">
+                  </div>
+                  <div class="col-lg-12 flex-container">
+                    <label for="password" class="main-color"><h3>Password* </h3></label><input class="input-style ml-3 flex-container-items" type="password" name="password" placeholder="password">
+                  </div>
+                  <div class="col-lg-12 flex-container">
+                    <label for="confirmPassword" class="main-color"><h3>Confirm* </h3></label><input class="input-style ml-3 flex-container-items" type="password" name="confirmPassword" placeholder="confirm password">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="row">
+                  <div class="col-lg-12 flex-container">
+                    <label for="addressField1" class="main-color"><h3>Address Field 1* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="addressField1" placeholder="Address Field 1">
+                  </div>
+                  <div class="col-lg-12 flex-container">
+                    <label for="addressField2" class="main-color"><h3>Address Field 2* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="addressField2" placeholder="Address Field 2">
+                  </div>
+                  <div class="col-lg-6 flex-container">
+                    <label for="city" class="main-color"><h3>City* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="city" placeholder="city">
+                  </div>
+                  <div class="col-lg-6 flex-container">
+                    <label for="state" class="main-color"><h3>State* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="state" placeholder="state">
+                  </div>
+                  <div class="col-lg-12 flex-container">
+                    <label for="zip" class="main-color"><h3>Zip Code* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="zip" placeholder="Zip Code">
+                  </div>
+                  <div class="col-lg-12 flex-container">
+                    <label for="country" class="main-color"><h3>Country* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="country" placeholder="Country">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3 register justify-content-center">
+              <div class="col-lg-12">
+                <input type="submit" name="register" value="Register" class="btn btn-style register-btn-style a-hover-color">
+              </div>
+            </div>
+
+          </form>
+        </div>  
+  		</div>
+  	</section>
+    </div> <!-- Row ends -->
+  </div> <!-- Container ends -->
+	<% include partials/footer.ejs %>
+	
+	<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  </body>
+</html>

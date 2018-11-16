@@ -341,7 +341,7 @@ td {
 	text-decoration: none;
 }
 
-.a-hover-color:hover {
+.sign-in:hover, .a-hover-color:hover {
 	text-decoration: none;
 	color: #6c757d;
 }
@@ -442,4 +442,50 @@ td {
 
 .text-center {
 	text-align: center;
+}
+
+/* Login */
+
+.my-ml-67 {
+	margin-left: 67px;
+}
+
+.sign-in {
+	width: 63%;
+	border-radius: 0px;
+	box-shadow: 4px 4px 4px rgb(0,0,0,0.2);
+}
+
+.input-style {
+	width: 55%;
+	border: 1px solid #FF9800;
+	padding: 8px;
+}
+
+/* Register */
+
+.flex-container {
+	display: flex;
+	margin-top: 5px;
+}
+
+.flex-container-items {
+	flex: 1;
+	height: 75%;
+}
+
+.register {
+	text-align: center;
+}
+
+.register-btn-style {
+	width: 33%;
+}
+
+.text-align {
+	text-align: center;
+}
+
+.register-breadcrumb {
+	margin-bottom: 0;
 }

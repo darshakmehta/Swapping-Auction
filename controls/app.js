@@ -303,6 +303,46 @@ app.post('/confirmswap', urlencodedParser, async (req, res) => {
 	}
 });
 
+app.get('/login', (req, res) => {
+	if(req.session.theUser === undefined) {
+		res.render('login', {
+			welcome: 'Not signed in.',
+			sessionStatus: false,
+			name: 'Anonymous'
+		});
+	} else {
+		// res.render('login', {
+		// 	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+		// 	sessionStatus: true,
+		// 	name: req.session.theUser.firstName
+		// });
+	}
+});
+
+app.get('/register', (req, res) => {
+	if(req.session.theUser === undefined) {
+		res.render('register', {
+			welcome: 'Not signed in.',
+			sessionStatus: false,
+			name: 'Anonymous'
+		});
+	} else {
+		// res.render('register', {
+		// 	welcome: 'Welcome ' + req.session.theUser.firstName + '!',
+		// 	sessionStatus: true,
+		// 	name: req.session.theUser.firstName
+		// });
+	}
+});
+
+app.post('/login', urlencodedParser, (req, res) => {
+	console.log(req.body);
+});
+
+app.post('/register', urlencodedParser, (req, res) => {
+	console.log(req.body);
+});
+
 /* Get Any URL Router*/
 app.get('/*', (req, res) => {
 	res.send('Plain Message');

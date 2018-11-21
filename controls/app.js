@@ -12,6 +12,14 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 const cookieParser = require('cookie-parser');
 /* Include NodeMailer */
 const nodemailer = require('nodemailer');
+/* Include HTTP module */
+const http = require("http");
+/* Include Path module*/
+const path = require("path");
+/* Include fs module */
+const fs = require("fs");
+/* Include multer module */
+const multer = require("multer");
 let userItem = require('../models/UserItem');
 
 /* Profile Controller to manage user actions */
@@ -458,6 +466,89 @@ app.post('/register', urlencodedParser, async (req, res) => {
 			userItemList: req.session.currentProfile.userItems,
 			sessionStatus: true
 		});
+	}
+});
+
+app.get('/addItem', (req, res) => {
+	if(req.session.theUser === undefined) {
+		res.render('login', {
+			welcome: 'notSignedIn',
+			sessionStatus: false,
+			name: 'Anonymous',
+			error: 'null'
+		});
+	} else {
+		res.render('addItem', {
+			welcome: req.session.theUser.firstName,
+			itemMsg : true,
+			sessionStatus: true
+		});
+	}
+});
+
+/* Set Storage Engine */
+const destination = (req, file, callback) => {
+	callback(null, '../resources/images/');
+}
+const filename = (req, file, callback) => {
+	callback(null, file.fieldname  + '-' + Date.now() + path.extname(file.originalname));
+}
+const storage = multer.diskStorage({
+	destination, filename
+});
+
+/* Check File type */
+const allowedImagesExts = ['jpg', 'png', 'gif', 'jpeg'];
+const fileFilter =  (req, file, cb) => {
+  cb(null, allowedImagesExts.includes(file.originalname.split('.').pop()))
+}
+
+/* Initialize upload */
+const upload = multer({
+	storage, 
+	fileFilter
+}).single('itemImage');
+
+
+app.post('/addItem', urlencodedParser, async (req, res) => {
+	if(req.session.theUser === undefined) {
+		res.render('login', {
+			welcome: 'notSignedIn',
+			sessionStatus: false,
+			name: 'Anonymous',
+			error: 'null'
+		});
+	} else {
+		// console.log(req.body);
+		upload(req, res, async (err) => {
+			if(err) {
+				/* Render Error */
+				console.log(err);
+			} else {
+				if(req.file == undefined) {
+					/* Render empty image error */
+					console.log("No File selected");
+				} else {
+					/* Render file uploaded successful */
+					console.log('File upload successful');
+					var name = req.body.itemName;
+					var category = req.body.itemCategory;
+					var description = req.body.itemDescription;
+					var userId = req.session.theUser.userId;
+					/* TODO checks and validation */
+					await userItem.addItem(userId, name, category, description, "/resources/images/"+req.file.filename);
+					req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
+					res.render('myItems', {
+						welcome: req.session.theUser.firstName,
+						itemMsg : true,
+						userItemList: req.session.currentProfile.userItems,
+						sessionStatus: true
+					});
+				}
+			}
+		})
+		
+		
 	}
 });
 

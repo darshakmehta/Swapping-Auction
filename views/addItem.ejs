@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <title>Swapping Auction</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <!-- CSS Reset -->
+    <!-- <link rel="stylesheet" href="styles/css-reset.css"> -->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/resources/styles.css">
+  </head>
+
+  <body>
+
+  <% include partials/header.ejs %>
+	<% include partials/user-navigation.ejs %>
+  <div class="content-container container-fluid">
+  	<% include partials/site-navigation.ejs %>	
+  	<!-- Main Content Area -->
+  	<section class="col-lg-10">
+  		<div class="content">
+  			<!--  Breadcrumb -->
+  			<div class="inline-header">
+              <nav aria-label="breadcrumb">
+                <ol class="register-breadcrumb breadcrumb">
+                  <li class="breadcrumb-item" aria-label="breadcrumb" aria-current="page"><span class="breadcrumb-active">Home</span></li>
+                </ol>
+              </nav>
+        </div>
+        <h1 class="main-color text-align"> Add New Item to your Catalog </h1>
+  			<!-- Register Area -->
+        <div class="container mt-5">
+          <form method="POST" action="/addItem" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="row">
+                  <div class="col-lg-12 flex-container">
+                    <label for="itemName" class="main-color"><h3>Item Name* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="itemName" placeholder="item name">
+                  </div>
+                  <div class="col-lg-12 flex-container">
+                    <label for="itemCategory" class="main-color"><h3>Item Category* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="itemCategory" placeholder="item category">
+                  </div>
+                  <div class="col-lg-12 flex-container">
+                    <label for="itemDescription" class="main-color"><h3>Item Description* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="itemDescription" placeholder="item description">
+                  </div>
+                  <div class="col-lg-12 flex-container input-group mb-3">
+                    	<label for="itemImage" class="main-color"><h3>Item Image* </h3></label><input class="btn btn-style item-img-upload input-style ml-3 flex-container-items" type="file" name="itemImage" accept="image/*">
+				  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3 register justify-content-center">
+              <div class="col-lg-12">
+                <input type="submit" name="addItem" value="Add Item" class="btn btn-style register-btn-style a-hover-color">
+              </div>
+            </div>
+
+          </form>
+        </div>  
+  		</div>
+  	</section>
+    </div> <!-- Row ends -->
+  </div> <!-- Container ends -->
+	<% include partials/footer.ejs %>
+	
+	<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  </body>
+</html>

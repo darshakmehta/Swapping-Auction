@@ -16,7 +16,8 @@ Status - this attribute indicates swap item status - available, pending (offer m
 
 /* Represents a ItemDB */
 class UserItemClass {
-	constructor(code, name, category, description, rating, image_url, active, userRating, status) {
+	constructor(userId, code, name, category, description, rating, image_url, active, userRating, status) {
+		this.userId = userId,
 		this.code = code,
 		this.name = name,
 		this.category = category,
@@ -105,13 +106,18 @@ module.exports.getItem = (code) => {
 }
 
 /* Add Item - TODO: get UserID by req.session.theUser.userId */
-module.exports.addItem = (userId, code, name, category, description, rating, image_url, active, userRating, status) => {
-	var item = new UserItemClass(userId, code, name, category, description, rating, image_url, active, userRating, status);
-	addItem(new UserItem(item));
+module.exports.addItem = (userId, name, category, description, image_url) => {
+	UserItem.countDocuments().then((count) => {
+		var item = new UserItemClass(userId, count + 1, name, category, description, "0", image_url, "active", "0", "available");
+		var newItem = new UserItem(item);
+		saveItem(newItem);
+	}, (err) => {
+		res.status(400).send(err);
+	});
 }
 
 /* Store in mongoose table */
-var addItem = (item) => {
+var saveItem = (item) => {
 	item.save((err) => {
 		if(err) throw err;
 	})

@@ -21,7 +21,8 @@ const fs = require("fs");
 /* Include multer module */
 const multer = require("multer");
 let userItem = require('../models/UserItem');
-
+const { check, validationResult } = require('express-validator/check');
+const { sanitizeBody } = require('express-validator/filter');
 /* Profile Controller to manage user actions */
 const ProfileController = require('../controls/ProfileController');
 app.use(ProfileController);
@@ -352,7 +353,10 @@ app.get('/register', (req, res) => {
 	}
 });
 
-app.post('/login', urlencodedParser, async (req, res) => {
+app.post('/login', urlencodedParser, [
+  check('username').blacklist(`{}<>&'/"`).isEmail().normalizeEmail({all_lowercase: true}).trim(),
+  sanitizeBody('notifyOnReply').toBoolean()
+], async (req, res) => {
 	if(req.body.signIn === 'Submit') {
 		if(req.session.theUser === undefined) {
 			if(req.body.username === '') {
@@ -363,14 +367,27 @@ app.post('/login', urlencodedParser, async (req, res) => {
 					error: 'username'
 				});
 			} else if(req.body.password === '') {
-				res.render('login', {
-					welcome: 'notSignedIn',
-					sessionStatus: false,
-					name: 'Anonymous',
-					error: 'password',
-					username: req.body.username
-				});
+				const errors = validationResult(req);
+			  	console.log(errors.array());
+			  	if (!errors.isEmpty()) {
+			  		console.log(errors);
+			    	res.render('login', {
+						welcome: 'notSignedIn',
+						sessionStatus: false,
+						name: 'Anonymous',
+						error: 'incorrect-email'
+					});
+			  	} else {
+					res.render('login', {
+						welcome: 'notSignedIn',
+						sessionStatus: false,
+						name: 'Anonymous',
+						error: 'password',
+						username: req.body.username
+					});
+			  	}
 			} else {
+				
 				req.session.theUser = await userDB.getUser(req.body.username, req.body.password);
 				if(req.session.theUser === null) {
 					req.session.theUser = undefined; /*  clear the session*/

@@ -447,3 +447,13 @@ td {
 .item-img-upload {
  
 }
+
+.a-disabled {
+	cursor: default;
+    color: #6c757d;
+}
+
+.a-disabled:hover{
+	cursor: default;
+    color: #6c757d;
+}

@@ -72,6 +72,6 @@ Domain: Content Swapping Domain
   
   2. ``npm install``
 
-  3. Use the [``hw4_create_db.txt``](https://github.com/tech-boy/Swapping-Auction/blob/master/hw4_create_db.txt) file to insert the documents in the mongodb database
+  3. Use the [``hw5_create_db.txt``](https://github.com/tech-boy/Swapping-Auction/blob/master/hw4_create_db.txt) file to insert the documents in the mongodb database
 
   4. inside the root folder -> ``nodemon controls/app``

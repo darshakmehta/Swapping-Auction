@@ -46,7 +46,7 @@
 	  						<% if(error === 'password') {%>
 	  							<label for="email" class="main-color" name="email-label"><h3>Email </h3></label><input class="input-style my-ml-67" type="text" name="username" placeholder="email" value="<%= username %>">
 	  						<%} else {%>
-	  							<label for="email" class="main-color" name="email-label"><h3>Email </h3></label><input class="input-style my-ml-67" type="text" name="username" placeholder="email">
+	  							<label for="email" class="main-color" name="email-label"><h3>Email </h3></label><input class="input-style my-ml-67" type="text" name="username" placeholder="email" value="">
 	  						<%}%>
 	  					</div>
 	  					 <!-- Force next columns to break to new line -->
@@ -81,7 +81,7 @@
 		  					</div>
 	  					<%} else {%>
 		  					<div class="col-lg-6 mt-3 offset-lg-2">
-		  						<h2>Don't have an account? <a class="a-disabled" href="/#" >Register</a></h2>
+		  						<h2>Don't have an account? <a class="" href="/register" >Register</a></h2>
 		  					</div>
 	  					<%}%>
   					</div>

@@ -1,34 +1,22 @@
-/* Include HTTP */
 const http = require('http');
-/* Include Express */
 const express = require('express');
-/* Include Express Session */
 const session = require('express-session');
 
-/* Express App*/
 const app = express();
 
-/* Include JavaScript Object (Model) for UserProfile */
-var UserProfile = require('../models/UserProfile');
-/* Include JavaScript Object (Model) for UserItem */
-var userItem = require('../models/UserItem');
-/* Include UserDB Class */
-var userDB = require('../models/UserDB');
-/* Include Offer Class */
-var offer = require('../models/offer');
-/* Create JavaScript Object (Model) for UserProfile */
+let UserProfile = require('../models/UserProfile');
+let userItem = require('../models/UserItem');
+let userDB = require('../models/UserDB');
+let offer = require('../models/offer');
+// let itemOptions = ['1', '2', '3', '4', '5', '6'];
 const profileOne = new UserProfile();
 
-/* Render views from following directory*/
 app.set('views', '../views');
-/* Set View engine*/
 app.set('view engine', 'ejs');
-/* Use static resources from following directory*/
 app.use('/resources', express.static('../resources'));
-/* User Session - set a secret */
 app.use(session({secret: "nbad"}));
-/* actions array represents possible set of User Action */
-var actions = ['accept', 'reject', 'update', 'withdraw', 'offer', 'delete', 'signout'];
+
+let actions = ['accept', 'reject', 'update', 'withdraw', 'offer', 'delete', 'signout'];
 
 app.get('/myItems', async (req, res) => {
 
@@ -41,9 +29,9 @@ app.get('/myItems', async (req, res) => {
 			error: 'null'
 		});
 	} else { /* if there is a user exist in the session on "theUser" disptach to Profile view with user Items*/
+		req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 		res.render('myItems', {
 			welcome: req.session.theUser.firstName,
-			itemMsg : true,
 			userItemList: req.session.currentProfile.userItems,
 			sessionStatus: true
 		});
@@ -66,14 +54,12 @@ app.get('myItems/:action', (req, res) => {
 		if(action.includes(req.params.action)) {
 			res.render('myItems', {
 				welcome: req.session.theUser.firstName,
-				itemMsg : true,
 				userItemList: req.session.currentProfile.userItems,
 				sessionStatus: true
 			});
 		} else {
 			res.render('myItems', {
 				welcome: req.session.theUser.firstName,
-				itemMsg : true,
 				userItemList: req.session.currentProfile.userItems,
 				sessionStatus: true
 			});
@@ -89,25 +75,24 @@ app.get('myItems/:action', (req, res) => {
 
 /* check http request for a parameter called "action" and "theItem" */
 app.get('/myItems/:action/:theItem', async (req, res) => {
-	var userItemList; /*  Represents available item requested by the user action*/	
+	let userItemList; /*  Represents available item requested by the user action*/	
 	if(req.session.theUser !== undefined) { /* if there is a user attribute and it is valid*/
 		if(actions.includes(req.params.action) && req.params.action === "update") { /* check the http request for a parameter called "action" having a valid value from actions array*/
 			/* if the action is update */
-			if(req.params !== undefined && req.params.theItem === "1" || req.params.theItem === "2" || 
-				req.params.theItem === "3" || req.params.theItem === "4" || req.params.theItem === "5" || req.params.theItem === "6" ) { /* check for a parameter called "theItem and validate that its value matches our item code format and is a valid current item code" */
+			if(req.params !== undefined && itemOptions.includes(req.params.theItem)) { /* check for a parameter called "theItem and validate that its value matches our item code format and is a valid current item code" */
 				/* TODO: validate that this request was an intentional user action
 					- check that it originated from a view that displayed this item as a candidate for an update and all items displayed are valid current items and that they belong to this user 
 					Hint: Use a hidden field named "itemList" in the view with the item code as the value for that field. The controller with receive that as a paramter with that name and having an array of values (all the items on the view). 
 					For example in Java, request.getParameterValues(“itemList”) will give you a list of all the items on the view)*/
-				var actionList = [];
+				let actionList = [];
 				/* If the item validates and exists in the user profile, get the UserItem Object saved in the user profile for this current item and check the status value */
-				var item = await userItem.getItem(req.params.theItem);
+				let item = await userItem.getItem(req.params.theItem);
 				if(item.status === 'pending') { /*  add the UserItem object to the request as "swapItem" and redirect to mySwaps view (to allow the user to accept/reject/withdraw)*/
-					var swapList = []; /* List containing UserItems with pending status*/
-					var swapItemList = []; /* List containing Swapped Item from database for current user item with status as pending*/
-					var itemOffer = await offer.getOfferByUser(req.session.theUser.userId, req.params.theItem); /*  Add Swapped Item for current user Item*/
+					let swapList = []; /* List containing UserItems with pending status*/
+					let swapItemList = []; /* List containing Swapped Item from database for current user item with status as pending*/
+					let itemOffer = await offer.getOfferByUser(req.session.theUser.userId, req.params.theItem); /*  Add Swapped Item for current user Item*/
 					if(itemOffer === null) {
-						var itemOfferInner = await offer.getOfferByOtherUser(req.session.theUser.userId, req.params.theItem); /*  Add Swapped Item for current user Item*/
+						let itemOfferInner = await offer.getOfferByOtherUser(req.session.theUser.userId, req.params.theItem); /*  Add Swapped Item for current user Item*/
 						swapList.push(await userItem.getItem(itemOfferInner.userItemCode));
 						swapItemList.push(await userItem.getItem(itemOfferInner.swapUserItemCode)); /*  Add User Item to SwapList */
 						actionList.push("accept");
@@ -124,7 +109,8 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 						sessionStatus: true, /* user logged in or logged out*/
 						name: req.session.theUser.firstName, /* user name*/
 						itemStatus: 'pending', /* item status*/
-						actionList
+						actionList,
+						swapping: false
 					});
 				} else if(item.status === 'available') { /* add the UserItem object to the request as "userItem" dispatch to the individual item view*/
 					/* Current placeholder for this stage of implementation we have choose the user item to display on the individual item view {We could choose swap item} */
@@ -154,49 +140,45 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				/* Current situation : User is sign out, also TODO: check if session is cleared */
 				res.render('myItems', {
 					welcome: 'notSignedIn',
-					itemMsg : true,
-					sessionStatus: false
+					sessionStatus: false,
+					userItemList: {}
 				});
 			}
 		} else if(actions.includes(req.params.action) && req.params.action === "accept" || req.params.action === "reject" || req.params.action === "withdraw") {
 				/* if the action is accept/reject/withdraw */
-				if(req.params !== undefined && req.params.theItem === "1" || req.params.theItem === "2" || 
-					req.params.theItem === "3" || req.params.theItem === "4" || req.params.theItem === "5" || req.params.theItem === "6" ) { /* check for a parameter called "theItem and validate that its value matches our item code format and is a valid current item code" */
+				if(req.params !== undefined && itemOptions.includes(req.params.theItem)) { /* check for a parameter called "theItem and validate that its value matches our item code format and is a valid current item code" */
 					/* TODO: validate that this request was an intentional user action
 						- check that it originated from a view that displayed this item as a candidate for an accept, reject or withdraw and all items displayed are valid current items and that they belong to this user */
 					if(req.params.action === 'reject'){
-	                  var offerItem = await offer.rejectOffer(req.session.theUser.userId, req.params.theItem);
+	                  let offerItem = await offer.rejectOffer(req.session.theUser.userId, req.params.theItem);
 	                  await offer.updateOffer(req.session.theUser.userId, req.params.theItem, req.params.action);
 	                  await userItem.updateItemStatus(offerItem.swapUserItemCode, "available");
 	                  await userItem.updateItemStatus(offerItem.userItemCode, "available");
 		              req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 	                  res.render('myItems',{
 	                  	welcome: req.session.theUser.firstName,
-						itemMsg : true,
 	                  	userItemList:req.session.currentProfile.userItems,
 	                  	sessionStatus: true,
 	                  });
 	                } else if (req.params.action === 'withdraw') {
-	                	var offerItem = await offer.getOfferByUser(req.session.theUser.userId, req.params.theItem);                	
+	                	let offerItem = await offer.getOfferByUser(req.session.theUser.userId, req.params.theItem);                	
                 	  	await offer.withdrawUpdateOffer(req.session.theUser.userId, req.params.theItem, req.params.action);
                 	  	await userItem.updateItemStatus(offerItem.userItemCode, "available");
 	                  	await userItem.updateItemStatus(offerItem.swapUserItemCode, "available");
 	                	req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 		                res.render('myItems',{
 		                  	welcome: req.session.theUser.firstName,
-							itemMsg : true,
 		                  	userItemList:req.session.currentProfile.userItems,
 		                  	sessionStatus: true,
 		                });
 	                } else if(req.params.action === 'accept'){
 		                /* if the action is accept, set the status value to indicate that this item was swapped */
-		                var offerItem = await offer.acceptOffer(req.session.theUser.userId, req.params.theItem);
+		                let offerItem = await offer.acceptOffer(req.session.theUser.userId, req.params.theItem);
 			            await userItem.updateItemStatus(offerItem.userItemCode, "swapped");
 			            await userItem.updateItemStatus(offerItem.swapUserItemCode, "swapped");
 		                req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 		                  res.render('myItems',{
 		                  	welcome: req.session.theUser.firstName,
-							itemMsg : true,
 		                  	userItemList:req.session.currentProfile.userItems,
 		                  	sessionStatus: true
 		                });
@@ -204,21 +186,19 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				} else {
 					res.render('myItems', {
 						welcome: 'notSignedIn',
-						itemMsg : true,
-						sessionStatus: false
+						sessionStatus: false,
+						userItemList: {}
 					});
 				}
 		} else if(actions.includes(req.params.action) && req.params.action === "delete") {
 			/* if the action is delete */
-			if(req.params !== undefined && req.params.theItem === "1" || req.params.theItem === "2" || 
-				req.params.theItem === "3" || req.params.theItem === "4" || req.params.theItem === "5" || req.params.theItem === "6" ) { /* check for a parameter called "theItem and validate that its value matches our item code format and is a valid current item code" */
+			if(req.params !== undefined && itemOptions.includes(req.params.theItem)) { /* check for a parameter called "theItem and validate that its value matches our item code format and is a valid current item code" */
 				/* TODO: validate that this request was an intentional user action
 					- check that it originated from a view that displayed this item as a candidate for a delete and all items displayed are valid current items and that they belong to this user */
 				await userItem.deleteItem(req.params.theItem);
 				req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 				res.render('myItems', {
                   	welcome: req.session.theUser.firstName,
-					itemMsg : true,
                   	userItemList:req.session.currentProfile.userItems,
                   	sessionStatus: true
                 });
@@ -228,16 +208,15 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				/* Current situation : User is sign out, also TODO: check if session is cleared */
 				res.render('myItems', {
 					welcome: 'notSignedIn',
-					itemMsg : true,
-					sessionStatus: false
+					sessionStatus: false,
+					userItemList: {}
 				});
 			}
 		} else if(actions.includes(req.params.action) && req.params.action === "offer") {
 			/* if the action is offer */
-			var availableList = []; /* Available items for swapping */
+			let availableList = []; /* Available items for swapping */
 			/* TODO: check from user Item ID and not 1,2,3,4,5,6 */ 
-			if(req.params !== undefined && req.params.theItem === "1" || req.params.theItem === "2" || 
-				req.params.theItem === "3" || req.params.theItem === "4" || req.params.theItem === "5" || req.params.theItem === "6" ) { /* check for a parameter called "theItem and validate that its value matches our item code format and is a valid current item code" */
+			if(req.params !== undefined && itemOptions.includes(req.params.theItem)) { /* check for a parameter called "theItem and validate that its value matches our item code format and is a valid current item code" */
 				/* TODO: validate that this request was an intentional user action
 					- check that it originated from a view that displayed this item as a candidate for a delete and all items displayed are valid current items and that they belong to this user */
 				Object.keys(req.session.currentProfile.userItems).forEach((item) => {
@@ -248,7 +227,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				});
 				if(availableList.length > 0) {
 					/* If there are available items, add all the available items to the request and dispatch to the swap item view (swap.ejs) */
-					var item = await userItem.getItem(req.params.theItem);
+					let item = await userItem.getItem(req.params.theItem);
 					res.render('swap', {
 						welcome: req.session.theUser.firstName,
 						availableList,
@@ -258,7 +237,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 					});
 				} else { /* If NO Available items for swapping, add a message requesting to add more items to start swapping again */
 						 /* TODO: dispatch back to the individual item view displaying the message and the item */
-					var item = await userItem.getItem(req.params.theItem);
+					let item = await userItem.getItem(req.params.theItem);
 					res.render('swap', {
 						message: '    Sorry, you do not have any available items for swapping. Please add more items to start swapping again!',
 						welcome: req.session.theUser.firstName,
@@ -273,8 +252,8 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				/* Current situation : User is sign out, also TODO: check if session is cleared */
 				res.render('myItems', {
 					welcome: 'notSignedIn',
-					itemMsg : true,
-					sessionStatus: false
+					sessionStatus: false,
+					userItemList: req.session.currentProfile.userItems
 				});
 			}
 		}  else {
@@ -282,7 +261,6 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 			/* TODO: if this is a new user and no items are added to their profile this page should be empty (display a message indicating there are no items to display */
 			res.render('myItems', {
 				welcome: req.session.theUser.firstName,
-				itemMsg : true,
 				userItemList: req.session.currentProfile.userItems,
 				sessionStatus: true
 			});

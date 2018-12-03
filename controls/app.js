@@ -1,60 +1,46 @@
-/* Include Express */
-const express = require('express');
-/* Express App*/
-const app = express();
-/* Include Express Session */
-const session = require('express-session');
-/* Include Body Parser */
 const bodyParser = require('body-parser');
-/* Url encoded Parser for POST Requests */
-const urlencodedParser = bodyParser.urlencoded({extended: false});
-/* Include Cookie Parser */
 const cookieParser = require('cookie-parser');
-/* Include NodeMailer */
-const nodemailer = require('nodemailer');
-/* Include HTTP module */
-const http = require("http");
-/* Include Path module*/
-const path = require("path");
-/* Include fs module */
+const express = require('express');
 const fs = require("fs");
-/* Include multer module */
+const http = require("http");
 const multer = require("multer");
-let userItem = require('../models/UserItem');
+const nodemailer = require('nodemailer');
+const path = require("path");
+const session = require('express-session');
+
+/* Validation/Sanitization */
 const { check, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
-/* Profile Controller to manage user actions */
-const ProfileController = require('../controls/ProfileController');
-app.use(ProfileController);
-/* Render views from following directory*/
+
+const urlencodedParser = bodyParser.urlencoded({extended: false});
+
+const app = express();
 app.set('views', '../views');
-/* Set View engine*/
 app.set('view engine', 'ejs');
-/* Use static resources from following directory*/
 app.use('/resources', express.static('../resources'));
-/* Use Cookie Parser */
 app.use(cookieParser());
-/* User Session - set a secret */
 app.use(session({secret: "nbad"}));
 
-var {ObjectID} = require('mongodb');
+const mongoose = require('../controls/mongoose');
+const transporter = require('../controls/nodemailtransporter');
+const ProfileController = require('../controls/ProfileController');/* Profile Controller to manage user actions */
+app.use(ProfileController);
 
-var {mongoose} = require('../controls/mongoose');
-var {transporter} = require('../controls/nodemailtransporter');
-var {User} = require('../models/UserDB');
-var {UserItem} = require('../models/UserItem');
-var offer = require('../models/offer');
-/* Include UserDB Class */
-var userDB = require('../models/UserDB');
-/* Include JavaScript Object (Model) for UserProfile */
-var UserProfile = require('../models/UserProfile');
-/* Include JavaScript Object (Model) for UserItem */
+const User = require('../models/UserDB');
+const UserItem = require('../models/UserItem');
+const offer = require('../models/offer');
+const userDB = require('../models/UserDB');
+const UserProfile = require('../models/UserProfile');
+
 const profileOne = new UserProfile();
+let userItem = require('../models/UserItem');
 let items = [];
+let categoryOptions = ['Movies', 'Vehicle'];
+let itemOptions = ['1', '2', '3', '4', '5', '6'];
 
 /* GET Home Router */
 app.get('/', (req, res) => {
-	if(req.session.theUser === undefined) {
+	if (req.session.theUser === undefined) {
 		res.render('index', {
 			welcome: 'notSignedIn',
 			sessionStatus: false,
@@ -69,31 +55,9 @@ app.get('/', (req, res) => {
 	}
 });
 
-/* Test Router to GET users */
-app.get('/users', (req, res) => {
-	User.find().then((user) => {
-		//console.log(user);
-		res.send(user);
-	}, (e) => {
-		console.log(e);
-	});
-});
-
-
-/* Test Router to GET user Items*/
-app.get('/userItems', (req, res) => {
-	UserItem.find().then((userItem) => {
-		res.send(userItem);
-	}, (e) => {
-		console.log(e);
-	});
-});
-
-
-
-/* GET Categories Router - Use to display categories belonging to the Catalog */
+/* GET Categories Router */
 app.get('/categories', (req, res) => {
-	if(req.session.theUser === undefined) {
+	if (req.session.theUser === undefined) {
 		res.render('categories', {
 			welcome: 'notSignedIn',
 			sessionStatus: false
@@ -108,20 +72,19 @@ app.get('/categories', (req, res) => {
 
 /* GET Sub Categories Router - Use to display all sub categories of a choosen category */
 app.get('/subCategories', async (req, res) => {
-	if(req.session.theUser === undefined) {
-		var itemList = [];
+	if (req.session.theUser === undefined) {
 		userItem.getAllItems((err, item) => {
 			/* Check catalogCategory parameter exist and it is valid */
-			if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
+			if (categoryOptions.includes(req.query.catalogCategory)) {
 				/* Dispatch list of sub categories of type catalogCategory */
 				/* If the user is not defined display the complete catalog */
 				res.render('subCategories', {
-				welcome: 'notSignedIn',
-				catalogCategory: req.query.catalogCategory,
-				items: item,
-				sessionStatus: false
+					welcome: 'notSignedIn',
+					catalogCategory: req.query.catalogCategory,
+					items: item,
+					sessionStatus: false
 				});
-			} else {//If invalid catalogCategory, dispatch catalog as if no category had been provided
+			} else {/*If invalid catalogCategory, dispatch catalog as if no category had been provided*/
 				res.render('categories', {
 					welcome: 'notSignedIn',
 					sessionStatus: false
@@ -129,19 +92,19 @@ app.get('/subCategories', async (req, res) => {
 			}
 		});
 	} else {
-		var userId = req.session.theUser.userId;
-		var item = await userItem.getNotAllItemsOfUser(userId);
-		if(req.query.catalogCategory === 'Movies' || req.query.catalogCategory === 'Vehicle') {
-		/* Dispatch filtered Item List */
-		res.render('subCategories', {
-			welcome: 'notSignedIn',
-			catalogCategory: req.query.catalogCategory,
-			items: item,
-			sessionStatus: true
-		});
-		} else { //If invalid catalogCategory, dispatch catalog as if no category had been provided
+		let userId = req.session.theUser.userId;
+		let items = await userItem.getNotAllItemsOfUser(userId);
+		if (categoryOptions.includes(req.query.catalogCategory)) {
+			/* Dispatch filtered Item List upon Logged-in user */
+			res.render('subCategories', {
+				welcome: req.session.theUser.firstName,
+				catalogCategory: req.query.catalogCategory,
+				items,
+				sessionStatus: true
+			});
+		} else {/*If invalid catalogCategory, dispatch catalog as if no category had been provided*/
 			res.render('categories', {
-				welcome: 'notSignedIn',
+				welcome: req.session.theUser.firstName,
 				sessionStatus: true
 			});
 		}
@@ -150,14 +113,11 @@ app.get('/subCategories', async (req, res) => {
 
 /* GET Item Router */
 app.get('/item', async (req, res) => {
-	
-	if(req.session.theUser === undefined) {
-		if(Object.keys(req.query.length != 0)) {
+	if (req.session.theUser === undefined) {
+		if (Object.keys(req.query.length != 0)) {
 			/* Check the http request for a parameter called "itemCode" and validate it matches our format and it is valid */
-			if(req.query.itemCode <= 6 && req.query.itemCode >= 1) {
-				/* Await till the item is returned */
-				var item = await userItem.getItem(req.query.itemCode);
-				/* Render individual Item */
+			if (itemOptions.includes(req.query.itemCode)) {
+				let item = await userItem.getItem(req.query.itemCode);
 				res.render('item', {
 					welcome: 'notSignedIn',
 					item: item,
@@ -165,48 +125,46 @@ app.get('/item', async (req, res) => {
 					itemStatus: 'available',
 					swapIt: "yes"
 				});
-			} else { //If item code is invalid, dispatch catalog as if no code had been provided
+			} else { /* If item code is invalid, dispatch catalog as if no code had been provided */
 				res.render('categories', {
 					welcome: 'notSignedIn',
 					sessionStatus: false
 				});
 			}
-		} else { //If no itemCode parameter is present, dispatch catalog
+		} else { /* If no itemCode parameter is present, dispatch catalog */
 			res.render('categories', {
 				welcome: 'notSignedIn',
 				sessionStatus: false
 			});
 		}
 	} else {
-		if(Object.keys(req.query.length != 0)) {
-			if(req.query.itemCode <= 6 && req.query.itemCode >= 1) {
-				var item = await userItem.getItem(req.query.itemCode);
-				var itemStatus = item.status;
-				var swapIt = req.session.theUser.userId === item.userId ? "no" : "yes";
+		if (Object.keys(req.query.length != 0)) {
+			if (itemOptions.includes(req.query.itemCode)) {
+				let item = await userItem.getItem(req.query.itemCode);
+				let itemStatus = item.status;
+				let swapIt = req.session.theUser.userId === item.userId ? "no" : "yes";
 				/*
 				TODO: check if the item is user and he has got offer, or he has swap to send the appropriate message
-				if(itemStatus === "pending") {
-					if(swapIt === "no") {
-						var offerItem = await offer.getOffer(req.sessionStatus.theUser.userId);
+				if (itemStatus === "pending") {
+					if (swapIt === "no") {
+						let offerItem = await offer.getOffer(req.sessionStatus.theUser.userId);
 					} else {
-
 					}
-					
 				}*/
 				res.render('item', {
 					welcome: req.session.theUser.firstName,
 					item,
 					sessionStatus: true,
-					itemStatus: itemStatus,
+					itemStatus,
 					swapIt
 				});
-			} else {
+			} else { /* If item code is invalid, dispatch catalog as if no code had been provided */
 				res.render('categories', {
 					welcome: req.session.theUser.firstName,
 					sessionStatus: true
 				});
 			}
-		} else { 
+		} else { /* If no itemCode parameter is present, dispatch catalog */
 			res.render('categories', {
 				welcome: req.session.theUser.firstName,
 				sessionStatus: true
@@ -216,13 +174,12 @@ app.get('/item', async (req, res) => {
 	}
 });
 
-/* Get Contact Router*/
+/* GET Contact Router*/
 app.get('/contact', (req, res) => {
-	if(req.session.theUser === undefined) {
+	if (req.session.theUser === undefined) {
 		res.render('contact', {
 			welcome: 'notSignedIn',
 			sessionStatus: false
-
 		});
 	} else {
 		res.render('contact', {
@@ -232,9 +189,9 @@ app.get('/contact', (req, res) => {
 	}
 });
 
-/* Get About Router*/
+/* GET About Router*/
 app.get('/about', (req, res) => {
-	if(req.session.theUser === undefined) {
+	if (req.session.theUser === undefined) {
 		res.render('about', {
 			welcome: 'notSignedIn',
 			sessionStatus: false
@@ -247,9 +204,9 @@ app.get('/about', (req, res) => {
 	}
 });
 
-/* Get My Swaps Router*/
+/* GET My Swaps Router*/
 app.get('/mySwaps', async (req, res) => {
-	if(req.session.theUser === undefined) {
+	if (req.session.theUser === undefined) {
 		res.render('login', {
 			welcome: 'notSignedIn',
 			sessionStatus: false,
@@ -257,30 +214,33 @@ app.get('/mySwaps', async (req, res) => {
 			error: 'null'
 		});
 	} else {
-		var offerList = await offer.getPendingOffers();
-		var count = await offer.getCountOfPending();
-		if(count !== 0) {
-			var userItemList= [];
-			var swapUserItemList = [];
-			var actionList = [];
+		let offerList = await offer.getPendingOffers();
+		let count = await offer.getCountOfPending();
+		if (count !== 0) {
+			let userItemList= [];
+			let swapUserItemList = [];
+			let actionList = [];
 			Object.keys(offerList).forEach(async (offer) => {
-				var item = await userItem.getItem(offerList[offer].userItemCode);
-				userItemList.push(item);
-				var swapItem = await userItem.getItem(offerList[offer].swapUserItemCode);
-				swapUserItemList.push(swapItem);
-				if((req.session.theUser.userId == offerList[offer].userId)) {
+				let item = await userItem.getItem(offerList[offer].userItemCode);
+				let swapItem = await userItem.getItem(offerList[offer].swapUserItemCode);
+				if ((req.session.theUser.userId == offerList[offer].userId)) {
+					userItemList.push(item);
+					swapUserItemList.push(swapItem);
 					actionList.push("withdraw");
 				} else {
+					userItemList.push(swapItem);
+					swapUserItemList.push(item);
 					actionList.push("accept/reject");
 				}
-				if((count - 1) == offer) {
+				if ((count - 1) == offer) {
 					res.render('mySwaps', {
 						welcome: req.session.theUser.firstName,
 						swapList: userItemList,
 						swapItemList: swapUserItemList,
 						sessionStatus: true,
 						name: req.session.theUser.firstName,
-						actionList
+						actionList,
+						swapping: false
 					});	
 				} 
 			});		
@@ -290,15 +250,16 @@ app.get('/mySwaps', async (req, res) => {
 				sessionStatus: true,
 				swapList: {},
 				name: 'My',
-				actionList: []
+				actionList: [],
+				swapping: true
 			});
 		}
 	}
 });
 
-/* Confirm Swap Router */
+/* POST Confirm Swap Router */
 app.post('/confirmswap', urlencodedParser, async (req, res) => {
-	if(req.session === undefined) {
+	if (req.session === undefined) {
 		res.render('index', {
 			welcome: 'notSignedIn',
 			sessionStatus: false,
@@ -311,15 +272,15 @@ app.post('/confirmswap', urlencodedParser, async (req, res) => {
 		req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 		res.render('myItems', {
           	welcome: req.session.theUser.firstName,
-			itemMsg : true,
           	userItemList:req.session.currentProfile.userItems,
           	sessionStatus: true
         });
 	}
 });
 
+/* GET Login Router*/
 app.get('/login', (req, res) => {
-	if(req.session.theUser === undefined) {
+	if (req.session.theUser === undefined) {
 		res.render('login', {
 			welcome: 'notSignedIn',
 			sessionStatus: false,
@@ -329,15 +290,15 @@ app.get('/login', (req, res) => {
 	} else {
 		res.render('myItems', {
 			welcome: req.session.theUser.firstName,
-			itemMsg : true,
 			userItemList: req.session.currentProfile.userItems,
 			sessionStatus: true
 		});
 	}
 });
 
+/* GET Register Router*/
 app.get('/register', (req, res) => {
-	if(req.session.theUser === undefined) {
+	if (req.session.theUser === undefined) {
 		res.render('register', {
 			welcome: 'notSignedIn',
 			sessionStatus: false,
@@ -346,31 +307,37 @@ app.get('/register', (req, res) => {
 	} else {
 		res.render('myItems', {
 			welcome: req.session.theUser.firstName,
-			itemMsg : true,
 			userItemList: req.session.currentProfile.userItems,
 			sessionStatus: true
 		});
 	}
 });
 
-app.post('/login', urlencodedParser, [
-  check('username').blacklist(`{}<>&'/"`).isEmail().normalizeEmail({all_lowercase: true}).trim(),
+/* POST Login Router */
+app.post('/login', urlencodedParser,[
+  check('username').blacklist(`{}<>&'/"`).isEmail().trim(),
   sanitizeBody('notifyOnReply').toBoolean()
 ], async (req, res) => {
-	if(req.body.signIn === 'Submit') {
-		if(req.session.theUser === undefined) {
-			if(req.body.username === '') {
+	if (req.body.signIn === 'Submit') {
+		if (req.session.theUser === undefined) {
+			if (req.body.username === '') {
 				res.render('login', {
 					welcome: 'notSignedIn',
 					sessionStatus: false,
 					name: 'Anonymous',
 					error: 'username'
 				});
-			} else if(req.body.password === '') {
+			} else if (req.body.password === '') {
+				res.render('login', {
+					welcome: 'notSignedIn',
+					sessionStatus: false,
+					name: 'Anonymous',
+					error: 'password',
+					username: req.body.username
+				});
+			} else {
 				const errors = validationResult(req);
-			  	console.log(errors.array());
 			  	if (!errors.isEmpty()) {
-			  		console.log(errors);
 			    	res.render('login', {
 						welcome: 'notSignedIn',
 						sessionStatus: false,
@@ -378,52 +345,31 @@ app.post('/login', urlencodedParser, [
 						error: 'incorrect-email'
 					});
 			  	} else {
-					res.render('login', {
-						welcome: 'notSignedIn',
-						sessionStatus: false,
-						name: 'Anonymous',
-						error: 'password',
-						username: req.body.username
-					});
-			  	}
-			} else {
-				
-				req.session.theUser = await userDB.getUser(req.body.username, req.body.password);
-				if(req.session.theUser === null) {
-					req.session.theUser = undefined; /*  clear the session*/
-					req.session.currentProfile = undefined; /*  clear the UserProfile*/
-					res.render('login', {
-						welcome: 'notSignedIn',
-						sessionStatus: false,
-						name: 'Anonymous',
-						error: 'incorrect'
-					});
-				} else {
-					profileOne.userId = req.session.theUser.userId;
-					profileOne.userItems = await userItem.getAllItemsOfUser(profileOne.userId); /*  get the User Profile item - this is current placeholder for a user's saved information and items */
-					req.session.currentProfile = profileOne; /*  add the user profile to the session object as "currentProfile" */
-					/* Check if user has any items if it does not have any item dispatch with message as "There are no items to display" */
-					if(req.session.currentProfile.userItems === undefined || req.session.currentProfile.userItems.length === 0) {
-						res.render('myItems', {
-							welcome: req.session.theUser.firstName,
-							itemMsg: false,
-							itemsMsg: 'There are no items to display',
-							sessionStatus: true
+					req.session.theUser = await userDB.getUser(req.body.username, req.body.password);
+					if (req.session.theUser === null) {
+						req.session.theUser = undefined;
+						req.session.currentProfile = undefined;
+						res.render('login', {
+							welcome: 'notSignedIn',
+							sessionStatus: false,
+							name: 'Anonymous',
+							error: 'incorrect'
 						});
-					} else { /* Dispatch to Profile view with user Items added on currentProfile*/
+					} else {
+						profileOne.userId = req.session.theUser.userId;
+						profileOne.userItems = await userItem.getAllItemsOfUser(profileOne.userId); /*  get the User Profile item - this is current placeholder for a user's saved information and items */
+						req.session.currentProfile = profileOne; /*  add the user profile to the session object as "currentProfile" */
 						res.render('myItems', {
 							welcome: req.session.theUser.firstName,
-							itemMsg : true,
 							userItemList: req.session.currentProfile.userItems,
 							sessionStatus: true
 						});
 					}
-				}
+			  	}
 			}
 		} else {		
 			res.render('myItems', {
 				welcome: req.session.theUser.firstName,
-				itemMsg : true,
 				userItemList: req.session.currentProfile.userItems,
 				sessionStatus: true
 			});
@@ -438,32 +384,32 @@ app.post('/login', urlencodedParser, [
 	}
 });
 
+/* POST Register Router */
 app.post('/register', urlencodedParser, async (req, res) => {
-	if(req.session.theUser === undefined) {
-		var firstName = req.body.firstName;
-		var lastName = req.body.lastName;
-		var email = req.body.email;
-		var password = req.body.password;
-		var confirmPassword = req.body.confirmPassword;
-		var addressField1 = req.body.addressField1;
-		var addressField2 = req.body.addressField2;
-		var city = req.body.city;
-		var state = req.body.state;
-		var zip = req.body.zip;
-		var country = req.body.state;
+	if (req.session.theUser === undefined) {
+		const firstName = req.body.firstName;
+		const lastName = req.body.lastName;
+		const email = req.body.email;
+		const password = req.body.password;
+		const confirmPassword = req.body.confirmPassword;
+		const addressField1 = req.body.addressField1;
+		const addressField2 = req.body.addressField2;
+		const city = req.body.city;
+		const state = req.body.state;
+		const zip = req.body.zip;
+		const country = req.body.state;
 		/* TODO checks and validation */
 		await userDB.addUser(firstName, lastName, email, password, addressField1, addressField2, city, state, zip, country);
-		var flag = false; /* TODO: To avoid sending out the password */
-		if(flag === true) {
+		let flag = false; /* TODO: To avoid sending out the password */
+		if (flag === true) {
 			const mailOptions = {
 			  from: 'dmehta9@uncc.edu', // sender address
 			  to: email, // list of receivers
 			  subject: 'Successfully Registerd ' + firstName, // Subject line
 			  html: '<h1><p>Congratulations for your first step.</p></h1><h4>As a First Sign up to our website we give you 25 points to start your swapping journey</h4>'// plain text body
 			};
-
 			transporter.sendMail(mailOptions, function (err, info) {
-			   if(err)
+			   if (err)
 			     console.log(err)
 			   else
 			     console.log(info);
@@ -479,7 +425,6 @@ app.post('/register', urlencodedParser, async (req, res) => {
 	} else {
 		res.render('myItems', {
 			welcome: req.session.theUser.firstName,
-			itemMsg : true,
 			userItemList: req.session.currentProfile.userItems,
 			sessionStatus: true
 		});
@@ -487,7 +432,7 @@ app.post('/register', urlencodedParser, async (req, res) => {
 });
 
 app.get('/addItem', (req, res) => {
-	if(req.session.theUser === undefined) {
+	if (req.session.theUser === undefined) {
 		res.render('login', {
 			welcome: 'notSignedIn',
 			sessionStatus: false,
@@ -497,7 +442,6 @@ app.get('/addItem', (req, res) => {
 	} else {
 		res.render('addItem', {
 			welcome: req.session.theUser.firstName,
-			itemMsg : true,
 			sessionStatus: true
 		});
 	}
@@ -506,16 +450,19 @@ app.get('/addItem', (req, res) => {
 /* Set Storage Engine */
 const destination = (req, file, callback) => {
 	callback(null, '../resources/images/');
-}
+};
+
 const filename = (req, file, callback) => {
 	callback(null, file.fieldname  + '-' + Date.now() + path.extname(file.originalname));
-}
+};
+
 const storage = multer.diskStorage({
 	destination, filename
 });
 
 /* Check File type */
 const allowedImagesExts = ['jpg', 'png', 'gif', 'jpeg'];
+
 const fileFilter =  (req, file, cb) => {
   cb(null, allowedImagesExts.includes(file.originalname.split('.').pop()))
 }
@@ -528,7 +475,7 @@ const upload = multer({
 
 
 app.post('/addItem', urlencodedParser, async (req, res) => {
-	if(req.session.theUser === undefined) {
+	if (req.session.theUser === undefined) {
 		res.render('login', {
 			welcome: 'notSignedIn',
 			sessionStatus: false,
@@ -536,28 +483,28 @@ app.post('/addItem', urlencodedParser, async (req, res) => {
 			error: 'null'
 		});
 	} else {
-		// console.log(req.body);
 		upload(req, res, async (err) => {
-			if(err) {
+			if (err) {
 				/* Render Error */
 				console.log(err);
 			} else {
-				if(req.file == undefined) {
+				if (req.file == undefined) {
 					/* Render empty image error */
 					console.log("No File selected");
 				} else {
 					/* Render file uploaded successful */
 					console.log('File upload successful');
-					var name = req.body.itemName;
-					var category = req.body.itemCategory;
-					var description = req.body.itemDescription;
-					var userId = req.session.theUser.userId;
+					const name = req.body.itemName;
+					const category = req.body.itemCategory;
+					const description = req.body.itemDescription;
+					const userId = req.session.theUser.userId;
 					/* TODO checks and validation */
-					await userItem.addItem(userId, name, category, description, "/resources/images/"+req.file.filename);
+					await userItem.addItem(userId, name, category, description, "/resources/images/" + req.file.filename);
+					itemOptions.push(itemOptions.length + 1 + '');
+					console.log(await userItem.getAllItemsOfUser(req.session.theUser.userId));
 					req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 					res.render('myItems', {
 						welcome: req.session.theUser.firstName,
-						itemMsg : true,
 						userItemList: req.session.currentProfile.userItems,
 						sessionStatus: true
 					});

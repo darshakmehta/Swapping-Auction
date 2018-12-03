@@ -41,13 +41,14 @@
 	                </ol>
 	              </nav>
 	          	</div>
-				<% if(itemMsg === false) {%>
-					<h2 class="badge badge-info itemMsg"> <%= itemsMsg %> </h2>
+				<% if(Object.keys(userItemList).length === 0) {%>
+					<h3 class="badge badge-info itemMsg"> There are no items to display <a href="/addItem" class="btn btn-style a-hover-color"> Add Item </a> </h3>
+					
 				<%}else{%>
 				<article>
 					<!-- Details of myItems -->
 					<h1 class="text-style">  Catalog for Swapping </h1>
-					<!-- <a href="/addItem" class="btn btn-style a-hover-color"> Add Item </a> -->
+					<a href="/addItem" class="btn btn-style a-hover-color"> Add Item </a>
 					<div class="item-content">
 						<table>
 							<thead class="border-bottom-style">

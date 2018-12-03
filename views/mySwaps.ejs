@@ -41,37 +41,37 @@
 	              </nav>
 	          	</div>
 				<article>
-					<!-- mySwaps Page - Active Swap Offers -->
-					<h1 class="text-style-swap-offer"> <%= name %> Swap Offers </h1>
-					<div class="item-content">
-
-						<table>
-							<thead class="border-bottom-style">
-								<tr>
-									<th>Item</th>
-									<th>Swap Offer</th>
-									<th></th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody class="border-bottom-style">
-								<% Object.keys(swapList).forEach((item) =>{%>
+					<% if (swapping) { %>
+						<h3> You do not have any pending Swaps <a href = "/categories">Start swapping Now </a></h3>
+					<% } else { %>
+						<!-- mySwaps Page - Active Swap Offers -->
+						<h1 class="text-style-swap-offer"> <%= name %> Swap Offers </h1>
+						<div class="item-content">
+							<table>
+								<thead class="border-bottom-style">
 									<tr>
-										<td><a href="/item?itemCode=<%= swapList[item].code%>"><%= swapList[item].name %></a></td>
-										<td><a href="/item?itemCode=<%= swapItemList[item].code%>"><%= swapItemList[item].name %></a></td>
-										<% if(actionList[item] === "withdraw") {%>
-										<td> <a href="/myItems/withdraw/<%= swapList[item].code%>"><button class="btn btn-style a-hover-color"> Withdraw Swap </button></a> </td>
-										<%} else {	%>
-										<td> <a href="/myItems/accept/<%= swapList[item].code%>"><button class="btn btn-style-mySwap a-hover-color"> Accept </button></a> <a href="/myItems/reject/<%=  swapList[item].code%>"><button class="btn btn-style-mySwap2 a-hover-color"> Reject </button></a></td>
-										<%}%>
+										<th>Item</th>
+										<th>Swap Offer</th>
+										<th></th>
+										<th></th>
 									</tr>
-								<%});%>
-							</tbody>
-						</table>
-						<div class="myItems-legend">
-							<p> Legend: <i class="fas fa-exchange-alt"></i> Swap offer available <i class="fas fa-check"> </i> already swapped</p>
+								</thead>
+								<tbody class="border-bottom-style">
+									<% Object.keys(swapList).forEach((item) =>{%>
+										<tr>
+											<td><a href="/item?itemCode=<%= swapList[item].code%>"><%= swapList[item].name %></a></td>
+											<td><a href="/item?itemCode=<%= swapItemList[item].code%>"><%= swapItemList[item].name %></a></td>
+											<% if(actionList[item] === "withdraw") {%>
+											<td> <a href="/myItems/withdraw/<%= swapList[item].code%>"><button class="btn btn-style a-hover-color"> Withdraw Swap </button></a> </td>
+											<%} else {	%>
+											<td> <a href="/myItems/accept/<%= swapList[item].code%>"><button class="btn btn-style-mySwap a-hover-color"> Accept </button></a> <a href="/myItems/reject/<%=  swapList[item].code%>"><button class="btn btn-style-mySwap2 a-hover-color"> Reject </button></a></td>
+											<%}%>
+										</tr>
+									<%});%>
+								</tbody>
+							</table>
 						</div>
-					</div>
+						<% } %>
 				</article>
 			</div>
 		</section>

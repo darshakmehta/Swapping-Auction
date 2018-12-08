@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const crypto = require('crypto');
 const express = require('express');
 const fs = require("fs");
 const http = require("http");
@@ -302,7 +303,8 @@ app.get('/register', (req, res) => {
 		res.render('register', {
 			welcome: 'notSignedIn',
 			sessionStatus: false,
-			name: 'Anonymous'
+			name: 'Anonymous',
+			user: {},
 		});
 	} else {
 		res.render('myItems', {
@@ -314,7 +316,7 @@ app.get('/register', (req, res) => {
 });
 
 /* POST Login Router */
-app.post('/login', urlencodedParser,[
+app.post('/login', urlencodedParser, [
   check('username').blacklist(`{}<>&'/"`).isEmail().trim(),
   sanitizeBody('notifyOnReply').toBoolean()
 ], async (req, res) => {
@@ -345,26 +347,38 @@ app.post('/login', urlencodedParser,[
 						error: 'incorrect-email'
 					});
 			  	} else {
-					req.session.theUser = await userDB.getUser(req.body.username, req.body.password);
-					if (req.session.theUser === null) {
-						req.session.theUser = undefined;
+			  		let userLoginData = await userDB.getUser(req.body.username);
+			  		if(userLoginData !== null) {
+			  			if(userDB.checkUser(req.body.username, req.body.password, userLoginData.password, userLoginData.salt)) {
+			  				req.session.theUser = userLoginData;
+			  				profileOne.userId = req.session.theUser.userId;
+							profileOne.userItems = await userItem.getAllItemsOfUser(profileOne.userId); /*  get the User Profile item - this is current placeholder for a user's saved information and items */
+							req.session.currentProfile = profileOne; /*  add the user profile to the session object as "currentProfile" */
+							res.render('myItems', {
+								welcome: req.session.theUser.firstName,
+								userItemList: req.session.currentProfile.userItems,
+								sessionStatus: true
+							});
+			  			} else { /* Incorrect Password */
+			  				req.session.theUser = undefined;
+							req.session.currentProfile = undefined;
+							res.render('login', {
+								welcome: 'notSignedIn',
+								sessionStatus: false,
+								name: 'Anonymous',
+								error: 'incorrect'
+							});
+			  			}
+			  		} else { /* Incorrect Email */
+			  			req.session.theUser = undefined;
 						req.session.currentProfile = undefined;
 						res.render('login', {
 							welcome: 'notSignedIn',
 							sessionStatus: false,
 							name: 'Anonymous',
-							error: 'incorrect'
+							error: 'incorrect-email'
 						});
-					} else {
-						profileOne.userId = req.session.theUser.userId;
-						profileOne.userItems = await userItem.getAllItemsOfUser(profileOne.userId); /*  get the User Profile item - this is current placeholder for a user's saved information and items */
-						req.session.currentProfile = profileOne; /*  add the user profile to the session object as "currentProfile" */
-						res.render('myItems', {
-							welcome: req.session.theUser.firstName,
-							userItemList: req.session.currentProfile.userItems,
-							sessionStatus: true
-						});
-					}
+			  		}
 			  	}
 			}
 		} else {		
@@ -385,7 +399,20 @@ app.post('/login', urlencodedParser,[
 });
 
 /* POST Register Router */
-app.post('/register', urlencodedParser, async (req, res) => {
+app.post('/register', urlencodedParser, [
+  check('firstName').isAlpha().withMessage('First name is missing'),
+  check('lastName').isAlpha().withMessage('Last name is missing'),
+  check('email').blacklist(`{}<>&'/"`).isEmail().withMessage('must be an email'),
+  check('password').isAlphanumeric().withMessage('password is missing'),
+  check('confirmPassword').isAlphanumeric().withMessage('confirm password please'),
+  check('addressField1').isAscii().withMessage('Address 1 is missing'),
+  check('addressField2').isAscii().withMessage('Address 2 is missing'),
+  check('city').isAscii().withMessage('City is missing'),
+  check('state').isAscii().withMessage('state is missing'),
+  check('zip').isNumeric().withMessage('zip is missing'),
+  check('country').isAscii().withMessage('country is missing'),
+  sanitizeBody('notifyOnReply').toBoolean()
+], async (req, res) => {
 	if (req.session.theUser === undefined) {
 		const firstName = req.body.firstName;
 		const lastName = req.body.lastName;
@@ -398,30 +425,54 @@ app.post('/register', urlencodedParser, async (req, res) => {
 		const state = req.body.state;
 		const zip = req.body.zip;
 		const country = req.body.state;
-		/* TODO checks and validation */
-		await userDB.addUser(firstName, lastName, email, password, addressField1, addressField2, city, state, zip, country);
-		let flag = false; /* TODO: To avoid sending out the password */
-		if (flag === true) {
-			const mailOptions = {
-			  from: 'dmehta9@uncc.edu', // sender address
-			  to: email, // list of receivers
-			  subject: 'Successfully Registerd ' + firstName, // Subject line
-			  html: '<h1><p>Congratulations for your first step.</p></h1><h4>As a First Sign up to our website we give you 25 points to start your swapping journey</h4>'// plain text body
-			};
-			transporter.sendMail(mailOptions, function (err, info) {
-			   if (err)
-			     console.log(err)
-			   else
-			     console.log(info);
+		
+		const errors = validationResult(req);
+		console.log(errors.array());
+
+	  	if (!errors.isEmpty()) {
+	    	res.render('register', {
+				welcome: 'notSignedIn',
+				sessionStatus: false,
+				name: 'Anonymous',
+				user: req.body,
 			});
-		}
-		res.render('login', {
-			welcome: 'notSignedIn',
-			sessionStatus: false,
-			name: 'Anonymous',
-			error:'success',
-			firstName
-		});
+	  	} else {
+	  		let userData = await userDB.getUser(email);
+	  		console.log(userData);
+	  		if(userData !== null) { /* Email already exist */
+	  			console.log("Email already exist");
+	  			res.render('register', {
+					welcome: 'notSignedIn',
+					sessionStatus: false,
+					name: 'Anonymous',
+					user: req.body,
+				});
+	  		} else {
+		  		await userDB.addUser(firstName, lastName, email, password, addressField1, addressField2, city, state, zip, country);
+				let flag = true;
+				if (flag === true) {
+					const mailOptions = {
+					  from: 'darshak_mehta@live.com', // sender address
+					  to: email, // list of receivers
+					  subject: 'Successfully Registerd ' + firstName, // Subject line
+					  html: '<h1><p>Congratulations for your first step.</p></h1><h4>As a First Sign up to our website we give you 25 points to start your swapping journey</h4>'// plain text body
+					};
+					try {
+						transporter.sendMail(mailOptions);
+					} catch(e) {
+						console.log(e);
+					}
+				}
+				res.render('login', {
+					welcome: 'notSignedIn',
+					sessionStatus: false,
+					name: 'Anonymous',
+					error:'success',
+					firstName
+				});
+	  		}
+	  	}
+		
 	} else {
 		res.render('myItems', {
 			welcome: req.session.theUser.firstName,
@@ -510,9 +561,7 @@ app.post('/addItem', urlencodedParser, async (req, res) => {
 					});
 				}
 			}
-		})
-		
-		
+		});
 	}
 });
 

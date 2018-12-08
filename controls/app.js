@@ -5,7 +5,7 @@ const express = require('express');
 const fs = require("fs");
 const http = require("http");
 const multer = require("multer");
-const nodemailer = require('nodemailer');
+var nodemailer = require('nodemailer');
 const path = require("path");
 const session = require('express-session');
 
@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(session({secret: "nbad"}));
 
 const mongoose = require('../controls/mongoose');
-const transporter = require('../controls/nodemailtransporter');
+var transporter = require('../controls/nodemailtransporter');
 const ProfileController = require('../controls/ProfileController');/* Profile Controller to manage user actions */
 app.use(ProfileController);
 
@@ -438,7 +438,6 @@ app.post('/register', urlencodedParser, [
 			});
 	  	} else {
 	  		let userData = await userDB.getUser(email);
-	  		console.log(userData);
 	  		if(userData !== null) { /* Email already exist */
 	  			console.log("Email already exist");
 	  			res.render('register', {
@@ -449,16 +448,21 @@ app.post('/register', urlencodedParser, [
 				});
 	  		} else {
 		  		await userDB.addUser(firstName, lastName, email, password, addressField1, addressField2, city, state, zip, country);
-				let flag = true;
+				let flag = false; /* Switch to true to start email function */
 				if (flag === true) {
 					const mailOptions = {
-					  from: 'darshak_mehta@live.com', // sender address
+					  from: 'dmehta9@uncc.edu', // sender address
 					  to: email, // list of receivers
 					  subject: 'Successfully Registerd ' + firstName, // Subject line
 					  html: '<h1><p>Congratulations for your first step.</p></h1><h4>As a First Sign up to our website we give you 25 points to start your swapping journey</h4>'// plain text body
 					};
 					try {
-						transporter.sendMail(mailOptions);
+						transporter.sendMail(mailOptions, function (err, info) {
+						   if (err)
+						     console.log(err)
+						   else
+						     console.log(info);
+						});
 					} catch(e) {
 						console.log(e);
 					}

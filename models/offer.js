@@ -50,9 +50,9 @@ module.exports.addOffer = (userId, swapUserId, userItemCode, swapUserItemCode, s
 }
 
 /* Update offer */
-module.exports.updateOffer = (swapUserId, userItemCode, action) => {
+module.exports.updateOffer = (swapUserId, swapUserItemCode, action) => {
 	try {
-		Offer.findOneAndUpdate({swapUserId, userItemCode, status: "pending"}, {$set: {status: action}}, {$new: true}, (err, doc) => {
+		Offer.findOneAndUpdate({swapUserId, swapUserItemCode, status: "pending"}, {$set: {status: action}}, {$new: true}, (err, doc) => {
 			if(err) throw err;
 		});
 	} catch(e) {
@@ -89,36 +89,41 @@ module.exports.getOfferByOtherUser = (swapUserId, swapUserItemCode) => {
 }
 
 /* Reject Offer */
-module.exports.rejectOffer = (swapUserId, userItemCode) => {
+module.exports.rejectOffer = (swapUserId, swapUserItemCode) => {
 	try {
-		return Offer.findOne({swapUserId, userItemCode, status: "pending"});
+		return Offer.findOne({swapUserId, swapUserItemCode, status: "pending"});
 	} catch(e) {
 		console.log(e);
 	}
 }
 
 /* Accept Offer */
-module.exports.acceptOffer = (swapUserId, userItemCode) => {
+module.exports.acceptOffer = (swapUserId, swapUserItemCode) => {
 	try {
-		return Offer.findOneAndUpdate({swapUserId, userItemCode, status: "pending"}, {$set: {status: "accepted"}}, {$new : true});
+		return Offer.findOneAndUpdate({swapUserId, swapUserItemCode, status: "pending"}, {$set: {status: "accepted"}}, {$new : true});
 	} catch(e) {
 		console.log(e);
 	}
 }
 
 /* Get Pending Offers */
-module.exports.getPendingOffers = () => {
+module.exports.getPendingOffers = async (userId) => {
 	try {
-		return Offer.find({status: "pending"});
+		let arr = await Offer.find({userId, status: "pending"});
+		let arr2 = await Offer.find({swapUserId: userId, status: "pending"});
+		let newArr = arr.concat(arr2);
+		return newArr;
+		
 	} catch(e) {
 		console.log(e);
 	}
 }
 
 /* Get Count of Pending Offers */
-module.exports.getCountOfPending = () => {
+module.exports.getCountOfPending = async (userId) => {
 	try {
-		return Offer.find({status: "pending"}).countDocuments();
+		return await Offer.find({userId, status: "pending"}).countDocuments() 
+				 + await Offer.find({swapUserId: userId, status: "pending"}).countDocuments();
 	} catch(e) {
 		console.log(e);
 	}

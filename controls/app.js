@@ -37,7 +37,7 @@ const profileOne = new UserProfile();
 let userItem = require('../models/UserItem');
 let items = [];
 let categoryOptions = ['Movies', 'Vehicle'];
-let itemOptions = ['1', '2', '3', '4', '5', '6'];
+let itemOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']; /* TODO: Update it to be dynamic */
 
 /* GET Home Router */
 app.get('/', (req, res) => {
@@ -215,8 +215,8 @@ app.get('/mySwaps', async (req, res) => {
 			error: 'null'
 		});
 	} else {
-		let offerList = await offer.getPendingOffers();
-		let count = await offer.getCountOfPending();
+		let offerList = await offer.getPendingOffers(req.session.theUser.userId);
+		let count = await offer.getCountOfPending(req.session.theUser.userId);
 		if (count !== 0) {
 			let userItemList= [];
 			let swapUserItemList = [];
@@ -270,7 +270,7 @@ app.post('/confirmswap', urlencodedParser, async (req, res) => {
 		offer.addOffer(req.body.userId, req.body.swapUserId, req.body.userItemCode, req.body.swapUserItemCode, "pending", "0");
 		await userItem.updateItemStatus(req.body.userItemCode, "pending");
 		await userItem.updateItemStatus(req.body.swapUserItemCode, "pending");
-		req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
+		req.session.currentProfile.userItems = await userItem.getAllAvailableItemsOfUser(req.session.theUser.userId);
 		res.render('myItems', {
           	welcome: req.session.theUser.firstName,
           	userItemList:req.session.currentProfile.userItems,

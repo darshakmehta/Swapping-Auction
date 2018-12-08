@@ -8,7 +8,7 @@ let UserProfile = require('../models/UserProfile');
 let userItem = require('../models/UserItem');
 let userDB = require('../models/UserDB');
 let offer = require('../models/offer');
-// let itemOptions = ['1', '2', '3', '4', '5', '6'];
+let itemOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']; /* TODO: Update it to be dynamic */
 const profileOne = new UserProfile();
 
 app.set('views', '../views');
@@ -149,7 +149,7 @@ app.get('/myItems/:action/:theItem', async (req, res) => {
 				if(req.params !== undefined && itemOptions.includes(req.params.theItem)) { /* check for a parameter called "theItem and validate that its value matches our item code format and is a valid current item code" */
 					/* TODO: validate that this request was an intentional user action
 						- check that it originated from a view that displayed this item as a candidate for an accept, reject or withdraw and all items displayed are valid current items and that they belong to this user */
-					if(req.params.action === 'reject'){
+					if(req.params.action === 'reject') {
 	                  let offerItem = await offer.rejectOffer(req.session.theUser.userId, req.params.theItem);
 	                  await offer.updateOffer(req.session.theUser.userId, req.params.theItem, req.params.action);
 	                  await userItem.updateItemStatus(offerItem.swapUserItemCode, "available");

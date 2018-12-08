@@ -69,7 +69,7 @@ const UserItem = mongoose.model('items', {
 
 /* Get All Items from Database */
 module.exports.getAllItems = (callback) => {
-	UserItem.find({active: "active"}, (err, userItem) => {
+	UserItem.find({active: "active", status: "available"}, (err, userItem) => {
 		if(userItem) {
 			callback(null, userItem);
 		} else {
@@ -81,7 +81,16 @@ module.exports.getAllItems = (callback) => {
 /* Get All Items from Database for particular User */
 module.exports.getAllItemsOfUser = (userId) => {
 	try {
-		return UserItem.find({userId: userId, active: "active"});
+		return UserItem.find({userId: userId, active: "active", status: ["available", "pending", "swapped"]});
+	} catch(e) {
+		console.log(e);	
+	}
+}
+
+/* Get All Available Items from Database for particular User */
+module.exports.getAllAvailableItemsOfUser = (userId) => {
+	try {
+		return UserItem.find({userId: userId, active: "active", status: ["available"]});
 	} catch(e) {
 		console.log(e);	
 	}
@@ -90,7 +99,7 @@ module.exports.getAllItemsOfUser = (userId) => {
 /* Get Items Not belonging to the user */
 module.exports.getNotAllItemsOfUser = (userId) => {
 	try {
-		return UserItem.find({userId: {$ne: userId}, active: "active"});
+		return UserItem.find({userId: {$ne: userId}, active: "active", status: "available"});
 	} catch(e) {
 		console.log(e);	
 	}

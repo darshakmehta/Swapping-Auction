@@ -101,6 +101,7 @@ article {
 
 .breadcrumb {
 	background-color: #FFECB3;
+	margin-bottom: 0px;
 }
 
 .name, .breadcrumb-active {
@@ -199,11 +200,16 @@ article {
 }
 
 .item-content {
-	margin: 20px 20px 20px 0px;
+	margin: 0px 20px 20px 0px;
 	text-align: justify;
 }
 
 /* My Items */
+
+.profile-add-item {
+	float: right;
+	margin: 20px;
+}
 
 .text-style {
 	text-align: center;
@@ -219,7 +225,7 @@ article {
 
 table {
 	width: 100%;
-	margin-top: 55px;
+	/*margin-top: 55px;*/
 	border-collapse: collapse;
 }
 
@@ -233,12 +239,12 @@ th {
 }
 
 td {
-	padding: 20px 0;
+	padding: 10px 0;
 	text-align: center;
 }
 
 .myItems-legend {
-	margin-top: 45px;
+	margin-top: 5px;
 }
 
 .myItems-aside {

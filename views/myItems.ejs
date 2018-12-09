@@ -63,12 +63,12 @@
 							</thead>
 							<tbody class="border-bottom-style">
 									<% Object.keys(userItemList).forEach((item, index) => { %>
-										<tr>
+									  <tr>
 										<td><a href="/item?itemCode=<%= userItemList[item].code %>"><%= userItemList[item].name %></a></td>
 										<td><a href= "/subCategories?catalogCategory=<%= userItemList[item].category %>"><%= userItemList[item].category %></a></td>
 										<td>
 											<% for(var i = 0; i < userItemList[item].rating; i++) {%>
-												<i class="fas fa-star">
+												<i class="fas fa-star"></i>
 											<%}%>
 										</td>
 										<% if(userItemList[item].status === 'available') {%>
@@ -78,11 +78,10 @@
 										<%} else if(userItemList[item].status === 'swapped'){%>
 											<td> <i class="fas fa-check"></i></td>
 										<%}%>
-										<td> <a class="a-disabled" href="/myItems/update/<%= userItemList[item].code %>"><button class="btn a-hover-color btn-style"> Update </button></a> </btn td>
-										<td> <a class="a-disabled" href="/myItems/delete/<%= userItemList[item].code %>"><button class="btn a-hover-color btn-style"> Delete </button></a> </btn td>
-									</tr>	
+										<td> <a class="a-disabled" href="/myItems/update/<%= userItemList[item].code %>"><button class="btn a-hover-color btn-style"> Update </button></a>  </td>
+										<td> <a class="a-disabled" href="/myItems/delete/<%= userItemList[item].code %>"><button class="btn a-hover-color btn-style"> Delete </button></a>  </td>
+									  </tr>	
 									<% }) %>
-								</tr>
 							</tbody>
 						</table>
 						<div class="myItems-legend">

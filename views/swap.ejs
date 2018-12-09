@@ -61,13 +61,13 @@
 						<div class = "swap-options">
 							<form action = "/confirmswap" method = "POST">
 								<!-- List of available UserItems -->
+								<input type = "hidden" name="swapUserId" value="<%= item.userId %>">
+								<input type = "hidden" name="swapUserItemCode" value="<%= item.code %>"> 
+								<input type = "hidden" name="userId" value="<%= availableList[0].userId %>">
 								<ul>
-									<input type = "hidden" name="swapUserId" value="<%= item.userId %>">
-									<input type = "hidden" name="swapUserItemCode" value="<%= item.code %>"> 
-									<input type = "hidden" name="userId" value="<%= availableList[0].userId %>">
 									<% Object.keys(availableList).forEach((item) => {%>
 										<li class="swap-options-list">
-											<input type="radio" name ="userItemCode" value="<%= availableList[item].code %>"> <span class ="swap-options-item"><a href="/item?itemCode=<%= availableList[item].code %>"> <%= availableList[item].name %></a></span>
+											<input required type="radio" name ="userItemCode" value="<%= availableList[item].code %>"> <span class ="swap-options-item"><a href="/item?itemCode=<%= availableList[item].code %>"> <%= availableList[item].name %></a></span>
 										</li>
 									<%});%>
 								</ul>

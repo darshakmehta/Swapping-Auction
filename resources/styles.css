@@ -422,6 +422,10 @@ td {
 	padding: 8px;
 }
 
+.input-inline {
+	display: inline;
+}
+
 /* Register */
 
 .flex-container {

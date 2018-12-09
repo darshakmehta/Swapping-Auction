@@ -39,6 +39,7 @@
               </nav>
         </div>
         <h1 class="main-color text-align"> Add New Item to your Catalog </h1>
+        <h6 class="main-color text-align"> Note: We give Rating of 5 by default. We trust your product </h6>
   			<!-- Register Area -->
         <div class="container mt-5">
           <form method="POST" action="/addItem" enctype="multipart/form-data">
@@ -46,17 +47,24 @@
               <div class="col-lg-6">
                 <div class="row">
                   <div class="col-lg-12 flex-container">
-                    <label for="itemName" class="main-color"><h3>Item Name* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="itemName" placeholder="item name">
+                    <label for="itemName"></label><h3 class="main-color">Item Name*</h3><input class="input-style ml-3 flex-container-items" type="text" name="itemName" placeholder="item name" id="itemName" required>
                   </div>
                   <div class="col-lg-12 flex-container">
-                    <label for="itemCategory" class="main-color"><h3>Item Category* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="itemCategory" placeholder="item category">
+                    <label for="itemCategory"></label><h3 class="main-color">Item Category*</h3>
+                    <select class="input-style ml-3 pb-0 pt-0 flex-container-items" required="" name="itemCategory">
+                      <option value="">--Please choose an option--</option>
+                      <option value="Movies">Movies</option>
+                      <option value="Vehicle">Vehicle</option>
+                    </select>
+
+                    <!-- <input class="input-style ml-3 flex-container-items" type="text" name="itemCategory" placeholder="item category" id="itemCategory" required> -->
                   </div>
                   <div class="col-lg-12 flex-container">
-                    <label for="itemDescription" class="main-color"><h3>Item Description* </h3></label><input class="input-style ml-3 flex-container-items" type="text" name="itemDescription" placeholder="item description">
+                    <label for="itemDescription"></label><h3 class="main-color">Item Description*</h3><input class="input-style ml-3 flex-container-items" type="text" name="itemDescription" placeholder="item description" id="itemDescription" pattern=".{200,250}" required title="200 to 250 characters">
                   </div>
                   <div class="col-lg-12 flex-container input-group mb-3">
-                    	<label for="itemImage" class="main-color"><h3>Item Image* </h3></label><input class="btn btn-style item-img-upload input-style ml-3 flex-container-items" type="file" name="itemImage" accept="image/*">
-				  </div>
+                    	<label for="itemImage"></label><h3 class="main-color">Item Image*</h3><input class="btn btn-style item-img-upload input-style ml-3 flex-container-items" type="file" name="itemImage" accept="image/*" id="itemImage" required>
+				          </div>
                 </div>
               </div>
             </div>

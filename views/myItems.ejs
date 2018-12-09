@@ -67,7 +67,7 @@
 										<td><a href="/item?itemCode=<%= userItemList[item].code %>"><%= userItemList[item].name %></a></td>
 										<td><a href= "/subCategories?catalogCategory=<%= userItemList[item].category %>"><%= userItemList[item].category %></a></td>
 										<td>
-											<% for(var i = 0; i < userItemList[item].rating; i++) {%>
+											<% for(var i = 0; i < userItemList[item].userRating; i++) {%>
 												<i class="fas fa-star"></i>
 											<%}%>
 										</td>

@@ -582,33 +582,54 @@ app.post('/confirmRating', urlencodedParser, async (req, res) => {
 		var feedback = await FeedbackDB.getItemFeedback(req.session.theUser.userId, req.body.itemCode);
 		if(feedback === null) {
 			await FeedbackDB.addItemFeedback(req.session.theUser.userId, req.body.itemCode, req.body.rating, "");
-		} else {
-			await FeedbackDB.updateItemFeedback(req.session.theUser.userId, req.body.itemCode, req.body.rating, "");
-		}
-		/* Average Rating */
-		let item = await userItem.getItem(req.body.itemCode);
-		let currentTotalRating = Number(item.totalUserRating) + Number(req.body.rating);
-		let totalUsers = Number(item.totalUserRatedItem) + 1;
-		let rating = (currentTotalRating / totalUsers).toFixed(2);
-		
-		{
+			/* Average Rating */
+			let item = await userItem.getItem(req.body.itemCode);
+			console.log(item);
+			let currentTotalRating = Number(item.totalUserRating) + Number(req.body.rating);
+			let totalUsers = Number(item.totalUserRatedItem) + 1;
+			let rating = Number((currentTotalRating / totalUsers).toFixed(2));
+			
 			if(item.userId === req.session.theUser.userId) {
 				await userItem.updateMyItemRating(req.body.itemCode, rating, totalUsers, currentTotalRating, req.body.rating);	
 			} else {
 				await userItem.updateMyItemRating(req.body.itemCode, rating, totalUsers, currentTotalRating);	
 			}
+			/* Check some times it get updated sometimes it does not */
+			let userUpdatedItem = await userItem.getItem(req.body.itemCode);
+			let itemStatus = userUpdatedItem.status;
+			let swapIt = req.session.theUser.userId === item.userId ? "no" : "yes";
+			res.render('item', {
+				welcome: req.session.theUser.firstName,
+				item: userUpdatedItem,
+				sessionStatus: true,
+				itemStatus,
+				swapIt
+			});
+		} else {
+			let oldRating = feedback.rating;
+			await FeedbackDB.updateItemFeedback(req.session.theUser.userId, req.body.itemCode, req.body.rating, "");
+			/* Average Rating */
+			let item = await userItem.getItem(req.body.itemCode);
+			let currentTotalRating = Number(item.totalUserRating) + Number(req.body.rating) - Number(oldRating);
+			let totalUsers = Number(item.totalUserRatedItem);
+			let rating = (currentTotalRating / totalUsers).toFixed(2);
+			if(item.userId === req.session.theUser.userId) {
+				await userItem.updateMyItemRating(req.body.itemCode, rating, totalUsers, currentTotalRating, req.body.rating);	
+			} else {
+				await userItem.updateMyItemRating(req.body.itemCode, rating, totalUsers, currentTotalRating);	
+			}
+			/* Check some times it get updated sometimes it does not */
+			let userUpdatedItem = await userItem.getItem(req.body.itemCode);
+			let itemStatus = userUpdatedItem.status;
+			let swapIt = req.session.theUser.userId === item.userId ? "no" : "yes";
+			res.render('item', {
+				welcome: req.session.theUser.firstName,
+				item: userUpdatedItem,
+				sessionStatus: true,
+				itemStatus,
+				swapIt
+			});
 		}
-		/* Check some times it get updated sometimes it does not */
-		let userUpdatedItem = await userItem.getItem(req.body.itemCode);
-		let itemStatus = userUpdatedItem.status;
-		let swapIt = req.session.theUser.userId === item.userId ? "no" : "yes";
-		res.render('item', {
-			welcome: req.session.theUser.firstName,
-			item: userUpdatedItem,
-			sessionStatus: true,
-			itemStatus,
-			swapIt
-		});
 	}
 });
 

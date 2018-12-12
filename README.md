@@ -40,6 +40,7 @@ Domain: Content Swapping Domain
 
 # Testing
   Validation of HTML5 pages by following tool: http://html5.validator.nu/
+  CSS Lint: http://csslint.net
   
   Cross-browser checking for Firefox and Chrome
 

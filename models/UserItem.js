@@ -16,13 +16,15 @@ Status - this attribute indicates swap item status - available, pending (offer m
 
 /* Represents a ItemDB */
 class UserItemClass {
-	constructor(userId, code, name, category, description, rating, image_url, active, userRating, status) {
+	constructor(userId, code, name, category, description, rating, totalUserRatedItem, totalUserRating, image_url, active, userRating, status) {
 		this.userId = userId,
 		this.code = code,
 		this.name = name,
 		this.category = category,
 		this.description = description,
 		this.rating = rating,
+		this.totalUserRatedItem = totalUserRatedItem,
+		this.totalUserRating = totalUserRating,
 		this.image_url = image_url,
 		this.active = active,
 		this.userRating = userRating,
@@ -51,6 +53,12 @@ const UserItem = mongoose.model('items', {
 		type: String, required: true
 	},
 	rating: {
+		type: String, required: true
+	},
+	totalUserRatedItem: {
+		type: String, required: true
+	},
+	totalUserRating: {
 		type: String, required: true
 	},
 	image_url: {
@@ -117,7 +125,7 @@ module.exports.getItem = (code) => {
 /* Add Item - TODO: get UserID by req.session.theUser.userId */
 module.exports.addItem = (userId, name, category, description, image_url) => {
 	UserItem.countDocuments().then((count) => {
-		var item = new UserItemClass(userId, count + 1, name, category, description, "5", image_url, "active", "5", "available");
+		var item = new UserItemClass(userId, count + 1, name, category, description, "5", "1", "5", image_url, "active", "5", "available");
 		var newItem = new UserItem(item);
 		saveItem(newItem);
 	}, (err) => {
@@ -152,10 +160,32 @@ module.exports.getItemByName = (name) => {
 	}
 }
 
-/*Update Item Status */
+/* Update Item Status */
 module.exports.updateItemStatus = (code, status) => {
 	try {
 		UserItem.findOneAndUpdate({code: code}, {$set: {status: status}}, {$new: true}, (err, doc) => {
+			if(err) throw err;
+		});
+	} catch(e) {
+		console.log(e);	
+	}
+}
+
+/* Update Item Rating */
+module.exports.updateItemRating = (code, rating, totalUserRatedItem, totalUserRating) => {
+	try {
+		UserItem.findOneAndUpdate({code}, {$set: {rating, totalUserRatedItem, totalUserRating}}, {$new: true}, (err, doc) => {
+			if(err) throw err;
+		});
+	} catch(e) {
+		console.log(e);	
+	}
+}
+
+/* Update My Item Rating */
+module.exports.updateMyItemRating = (code, rating, totalUserRatedItem, totalUserRating, userRating) => {
+	try {
+		UserItem.findOneAndUpdate({code}, {$set: {rating, totalUserRatedItem, totalUserRating, userRating}}, {$new: true}, (err, doc) => {
 			if(err) throw err;
 		});
 	} catch(e) {

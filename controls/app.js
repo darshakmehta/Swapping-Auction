@@ -32,6 +32,7 @@ const UserItem = require('../models/UserItem');
 const offer = require('../models/offer');
 const userDB = require('../models/UserDB');
 const UserProfile = require('../models/UserProfile');
+const FeedbackDB = require('../models/FeedbackDB');
 
 const profileOne = new UserProfile();
 let userItem = require('../models/UserItem');
@@ -270,7 +271,7 @@ app.post('/confirmswap', urlencodedParser, async (req, res) => {
 		offer.addOffer(req.body.userId, req.body.swapUserId, req.body.userItemCode, req.body.swapUserItemCode, "pending", "0");
 		await userItem.updateItemStatus(req.body.userItemCode, "pending");
 		await userItem.updateItemStatus(req.body.swapUserItemCode, "pending");
-		req.session.currentProfile.userItems = await userItem.getAllAvailableItemsOfUser(req.session.theUser.userId);
+		req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);
 		res.render('myItems', {
           	welcome: req.session.theUser.firstName,
           	userItemList:req.session.currentProfile.userItems,
@@ -565,6 +566,48 @@ app.post('/addItem', urlencodedParser, async (req, res) => {
 					});
 				}
 			}
+		});
+	}
+});
+
+app.post('/confirmRating', urlencodedParser, async (req, res) => {
+	if(req.session.theUser === undefined) {
+		res.render('login', {
+			welcome: 'notSignedIn',
+			sessionStatus: false,
+			name: 'Anonymous',
+			error: 'null'
+		});
+	} else {
+		var feedback = await FeedbackDB.getItemFeedback(req.session.theUser.userId, req.body.itemCode);
+		if(feedback === null) {
+			await FeedbackDB.addItemFeedback(req.session.theUser.userId, req.body.itemCode, req.body.rating, "");
+		} else {
+			await FeedbackDB.updateItemFeedback(req.session.theUser.userId, req.body.itemCode, req.body.rating, "");
+		}
+		/* Average Rating */
+		let item = await userItem.getItem(req.body.itemCode);
+		let currentTotalRating = Number(item.totalUserRating) + Number(req.body.rating);
+		let totalUsers = Number(item.totalUserRatedItem) + 1;
+		let rating = (currentTotalRating / totalUsers).toFixed(2);
+		
+		{
+			if(item.userId === req.session.theUser.userId) {
+				await userItem.updateMyItemRating(req.body.itemCode, rating, totalUsers, currentTotalRating, req.body.rating);	
+			} else {
+				await userItem.updateMyItemRating(req.body.itemCode, rating, totalUsers, currentTotalRating);	
+			}
+		}
+		/* Check some times it get updated sometimes it does not */
+		let userUpdatedItem = await userItem.getItem(req.body.itemCode);
+		let itemStatus = userUpdatedItem.status;
+		let swapIt = req.session.theUser.userId === item.userId ? "no" : "yes";
+		res.render('item', {
+			welcome: req.session.theUser.firstName,
+			item: userUpdatedItem,
+			sessionStatus: true,
+			itemStatus,
+			swapIt
 		});
 	}
 });

@@ -1,6 +1,7 @@
 /* Represents a Feedback for Other User with whom user Swapped */
 class FeedbackDBUser {
-	constructor(offerId, userId, swapUserId, rating, feedback) {
+	constructor(feedbackId, offerId, userId, swapUserId, rating, feedback) {
+		this.feedbackId = feedbackId;
 		this.offerId = offerId,
 		this.userId = userId,
 		this.swapUserId = swapUserId,
@@ -11,9 +12,10 @@ class FeedbackDBUser {
 
 /* Represents a Feedback for Item Swapped */
 class FeedbackDBOffer {
-	constructor(code, userId, rating, feedback) {
-		this.code = code,
+	constructor(feedbackId, userId, itemCode, rating, feedback) {
+		this.feedbackId = feedbackId;
 		this.userId = userId,
+		this.itemCode = itemCode,
 		this.rating = rating,
 		this.feedback = feedback
 	}
@@ -43,31 +45,59 @@ const FeedbackUser = mongoose.model('userfeedbacks', {
 
 /* Represents Item Feedback by other user in MongoDB */
 const FeedbackItem = mongoose.model('itemfeedbacks', {
-	code: {
-		type: String, required: true
+	feedbackId: {
+	 	type: String, required: true
 	},
 	userId: {
+		type: String, required: true
+	},
+	itemCode: {
 		type: String, required: true
 	},
 	rating: {
 		type: String, required: true
 	},
 	feedback: {
-		type: String, required: true
+		type: String, required: false
 	}
 });
 
 /* Add Feedback for the Item for Offer made to the user */
-module.exports.addItemFeedback = (code, userId, rating, feedback) => {
-	var offerFeedback = new FeedbackDBOffer(code, userId, rating, feedback);
-	addOfferFeedbackByUser(offerFeedback);
+module.exports.addItemFeedback = (userId, itemCode, rating, feedback) => {
+	FeedbackItem.countDocuments().then((count) => {
+		var offerFeedback = new FeedbackDBOffer(count + 1, userId, itemCode, rating, "");
+		var newFeedback = new FeedbackItem(offerFeedback);
+		addOfferFeedbackByUser(newFeedback);
+	}, (err) => {
+		res.status(400).send(err);
+	});
 }
 
 /* Store Feedback for Offer By User in mongoose table */
 var addOfferFeedbackByUser = (offerFeedback) => {
-	FeedbackItem.save((err) => {
+	offerFeedback.save((err) => {
 		if(err) throw err;
 	})
+}
+
+/* Get Item Feedback */
+module.exports.getItemFeedback = (userId, itemCode) => {
+	try {
+		return FeedbackItem.findOne({userId, itemCode});
+	} catch(e) {
+		console.log(e);
+	}
+}
+
+/* update Item Feedback */
+module.exports.updateItemFeedback = (userId, itemCode, rating, feedback) => {
+	try {
+		FeedbackItem.findOneAndUpdate({userId, itemCode}, {$set: {rating}}, {$new: true}, (err, doc) => {
+			if(err) throw err;
+		});
+	} catch(e) {
+		console.log(e);	
+	}
 }
 
 /* Add Feedback for the Offer made to the user */
@@ -81,4 +111,34 @@ var addFeedbackForUser = (userFeedback) => {
 	FeedbackUser.save((err) => {
 		if(err) throw err;
 	})
+}
+
+var getNumberOfFeedbackForItem = (itemCode) => {
+	try {
+		return FeedbackItem.find(itemCode).countDocuments();
+	} catch(e) {
+		console.log(e);	
+	}
+}
+
+module.exports.getAverageRating = (itemCode) => {
+	try {
+		return FeedbackItem.aggregate([
+	        { $match: {
+	            itemCode
+	        }},
+	        { $group: {
+	            _id: "$itemCode",
+	            totalRating: { $sum: "$rating"  }
+	        }}
+	    ], function (err, result) {
+	        if (err) {
+	            console.log(err);
+	            return;
+	        }
+	        console.log(result);
+	    });
+		} catch(e) {
+			console.log(e);	
+		}
 }

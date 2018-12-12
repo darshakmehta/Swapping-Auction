@@ -73,7 +73,25 @@
 							<%}}%>
 
 							<!-- Rate the item --> 
-							<a class="a-disabled" href="#"><button class="btn rate btn-style rate-disabled"><i class="fas fa-star fa-star-item"></i><span class="text-color"> Rate it</span></button></a>
+							<% if(sessionStatus === false) { %>
+								<a class="a-disabled" href="/login">
+									<button data-toggle="tooltip" title="Login to Rate" class="btn rate btn-style rate-disabled">
+										<i class="fas fa-star fa-star-item"></i>
+										<span class="text-color"> Rate it</span>
+									</button>
+								</a>
+
+							<% } else { %>
+									<form class="item-rating ml-3" method = "POST" action="/confirmRating">
+										<input type = "hidden" value= "<%= item.code %>" name="itemCode">
+										<button data-toggle="tooltip" title="Sucks big time - 1 star" class="btn rate-btn" type="submit" name="rating" value="1" id="star1"><i class="fa fa-star fa-rate-item" ></i></button>
+										<button data-toggle="tooltip" title="Kinda bad - 2 stars" class="btn rate-btn" type="submit" name="rating" value="2"><i class="fa fa-star fa-rate-item" ></i></button>
+										<button data-toggle="tooltip" title="Meh - 3 stars" class="btn rate-btn" type="submit" name="rating" value="3"><i class="fa fa-star fa-rate-item" ></i></button>
+										<button data-toggle="tooltip" title="Pretty good - 4 stars" class="btn rate-btn" type="submit" name="rating" value="4"><i class="fa fa-star fa-rate-item" ></i></button>
+										<button data-toggle="tooltip" title="Awesome - 5 stars" class="btn rate-btn" type="submit" name="rating" value="5"><i class="fa fa-star fa-rate-item" ></i></button>
+									</form>
+							<% } %>
+							
 						</div>
 
 						<div class="item-content float-right">

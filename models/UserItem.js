@@ -1,11 +1,14 @@
 /***
 
 UserItem {
+User Id
 Item Code - Unique identifier for the item --> TODO: Alphanumeric string
 Item Name - Name of the product
 Catalog Category - Select or Arrange items by section or type in the catalog
 Description - describe the importance of the item
 Rating - this user's rating for their item
+Total User Rated - Number of users who have given feedback for the product
+Total User Rating - Total number of ratings received
 Image URL -  Item image URL - generated based on itemCode and Directory file path
 active - Check if product is active or inactive(deleted)
 user Rating - This is the user's rating by other users

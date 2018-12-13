@@ -3,6 +3,9 @@ Vision: Swap your old stuff. Get new stuff you LOVE
 
 Domain: Content Swapping Domain
 
+## [Requirement & Design Document](https://github.com/darshakmehta/Swapping-Auction/blob/master/Requirements%20and%20Design%20Document.pdf)
+## [User Manual](https://github.com/darshakmehta/Swapping-Auction/blob/master/User%20Manual.pdf)
+
 # Stage 1
   Creating a set of static HTML5 pages which serves as look-and-feel design prototype for later functional/dynamic application development
   
@@ -73,6 +76,6 @@ Domain: Content Swapping Domain
   
   2. ``npm install``
 
-  3. Use the [``hw5_create_db.txt``](https://github.com/tech-boy/Swapping-Auction/blob/master/hw4_create_db.txt) file to insert the documents in the mongodb database
+  3. Use the [``database_scripts.txt``](https://github.com/tech-boy/Swapping-Auction/blob/master/database_scripts.txt) file to insert the documents in the mongodb database
 
   4. inside the root folder -> ``nodemon controls/app``

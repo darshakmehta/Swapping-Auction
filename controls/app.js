@@ -268,7 +268,7 @@ app.post('/confirmswap', urlencodedParser, async (req, res) => {
 			name: 'Anonymous'
 		});
 	} else {
-		offer.addOffer(req.body.userId, req.body.swapUserId, req.body.userItemCode, req.body.swapUserItemCode, "pending", "0");
+		offer.addOffer(req.body.userId, req.body.swapUserId, req.body.userItemCode, req.body.swapUserItemCode, "pending");
 		await userItem.updateItemStatus(req.body.userItemCode, "pending");
 		await userItem.updateItemStatus(req.body.swapUserItemCode, "pending");
 		req.session.currentProfile.userItems = await userItem.getAllItemsOfUser(req.session.theUser.userId);

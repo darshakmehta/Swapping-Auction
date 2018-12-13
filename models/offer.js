@@ -1,13 +1,12 @@
 /* Represents a UserDB */
 class offerDB {
-	constructor(offerId, userId, swapUserId, userItemCode, swapUserItemCode, status, swapperRating) {
+	constructor(offerId, userId, swapUserId, userItemCode, swapUserItemCode, status) {
 		this.offerId = offerId	,
 		this.userId = userId,
 		this.swapUserId = swapUserId,
 		this.userItemCode = userItemCode,
 		this.swapUserItemCode = swapUserItemCode,
-		this.status = status,
-		this.swapperRating = swapperRating
+		this.status = status
 	}
 }
 /* Require Mongoose Library */
@@ -31,16 +30,13 @@ const Offer = mongoose.model('offers', {
 	},
 	status: {
 		type: String, required: true
-	},
-	swapperRating: {
-		type: String, required: true
 	}
 });
 
 /* Add offer */
-module.exports.addOffer = (userId, swapUserId, userItemCode, swapUserItemCode, status, swapperRating) => {
+module.exports.addOffer = (userId, swapUserId, userItemCode, swapUserItemCode, status) => {
 	Offer.countDocuments({}, (err, count) => {
-		var offer = new offerDB(count + 1, userId, swapUserId, userItemCode, swapUserItemCode, status, swapperRating);
+		var offer = new offerDB(count + 1, userId, swapUserId, userItemCode, swapUserItemCode, status);
 		var offerItem = new Offer(offer);
 		/* Store offer in mongoose table */
 		offerItem.save((err) => {

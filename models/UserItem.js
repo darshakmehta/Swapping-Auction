@@ -125,7 +125,7 @@ module.exports.getItem = (code) => {
 /* Add Item - TODO: get UserID by req.session.theUser.userId */
 module.exports.addItem = (userId, name, category, description, image_url) => {
 	UserItem.countDocuments().then((count) => {
-		var item = new UserItemClass(userId, count + 1, name, category, description, "5", "1", "5", image_url, "active", "5", "available");
+		var item = new UserItemClass(userId, count + 1, name, category, description, "0", "0", "0", image_url, "active", "0", "available");
 		var newItem = new UserItem(item);
 		saveItem(newItem);
 	}, (err) => {
